@@ -5,6 +5,7 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
     public String Query;
     public boolean isTest; 
     boolean filterTestConsOnly = false;
+    //foo
 
     public map<integer,string> lvlNameMap = new map<integer,string>();
     map<integer,string> lvlNameSettingMap = new map<integer,string> {
