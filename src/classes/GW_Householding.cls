@@ -4,7 +4,7 @@ public class GW_Householding {
 // Modifications by Evan Callahan, copyright (c) 2010 Groundwire
 // This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
 
-// Class to manage household names and addresses
+// Class to manage household names and addresses syncing
     
     // set to true if you want Mr. and Mrs. in the household name
     static final boolean includeSalutation = true;  
