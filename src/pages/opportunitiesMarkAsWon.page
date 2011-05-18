@@ -1,0 +1,3 @@
+<apex:page standardController="Opportunity" recordSetVar="opportunities"
+	extensions="ONEN_EXT_OpportunitiesMarkAs" action="{!MarkAsWon}">
+</apex:page>

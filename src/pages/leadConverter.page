@@ -1,0 +1,267 @@
+<apex:page controller="ONEN_CTRL_LeadConverter" tabStyle="Importer__tab">
+	<!--
+Visualforce Lead Conversion Page for Salesforce.com
+Copyright (c) 2008 Evan Callahan, evanc@npowerseattle.org, NPower Seattle, 403 23rd Ave S, Seattle, WA 98144
+-->
+	<style>
+.show {
+	display: block;
+}
+
+.hide {
+	display: none;
+}
+
+select,option {
+	font-size: .8em;
+}
+</style>
+	<script>
+
+        // function to check or uncheck all the checkboxes in the form
+        function SelectChecked(form, element_name, value) { 
+            var i = 0; 
+            for (i = 0; i < form.elements.length; i++) { 
+                if (form.elements[i].name.lastIndexOf(element_name) == form.elements[i].name.length - element_name.length) { 
+                    form.elements[i].checked = value; 
+                } 
+            } 
+        } 
+        
+        // object that stores account list values
+        var acctListValues = new Object();
+        
+        // function to refill the account list and enable the right one
+        function setAcctList(alistId1, alistId2, clistId, leadId) {
+            var acctlist = document.getElementById(alistId1);
+            var dummylist = document.getElementById(alistId2);
+            var cid = document.getElementById(clistId).value;
+            
+            // clear the list
+            dummylist.options.length = 0;
+            
+            // get the array of values for this lead
+            var thisList = acctListValues[leadId];
+
+            // every third value is the contact id, followed by the account id and name
+            for (i = 0; i < thisList.length; i=i+3) {
+                var thisId = thisList[i];
+                if (thisId == cid) {  
+                    addOpt(dummylist, thisList[i+2], 'Place in: ' + thisList[i+1], false);
+                }
+            }
+            
+            // show the right list
+            acctlist.className = (cid=="") ? 'show' : 'hide';
+            dummylist.className = (cid=="") ? 'hide' : 'show';
+        }
+        
+        // function to add an option to a list
+        function addOpt(list, item, index, isDefault) {
+            if (isIE) {             // IE is different.
+                if (isDefault) {
+                    var opt = new Option(item, index, true, true);
+                    list.add(opt, 0);
+                } else {
+                    var opt = new Option(item, index);
+                    list.add(opt);              
+                }
+            } else {
+                if (isDefault) {
+                    var opt = new Option(item, index, true, true);
+                    list.add(opt, list.options[0]);
+                } else {
+                    var opt = new Option(item, index, false, false);
+                    list.add(opt, null);                
+                }
+            }
+        }
+
+		function verifySelection(form, element_name) { 
+			for (i = 0; i < form.elements.length; i++) { 
+				if ((form.elements[i].name.lastIndexOf(element_name) == form.elements[i].name.length - element_name.length) && (form.elements[i].checked)) {
+					displayHourglass(true);
+					return true;
+				} 
+			} 
+			alert("No records are checked."); 
+			return false;
+		} 
+
+        function displayHourglass(turnItOn) { document.body.style.cursor = turnItOn ? 'wait' : 'default' ; return true; }
+        
+    </script>
+
+	<apex:sectionHeader title="Lead Converter" />
+	<apex:outputText >
+    	Use this page to match leads to existing contacts.<br />
+	</apex:outputText>
+	<br />
+	<strong> <apex:outputText rendered="{!noOpenLeads}"
+		value="There are no open leads." /> <apex:actionStatus id="loadStatus" startText="Loading leads..." stopText="" /> <apex:actionStatus id="convertStatus" startText="Converting..." stopText="" /> <apex:actionStatus id="deleteStatus" startText="Deleting..." stopText="" /> </strong>
+	<br />&nbsp;
+    <apex:outputPanel id="optionsPanel">
+	    <apex:pageBlock title="Options" rendered="{!AND(NOT(noOpenLeads),NOT(batching))}">
+			<apex:form >
+				<apex:panelGrid columns="3" id="theGrid">
+					<apex:outputText value="Leads to Load: " styleClass="labelCol" />
+					<apex:selectList value="{!leadSource}" id="leadSourceList"
+						multiselect="false" size="1">
+						<apex:selectOptions value="{!sources}" />
+						<apex:actionSupport event="onchange" rerender="leadList"
+							status="loadStatus"
+							onsubmit="javascript:document.body.style.cursor = 'wait';"
+							oncomplete="javascript:document.body.style.cursor = 'default';" />
+					</apex:selectList>
+				</apex:panelGrid>
+			</apex:form>
+		</apex:pageBlock>
+	</apex:outputPanel>
+	<apex:form >
+		<apex:outputPanel id="batchControl" >
+			<apex:pageBlock Title="Auto-Converter" rendered="{!batching}">
+				<apex:pageBlockButtons >
+					<apex:commandButton action="{!batchConvert}" value="Convert"
+						disabled="{!batchRunning}" />
+					<apex:commandButton action="{!cancel}" value="Cancel" rerender="batchControl"/> 
+				</apex:pageBlockButtons>
+				<apex:messages styleClass="err" />
+				<apex:outputText >
+					Use the batch lead converter to convert all leads that obviously match (External Id, Contact Id, and First Name + Email) an existing contact record
+					in your database and all leads that obviously don't match an existing contact (no name or email match).  The remaining leads that match only loosely
+					will be ignored and you can use this importer page to convert them. 
+				</apex:outputText>
+				<p><apex:panelGrid columns="3" id="theGrid">
+					<apex:outputText value="Lead Sources to Auto-Convert: " styleClass="labelCol" />
+					<apex:selectList value="{!leadSource}" id="leadSourceList"
+						multiselect="false" size="1">
+						<apex:selectOptions value="{!sources}" />
+					</apex:selectList>
+				</apex:panelGrid></p>
+			</apex:pageBlock>
+		</apex:outputPanel>
+		<apex:outputPanel rendered="{!batchRunning}">
+			<c:batchJobs batchComponentLabel="Batch Rollup Progress"
+				numberOfJobs="1" />
+		</apex:outputPanel>
+	</apex:form>
+	<apex:outputPanel id="convertedList">
+		<apex:outputPanel id="leadList">
+			<apex:form id="leadListForm" rendered="{!AND(NOT(ISNULL(results)),NOT(batching))}"> 
+				<apex:pageBlock title="Leads to be Converted">
+					<apex:pageBlockButtons >
+						<apex:commandButton id="convertBtn" value="Convert"
+							action="{!convertLeads}" rerender="convertedList"
+							status="convertStatus"
+							onclick="verifySelection(document.getElementById('{!$Component.leadListForm}'), 'selected')"
+							oncomplete="displayHourglass(false)" />
+						<apex:commandButton id="deleteBtn" value="Delete"
+							action="{!deleteLeads}" rerender="leadList" status="deleteStatus"
+							onclick="verifySelection(document.getElementById('{!$Component.leadListForm}'), 'selected')"
+							oncomplete="displayHourglass(false)" />
+					</apex:pageBlockButtons>
+					<apex:outputPanel rendered="{!dupContact}">
+						<p><strong><apex:outputText style="font-size: 1.2em; color:red;"
+							value="There is a duplicate contact in your conversion set. You cannot merge two leads to one contact record in a single conversion. Please uncheck one of the duplicate records and try your conversion again, you may convert the second lead record in the next batch of leads." /></strong><br />
+						<br />
+						</p>
+					</apex:outputPanel>
+					<apex:pageBlockTable id="ldtbl" value="{!results}" var="l"
+						style="margin-bottom:20px">
+						<apex:column >
+							<apex:facet name="header">
+								<apex:inputCheckbox id="checkAll"
+									onclick="javascript:SelectChecked(document.getElementById('{!$Component.leadListForm}'), 'selected', this.checked);" />
+							</apex:facet>
+							<apex:inputCheckbox value="{!l.selected}" id="selected" />
+						</apex:column>
+						<apex:column headerValue="Lead Name">
+							<apex:outputLink value="{!l.leadUrl}" target="_new">
+								<apex:outputText value="{!l.lead.name}" />
+							</apex:outputLink>
+							<br />
+							<apex:outputText value="{!NULLVALUE(l.lead.email, 'no email')}" />
+						</apex:column>
+						<apex:column id="calistcol" headerValue="Contact/Account">
+							<apex:selectList id="clist" value="{!l.match}"
+								disabled="{!l.noChoice}" multiselect="false" size="1"
+								onclick="javascript:setAcctList('{!$Component.alist1}', '{!$Component.alist2}', '{!$Component.clist}', '{!l.lead.id}');">
+								<apex:selectOptions value="{!l.cOptions}" />
+							</apex:selectList>
+							<br />
+							<apex:selectList id="alist1" disabled="{!l.oneAOption}"
+								value="{!l.amatch}" multiselect="false" size="1"
+								styleClass="{!l.alistStyle}">
+								<apex:selectOptions value="{!l.aOptions}" />
+							</apex:selectList>
+							<apex:selectList id="alist2" disabled="true" multiselect="false"
+								size="1" styleClass="{!l.dummyStyle}">
+								<apex:selectOptions value="{!l.cAccount}" />
+							</apex:selectList>
+							<script>
+                            // add the possible account matches for this lead to a javascript array so the script code can use it
+                            var alist = new Array();
+                            <apex:repeat value="{!l.arrayData}" var="ad">
+                                    alist.push("{!ad}");
+                            </apex:repeat>
+                            acctListValues['{!l.lead.id}'] = alist;
+                        </script>
+						</apex:column>
+						<apex:column value="{!l.lead.leadSource}"
+							headerValue="Lead Source" />
+						<apex:column headerValue="Payment">
+							<apex:outputField value="{!l.lead.Opportunity_Date__c}"
+								rendered="{!NOT(ISNULL(l.omatch))}" />
+							<apex:outputText value=" : "
+								rendered="{!AND(NOT(ISNULL(l.omatch)), NOT(ISNULL(l.lead.Opportunity_Date__c)))}" />
+							<apex:outputField value="{!l.lead.Opportunity_Amount__c}"
+								rendered="{!NOT(ISNULL(l.omatch))}" />
+							<br />
+							<apex:selectList id="olist" value="{!l.omatch}"
+								disabled="{!l.noOChoice}" multiselect="false" size="1"
+								rendered="{!NOT(ISNULL(l.omatch))}">
+								<apex:selectOptions value="{!l.oMatches}" />
+							</apex:selectList>
+							<br />
+							<apex:selectList id="RTList" value="{!l.oRecType}"
+								multiselect="false" size="1"
+								rendered="{!NOT(ISNULL(l.lead.Opportunity_Amount__c))}">
+								<apex:selectOptions value="{!l.oRecTypes}" />
+							</apex:selectList>
+						</apex:column>
+					</apex:pageBlockTable>
+				</apex:pageBlock>
+			</apex:form>
+		</apex:outputPanel>
+		<apex:pageBlock title="Converted Leads"
+			rendered="{!NOT(ISNULL(conversions))}">
+			<apex:pageBlockTable id="ldtbl" value="{!conversions}" var="c">
+				<apex:column headerValue="Contact" style="width:25%">
+					<apex:outputLink value="{!c.contactUrl}" target="_new">
+						<apex:outputText value="{!c.contactName}" />
+					</apex:outputLink>
+				</apex:column>
+				<apex:column headerValue="Account" style="width:25%">
+					<apex:outputLink value="{!c.accountUrl}" target="_new">
+						<apex:outputText value="{!c.accountName}" />
+					</apex:outputLink>
+				</apex:column>
+				<apex:column headerValue="Opportunity">
+					<apex:outputLink value="{!c.oppUrl}" target="_new"
+						rendered="{!NOT(ISNULL(c.oppName))}">
+						<apex:outputText value="{!c.oppName}" />
+					</apex:outputLink>
+				</apex:column>
+			</apex:pageBlockTable>
+		</apex:pageBlock>
+		<apex:pageBlock title="Tools">
+				
+			<p><a href='/00Q/e'>Create Leads</a></p>
+			<p><a href='/lead/leadImportWelcome.jsp'>Import Leads</a></p>
+			<apex:form >
+				<p><apex:commandLink action="{!openBatchDialog}" value="Auto-Convert All Leads" rerender="batchControl,optionsPanel" /></p>
+			</apex:form>
+				
+		</apex:pageBlock>
+	</apex:outputPanel>
+</apex:page>

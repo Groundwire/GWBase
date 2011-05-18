@@ -1,0 +1,1438 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <enableFeeds>true</enableFeeds>
+    <fields>
+        <fullName>Action_Alerts__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates that this person should receive email action alerts</inlineHelpText>
+        <label>Action Alerts</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Activist_Preferences__c</fullName>
+        <externalId>false</externalId>
+        <label>Activist Preferences</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Attend Event</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Volunteer</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Write Letter</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>MultiselectPicklist</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Anonymous__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>If set, mark all new opportunities for this Contact as anonymous.</inlineHelpText>
+        <label>Anonymous</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>AverageAmount__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Average Gift</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Bad_Address__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Bad Address</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Bad_Email_Address__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Bad Email Address</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Best_Gift_Year_Total__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>total giving during the year shown in Best Gift Year</inlineHelpText>
+        <label>Best Gift Year Total</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Best_Gift_Year__c</fullName>
+        <externalId>false</externalId>
+        <label>Best Gift Year</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>BoardMember__c</fullName>
+        <externalId>false</externalId>
+        <label>Board Member</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Current</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Former</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Prospective</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Communication_Preference__c</fullName>
+        <externalId>false</externalId>
+        <label>Communication Preference</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Do Not Contact</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mail</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Phone</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Cong_District__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Voter&apos;s Federal congressional district</inlineHelpText>
+        <label>Voter Cong District</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Contact_Name_Last_First__c</fullName>
+        <externalId>false</externalId>
+        <formula>LastName &amp; &quot;, &quot; &amp; FirstName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Contact Name Last First</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Days_Since_First_Action_at_Level__c</fullName>
+        <externalId>false</externalId>
+        <formula>TODAY() -  First_Action_Date_Curr_Level__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Days Since First Action at Level</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Deceased__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Check if this contact is deceased</inlineHelpText>
+        <label>Deceased</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Districting_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Districting Status</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Do_Not_Mail__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Do Not Mail</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Do_Not_Solicit__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Do Not Solicit</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Do_Not_Trade__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Do not trade, rent or otherwise share this person&apos;s contact information with third parties.</inlineHelpText>
+        <label>Do Not Trade</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Donor_This_Year__c</fullName>
+        <description>yes/no formula</description>
+        <externalId>false</externalId>
+        <formula>IF (   OppAmountThisYear__c  &gt; 0 , &quot;Yes&quot; , &quot;No&quot; )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Donor This Year?</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Donor__c</fullName>
+        <description>yes/no formula for display to profiles without permissions to view Opps</description>
+        <externalId>false</externalId>
+        <formula>IF (   TotalOppAmount__c  &gt; 0 , &quot;Yes&quot;, &quot;No&quot; )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Displays as Yes or No depending on whether this individual has ever made a donation or sponsorship.</inlineHelpText>
+        <label>Donor?</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Engagement_Level_Numeric_After_Override__c</fullName>
+        <externalId>false</externalId>
+        <formula>MAX (  Engagement_Level_Override_Numeric__c ,  Engagement_Level_Numeric__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Engagement Level Numeric After Override</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Engagement_Level_Numeric__c</fullName>
+        <description>set automatically by batch process</description>
+        <externalId>false</externalId>
+        <label>Engagement Level Numeric</label>
+        <precision>2</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Engagement_Level_Override_Numeric__c</fullName>
+        <externalId>false</externalId>
+        <formula>VALUE(LEFT(TEXT(Engagement_Level_Override__c ),1))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Engagement Level Override Numeric</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Engagement_Level_Override__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>This will increase the contact&apos;s engagement level, if this level is higher than what they would otherwise get based on their activity/donor history.  It cannot lower their level, only raise it.  It is effective until the override end date specified.</inlineHelpText>
+        <label>Engagement Level Override</label>
+        <picklist>
+            <picklistValues>
+                <fullName>1 - Follower</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2 - Bridge Supporter</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3 - Core Supporter</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>4 - Super-Supporter</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>5 - Organizer</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>6 - Leader</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Engagement_Level__c</fullName>
+        <description>set by batch process</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Current engagement level, automatically calculated.  If you want to manually change the level, do not attempt to change this field.  Instead, enter a value in Engagement Level Override.</inlineHelpText>
+        <label>Engagement Level</label>
+        <picklist>
+            <picklistValues>
+                <fullName>1 - Observing</fullName>
+                <color>#FFCC33</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2 - Following</fullName>
+                <color>#996633</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3 - Endorsing</fullName>
+                <color>#66CCCC</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>4 - Contributing</fullName>
+                <color>#9999FF</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>5 - Owning</fullName>
+                <color>#663366</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>6 - Leading</fullName>
+                <color>#FF6666</color>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Engagement_Levels_Below_Peak__c</fullName>
+        <externalId>false</externalId>
+        <formula>Engagement_Level_Numeric__c - Engagement_Peak_Numeric__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Compares current and peak level, indicates how many levels they have fallen off their peak.  If 0, means peak and current level are the same.</inlineHelpText>
+        <label>Engagement Levels Below Peak</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Engagement_Override_End_Date__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>override specified is effective until this date</inlineHelpText>
+        <label>Engagement Override End Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Engagement_Peak_Numeric__c</fullName>
+        <description>set automatically by batch process</description>
+        <externalId>false</externalId>
+        <label>Engagement Peak Numeric</label>
+        <precision>2</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Engagement_Peak__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>The highest engagement level ever reached by this contact.
+
+NOTE: This does not take into account any past overrides or formerly-checked checkboxes that affect engagement level.</inlineHelpText>
+        <label>Engagement Peak</label>
+        <picklist>
+            <picklistValues>
+                <fullName>1 - Observing</fullName>
+                <color>#FFCC33</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2 - Following</fullName>
+                <color>#996633</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3 - Endorsing</fullName>
+                <color>#66CCCC</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>4 - Contributing</fullName>
+                <color>#9999FF</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>5 - Owning</fullName>
+                <color>#663366</color>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>6 - Leading</fullName>
+                <color>#FF6666</color>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>External_Id__c</fullName>
+        <externalId>true</externalId>
+        <label>External Id</label>
+        <length>80</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>FirstCloseDate__c</fullName>
+        <externalId>false</externalId>
+        <label>First Gift Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>First_Action_Date_Curr_Level__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>The date of the first action for this contact at their current Engagement Level.   i.e. the date the contact first &quot;graduated&quot; to the this level of engagement.</inlineHelpText>
+        <label>First Action Date at Engagement Level</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Gender__c</fullName>
+        <externalId>false</externalId>
+        <label>Gender</label>
+        <length>3</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Geocode_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Google Geocode Status</label>
+        <length>30</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Geocoding_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Geocoding Status</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Home_County__c</fullName>
+        <externalId>false</externalId>
+        <label>Home County</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>HouseholdGreeting__c</fullName>
+        <externalId>false</externalId>
+        <formula>ONEN_Household__r.Greeting__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Household Greeting</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>HouseholdMembershipEndDate__c</fullName>
+        <externalId>false</externalId>
+        <formula>ONEN_Household__r.MembershipEndDate__c</formula>
+        <inlineHelpText>End date of the last membership for this person&apos;s household.</inlineHelpText>
+        <label>Household Membership End Date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>HouseholdMembershipJoinDate__c</fullName>
+        <externalId>false</externalId>
+        <formula>ONEN_Household__r.MembershipJoinDate__c</formula>
+        <inlineHelpText>Start date of the first membership for this person&apos;s household.</inlineHelpText>
+        <label>Household Membership Join Date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>HouseholdName__c</fullName>
+        <externalId>false</externalId>
+        <formula>ONEN_Household__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Household Name</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Household_Greeting__c</fullName>
+        <externalId>false</externalId>
+        <formula>ONEN_Household__r.Greeting__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Household Greeting</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Household_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>ONEN_Household__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Household Name</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Inactive__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates that this person is no longer involved in any way, hasn&apos;t been for some time, and we don&apos;t expect them to get more involved.</inlineHelpText>
+        <label>Inactive</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Is_Org_Primary_Contact__c</fullName>
+        <description>for use in reports, equals &quot;True&quot; if this contact is the primary con for the related acct</description>
+        <externalId>false</externalId>
+        <formula>IF (  AND ( Account.Primary_Contact__c =  Id , NOT ( Account.Name = &quot;Individual&quot; ) ) , &quot;True&quot; , &quot;False&quot; )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Org Primary Contact?</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Issue_Interest__c</fullName>
+        <externalId>false</externalId>
+        <label>Issue Interest</label>
+        <picklist>
+            <picklistValues>
+                <fullName>N/A</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>MultiselectPicklist</type>
+        <visibleLines>6</visibleLines>
+    </fields>
+    <fields>
+        <fullName>LargestAmount__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Largest Gift</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>LastCloseDateHH__c</fullName>
+        <externalId>false</externalId>
+        <formula>ONEN_Household__r.LastCloseDate__c</formula>
+        <label>Last Household Gift Date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>LastCloseDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Last Gift Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>LastMembershipAmount__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Last Membership Amount</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>LastMembershipDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Last Membership Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>LastMembershipLevel__c</fullName>
+        <externalId>false</externalId>
+        <label>Last Membership Level</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LastMembershipOrigin__c</fullName>
+        <externalId>false</externalId>
+        <label>Last Membership Origin</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LastOppAmount__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Last Gift Amount</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Last_Leadership_Action_Date__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Date of most recent action taken (may include donations if your org includes that in Engagement Level calculations)</inlineHelpText>
+        <label>Last Engagement Action Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Latitude__c</fullName>
+        <externalId>false</externalId>
+        <label>Latitude</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>6</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LeadSource</fullName>
+        <picklist>
+            <picklistValues>
+                <fullName>Web</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Phone Inquiry</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Partner Referral</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Purchased List</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Paypal</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Eventbrite</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Legacy_ID__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>The ID of this record in the old database, if any</inlineHelpText>
+        <label>Legacy ID</label>
+        <length>50</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Longitude__c</fullName>
+        <externalId>false</externalId>
+        <label>Longitude</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>6</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>MembershipEndDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Membership End Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>MembershipJoinDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Membership Join Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Membership_Span__c</fullName>
+        <externalId>false</externalId>
+        <formula>year(MembershipEndDate__c ) - year(MembershipJoinDate__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Membership Span</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Membership_Status__c</fullName>
+        <description>note: grace period term is hard coded as 1 month, may need to be changed for some clients</description>
+        <externalId>false</externalId>
+        <formula>if (  MembershipEndDate__c  &lt;today(), if ( MembershipEndDate__c  &gt; ( TODAY() - 31 ) , &quot;Grace Period&quot; , &quot;Expired&quot;) , if(isnull(MembershipEndDate__c ),&quot;&quot;,&quot;Current&quot;))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Current, expired, or grace period</inlineHelpText>
+        <label>Membership Status</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Middle_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Middle Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>New_Donor_This_Year__c</fullName>
+        <description>yes/no formula</description>
+        <externalId>false</externalId>
+        <formula>IF (  AND (  OppAmountThisYear__c  =  TotalOppAmount__c   , OppAmountThisYear__c &gt; 0 ) , &quot;Yes&quot; , &quot;No &quot; )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>New Donor This Year?</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Newsletter_Opt_Out__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Check here to indicate that a person who would ordinarily get the newsletter should not get it.</inlineHelpText>
+        <label>Newsletter Opt Out</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Not_in_HH_Name__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>If you check this box, this contact will not be included in the household name. Use for children or other dependents.</inlineHelpText>
+        <label>Not in Household Name</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NumberOfClosedOpps__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Total Number of Gifts</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>NumberOfMembershipOpps__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Number of Memberships</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ONEN_Household__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>This is a lookup to the Contact&apos;s Household. If you want to change it, override the Household Name on this Household and it will show up here.</inlineHelpText>
+        <label>Household</label>
+        <referenceTo>ONEN_Household__c</referenceTo>
+        <relationshipLabel>Contacts</relationshipLabel>
+        <relationshipName>Contacts</relationshipName>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>OppAmount2YearsAgo__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Total Gifts Two Years Ago</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>OppAmountLastNDaysHH__c</fullName>
+        <externalId>false</externalId>
+        <formula>ONEN_Household__r.OppAmountLastNDays__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Total Household Gifts Last 365 Days</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>OppAmountLastNDays__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Total Gifts Last 365 Days</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>OppAmountLastYearHH__c</fullName>
+        <externalId>false</externalId>
+        <formula>ONEN_Household__r.OppAmountLastYear__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Total Household Gifts Last Year</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>OppAmountLastYear__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Total Gifts Last Year</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>OppAmountThisYearHH__c</fullName>
+        <externalId>false</externalId>
+        <formula>ONEN_Household__r.OppAmountThisYear__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Total Household Gifts This Year</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>OppAmountThisYear__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Total Gifts This Year</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>OppsClosed2YearsAgo__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Number of Gifts Two Years Ago</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OppsClosedLastNDays__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Number of Gifts Last 365 Days</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OppsClosedLastYear__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Number of Gifts Last Year</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OppsClosedThisYear__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Number of Gifts This Year</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Override_Prospect_Level__c</fullName>
+        <description>If Don&apos;t Override is chosen, then Prospect level field is calc&apos;d automatically in a formula using the total gift fields. If any other value is chosen, that value is used instead.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Choose Do Not Override to allow Prospect Level to be calculated automatically. Choose any other value to set Prospect Level manually.</inlineHelpText>
+        <label>Override Prospect Level</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Do Not Override</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Donor</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Major Donor</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Primary_Address_Household_Greeting__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) , FirstName , IF ( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ) , HouseholdGreeting__c , IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) , HouseholdGreeting__c , FirstName ) ) )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Primary Address Household Greeting</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Primary_Address_Household_Name__c</fullName>
+        <description>Equals Household Name if effective primary address is Home</description>
+        <externalId>false</externalId>
+        <formula>IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) ,  FirstName &amp; &quot; &quot; &amp; LastName , IF ( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ) ,  HouseholdName__c  , IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) , HouseholdName__c , FirstName &amp; &quot; &quot; &amp; LastName ) ) )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Primary Address Household Name</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Primary_Address_Name_Block_HH__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF ( OR( ISPICKVAL(Primary_Address__c ,&quot;Work&quot;), AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) ) , Primary_Address_Name_Block__c , HouseholdName__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Primary Address Name Block HH</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Primary_Address_Name_Block__c</fullName>
+        <description>includes full contact name + Title &amp; org name where applicable</description>
+        <externalId>false</externalId>
+        <formula>FirstName &amp; IF (  Middle_Name__c  &lt;&gt; &quot;&quot; , &quot; &quot; &amp; Middle_Name__c  , &quot;&quot; ) &amp; &quot; &quot; &amp; LastName  &amp;
+IF (  Primary_Address_Title__c  &lt;&gt; &quot;&quot; ,   BR()  &amp; Primary_Address_Title__c , &quot;&quot; ) &amp;
+IF (   Primary_Address_Org_Name__c  &lt;&gt; &quot;&quot; ,  BR() &amp; Primary_Address_Org_Name__c  , &quot;&quot; )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Primary Address Name Block</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Primary_Address_Org_Name__c</fullName>
+        <description>Equal to the account name if and only if there is an account, and the effective primary address is Work.  (11/17/08 MMS)</description>
+        <externalId>false</externalId>
+        <formula>IF ( Account.Name = &quot;Individual&quot; , &quot;&quot; , 
+IF ( ISPICKVAL ( Primary_Address__c, &quot;No Mail&quot; ) , &quot;&quot; ,
+IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) ,  Account.Name , IF ( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ) , &quot;&quot; , IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) , &quot;&quot; ,  Account.Name ) ) )
+)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Primary Address Org Name</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Primary_Address_Title__c</fullName>
+        <description>Equals title if and only if effective primary address is Work</description>
+        <externalId>false</externalId>
+        <formula>IF ( Account.Name = &quot;Individual&quot; , &quot;&quot; , 
+IF ( ISPICKVAL ( Primary_Address__c, &quot;No Mail&quot; ) , &quot;&quot; , 
+IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) ,  Title  , IF ( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ) , &quot;&quot; , IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) , &quot;&quot; , Title   ) ) ) 
+) 
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Primary Address Title</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Primary_Address__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Selecting Home makes the Home address the primary, selecting Work makes the Work Address the primary.</inlineHelpText>
+        <label>Primary Address</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Home</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Work</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>No Mail</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Primary_City__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF ( ISPICKVAL ( Primary_Address__c, &quot;No Mail&quot; ) , &quot;&quot; ,
+IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) , MailingCity , IF ( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ) , OtherCity , IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) , OtherCity, MailingCity ) ) )
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Primary mailing City</inlineHelpText>
+        <label>Primary City</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Primary_Country__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF ( ISPICKVAL ( Primary_Address__c, &quot;No Mail&quot; ) , &quot;&quot; , 
+IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) , MailingCountry , IF ( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ) , OtherCountry , IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) , OtherCountry , MailingCountry ) ) )
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Primary Country</inlineHelpText>
+        <label>Primary Country</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Primary_County__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF ( ISPICKVAL ( Primary_Address__c, &quot;No Mail&quot; ) , &quot;&quot; ,
+IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) , Work_County__c , IF ( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ) , Home_County__c , IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) , Home_County__c , Work_County__c ) ) )
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Primary County</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Primary_Postal_Code__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF ( ISPICKVAL ( Primary_Address__c, &quot;No Mail&quot; ) , &quot;&quot; ,
+IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) , MailingPostalCode , IF ( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ) , OtherPostalCode , IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) , OtherPostalCode , MailingPostalCode ) ) )
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Primary Zip/Postal Code</inlineHelpText>
+        <label>Primary Postal Code</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Primary_State_Province__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF ( ISPICKVAL ( Primary_Address__c, &quot;No Mail&quot; ) , &quot;&quot; ,
+IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) , MailingState , IF ( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ) , OtherState , IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) , OtherState , MailingState ) ) )
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Primary mailing State</inlineHelpText>
+        <label>Primary State/Province</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Primary_Street__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF ( ISPICKVAL ( Primary_Address__c, &quot;No Mail&quot; ) , &quot;&quot; ,
+IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) , MailingStreet , IF ( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ) , OtherStreet , IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) , OtherStreet, MailingStreet ) ) )
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Primary Street Address</inlineHelpText>
+        <label>Primary Street</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Program_Interest__c</fullName>
+        <externalId>false</externalId>
+        <label>Program Interest</label>
+        <picklist>
+            <picklistValues>
+                <fullName>N/A</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>MultiselectPicklist</type>
+        <visibleLines>6</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Prospect_Level__c</fullName>
+        <description>Level of Prospect. Calculated based on Total Gifts fields unless Overridden in Override Prospect field.  Change formula to embody client&apos;s donation level rules.</description>
+        <externalId>false</externalId>
+        <formula>CASE( Override_Prospect_Level__c, 
+&apos;Do Not Override&apos;, IF( ISNULL( TotalOppAmount__c ),&apos;&apos;, 
+IF(  OppAmountLastYear__c  &gt;= 250 ||  OppAmountThisYear__c  &gt;= 250 ,&apos;Major Donor&apos;, 
+IF(OppAmountLastYear__c  = 0 &amp;&amp; OppAmountThisYear__c  = 0, &apos;Lapsed Donor&apos;, &apos;Donor&apos;))), 
+&apos;Donor&apos;, &apos;Donor&apos;, 
+&apos;Major Donor&apos;, &apos;Major Donor&apos;, 
+&apos;New Override Value - Must be Added to Formula in field Prospect Level&apos;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Level of Prospect. Calculated based on Total Gifts fields unless Overridden in Override Prospect Level field.</inlineHelpText>
+        <label>Prospect Level</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SecondContactEmail__c</fullName>
+        <externalId>false</externalId>
+        <label>Second Contact Email</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SecondContactFirstName__c</fullName>
+        <externalId>false</externalId>
+        <label>Second Contact First Name</label>
+        <length>50</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SecondContactLastName__c</fullName>
+        <externalId>false</externalId>
+        <label>Second Contact Last Name</label>
+        <length>50</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SecondContactSalutation__c</fullName>
+        <externalId>false</externalId>
+        <label>Second Contact Salutation</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Mr.</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Ms.</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mrs.</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Dr.</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Prof.</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Secondary_Email__c</fullName>
+        <externalId>false</externalId>
+        <label>Secondary Email</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SmallestAmount__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Smallest Gift</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Staff_Status__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Is this contact a staff member?</inlineHelpText>
+        <label>Staff Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Current</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Past</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Prospective</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>State_Senate__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>State Senate legislative district (where different from state House district)</inlineHelpText>
+        <label>Voter State Senate</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TotalMembershipOppAmount__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Total Membership Amount</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>TotalOppAmount__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Total Gifts</label>
+        <precision>16</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Total_Household_Gifts__c</fullName>
+        <externalId>false</externalId>
+        <formula>ONEN_Household__r.TotalOppAmount__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Total Household Gifts</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Voter_Leg_District__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>State legislative district (House)</inlineHelpText>
+        <label>Voter Leg District</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Work_County__c</fullName>
+        <externalId>false</externalId>
+        <label>Work County</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <listViews>
+        <fullName>Donors</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>OppAmountLastNDays__c</columns>
+        <columns>OppAmountThisYear__c</columns>
+        <columns>OppAmountLastYear__c</columns>
+        <columns>NumberOfClosedOpps__c</columns>
+        <columns>LastCloseDate__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>TotalOppAmount__c</field>
+            <operation>greaterThan</operation>
+            <value>0</value>
+        </filters>
+        <label>Donors</label>
+    </listViews>
+    <listViews>
+        <fullName>Engagement_Level</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>Engagement_Level__c</columns>
+        <columns>Engagement_Peak__c</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>CONTACT.TITLE</columns>
+        <columns>CONTACT.PHONE1</columns>
+        <columns>CONTACT.EMAIL</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <label>Engagement Level</label>
+    </listViews>
+    <webLinks>
+        <fullName>Job_Change</fullName>
+        <availability>online</availability>
+        <description>This button brings up a page to choose a new organization for a particular contact.  When saved, a former employment Organization to Contact relationship is created with a job end date.</description>
+        <displayType>button</displayType>
+        <linkType>url</linkType>
+        <masterLabel>Job Change</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <url>/apex/jobChangeWizard?id={!Contact.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Update_Giving_Totals</fullName>
+        <availability>online</availability>
+        <description>updates apex giving rollups &amp; mbr stats</description>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Update Giving Totals</masterLabel>
+        <openType>sidebar</openType>
+        <protected>false</protected>
+        <url>/apex/opportunityrollup?id={!Contact.Id}</url>
+    </webLinks>
+</CustomObject>

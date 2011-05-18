@@ -1,0 +1,55 @@
+<apex:page standardController="account" extensions="GW_EXT_OppTotals"
+	title="Account Giving Totals">
+	<!--
+-- Visualforce page that displays opportunity fiscal year totals for display in a small VF "pagelet."
+-- Because it uses a standard controller, the pagelet is available to add to the Account page layout.
+-- Written by Evan Callahan, copyright (c) 2010 Groundwire
+-->
+	<style>
+.bold {
+	font-weight: bold
+}
+
+.lt {
+	text-align: left;
+	width: 80px;
+}
+
+.ctr {
+	text-align: center;
+	width: 90px;
+}
+
+.rt {
+	text-align: right;
+	width: 80px;
+}
+</style>
+	<apex:outputPanel layout="block" style="padding:4px 2px 20px 8px;">
+		<apex:dataTable value="{!detailRows}" var="o"
+			rendered="{!NOT(ISNULL(totalRow))}" cellpadding="2"
+			headerclass="pbSubheader tertiaryPalette" footerclass="bold">
+			<apex:column styleclass="lt" footerclass="lt">
+				<apex:facet name="header">Fiscal Year</apex:facet>
+				<apex:outputText value="{!o.oppYear}" />
+				<apex:facet name="footer">{!totalRow.oppYear}</apex:facet>
+			</apex:column>
+			<apex:column styleclass="ctr" footerclass="ctr">
+				<apex:facet name="header">Number of Gifts</apex:facet>
+				<apex:outputText value="{!o.oppCount}" />
+				<apex:facet name="footer">{!totalRow.oppCount}</apex:facet>
+			</apex:column>
+			<apex:column styleclass="rt" footerclass="rt">
+				<apex:facet name="header">Total Amount</apex:facet>
+				<apex:outputText value="{0, number, currency}">
+					<apex:param value="{!o.oppAmount}" />
+				</apex:outputText>
+				<apex:facet name="footer">
+					<apex:outputText value="{0, number, currency}" styleclass="rt">
+						<apex:param value="{!totalRow.oppAmount}" />
+					</apex:outputText>
+				</apex:facet>
+			</apex:column>
+		</apex:dataTable>
+	</apex:outputPanel>
+</apex:page>

@@ -1,0 +1,88 @@
+<apex:page controller="ONEN_CTRL_InstallmentWizard"
+	title="Installment Wizard" tabStyle="Opportunity">
+	<script>
+        //hack to override JavaScript that is setting focus on Date field
+        function setFocusOnLoad() {} 
+    </script>
+	<apex:sectionHeader title="Installments"
+		subtitle="Create multiple installments for this Opportunity" />
+	<apex:pageBlock title="Current Opportunity Info">
+		<apex:panelGrid columns="2" id="theGrid">
+			<apex:outputText value="Name: " styleClass="labelCol" />
+			<apex:outputText value="{!currentOpp.Name}" styleClass="dataCol" />
+			<apex:outputText value="Amount: " styleClass="labelCol" />
+			<apex:outputText value="{!currentOpp.Amount}" styleClass="dataCol" />
+			<apex:outputText value="Stage: " styleClass="labelCol" />
+			<apex:outputText value="{!currentOpp.StageName}" styleClass="dataCol" />
+			<apex:outputText value="Description: " styleClass="labelCol" />
+			<apex:outputText value="{!currentOpp.Description}"
+				styleClass="dataCol" />
+		</apex:panelGrid>
+	</apex:pageBlock>
+
+	<apex:form >
+		<apex:pageBlock title="Create a Payment Schedule" mode="edit">
+			<apex:panelGrid columns="3" id="theGrid" cellpadding="4">
+				<apex:outputText value="# of Installments" styleClass="labelCol" />
+				<apex:outputText value="Date of 1st Installment"
+					styleClass="labelCol" />
+				<apex:outputText value="{!IF(multipleInstallments, 'Interval','')}"
+					styleClass="labelCol" id="theLabel" />
+				<apex:selectList value="{!numberofinstallments}"
+					id="installmentCount" multiselect="false" size="1">
+					<apex:selectOptions value="{!items}" />
+					<apex:actionSupport event="onchange" rerender="thePanel,theLabel" />
+				</apex:selectList>
+				<apex:inputField value="{!thisInstallment.Date__c}" />
+				<apex:outputPanel id="thePanel">
+					<apex:selectList value="{!interval}" id="intervals"
+						multiselect="false" size="1" rendered="{!multipleInstallments}">
+						<apex:selectOptions value="{!intervals}" />
+					</apex:selectList>
+					<apex:selectList value="{!intervalunit}" id="intervalunits"
+						multiselect="false" size="1" rendered="{!multipleInstallments}">
+						<apex:selectOptions value="{!intervalunits}" />
+					</apex:selectList>
+				</apex:outputPanel>
+			</apex:panelGrid>
+			<apex:pageBlockButtons >
+				<apex:commandButton rerender="installmenttable" value="Next" />
+			</apex:pageBlockButtons>
+
+		</apex:pageBlock>
+	</apex:form>
+
+	<apex:form >
+		<apex:outputPanel id="installmenttable">
+			<apex:pageBlock title="Installments to be Created"
+				rendered="{!payments.size>0}" mode="edit">
+
+				<apex:dataTable value="{!payments}" var="OppPayment" id="theTable"
+					rowClasses="odd,even" styleClass="tableClass" cellpadding="4">
+
+					<apex:column >
+						<apex:facet name="header">Installment #</apex:facet>
+						<apex:outputText value="{!OppPayment.Check_Number__c}" />
+					</apex:column>
+					<apex:column >
+						<apex:facet name="header">Amount</apex:facet>
+						<apex:inputField value="{!OppPayment.Amount__c}" />
+					</apex:column>
+					<apex:column >
+						<apex:facet name="header">Date</apex:facet>
+						<apex:inputField value="{!OppPayment.Date__c}" />
+					</apex:column>
+					<apex:column >
+						<apex:facet name="header">Paid?</apex:facet>
+						<apex:inputField value="{!OppPayment.Paid__c}" />
+					</apex:column>
+				</apex:dataTable>
+				<apex:pageBlockButtons >
+					<apex:commandButton action="{!createInstallments}" value="Create" />
+				</apex:pageBlockButtons>
+
+			</apex:pageBlock>
+		</apex:outputPanel>
+	</apex:form>
+
+</apex:page>

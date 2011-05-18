@@ -1,0 +1,196 @@
+<apex:page standardController="Opportunity"
+	title="New Opportunity Wizard" tabStyle="Opportunity"
+	extensions="ONEN_CTRL_NewOppWizard">
+
+	<script>
+		//hack to override JavaScript that is setting focus on Date field
+		function setFocusOnLoad() {} 
+	</script>
+	
+	<style>
+		<!-- to affect visuals of SelectRadio labels. -->
+		Label {
+			color: #4a4a56;
+			font-weight: bold;
+			vertical-align: middle;
+		}		
+	</style>
+	
+	<apex:outputPanel >
+		<apex:sectionHeader title="New Opportunity Wizard"
+			subtitle="Create new Opportunity" />
+		<apex:pageMessages />
+		<apex:form >
+			<apex:pageBlock title="Contact and Organization" mode="edit">
+
+				<apex:pageBlockSection showHeader="false" id="testSection" columns="1">
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value="Apply Opportunity To" for="oppApplicantSelect" />
+						<apex:selectRadio id="oppApplicantSelect" value="{!oppApplicant}" >
+							<apex:selectOption itemValue="Contact" itemLabel="Contact" />
+							<apex:selectOption itemValue="Organization"	itemLabel="Organization" />
+							<apex:actionSupport event="onchange"
+								action="{!resetRecordTypeArray}"
+								rerender="orgError,panelPaymentInfo,panelPaymentType,orgSection,rectypeSection,OpenOppsPanel"
+								status="status" />
+						</apex:selectRadio>
+					</apex:pageBlockSectionItem>
+
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value="Primary Contact" for="contactField" />
+						<apex:inputField id="contactField" value="{!contactRole.ContactId}" required="false">
+							<apex:actionSupport event="onchange" action="{!getOpenOpps}" rerender="OpenOppsPanel,orgError" />
+							<apex:actionSupport event="onblur" rerender="testSection" />
+						</apex:inputField>
+					</apex:pageBlockSectionItem>
+
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value=" " />
+						<apex:outputPanel style="color:red">
+							<apex:actionStatus startText="Working..." id="status" />
+						</apex:outputPanel>
+					</apex:pageBlockSectionItem>
+
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value=" " />
+						<apex:outputPanel id="orgError">
+							<apex:outputPanel style="color:red"
+								rendered="{!errorMessageText!=null}">
+								<p>{!errorMessageText}</p>
+							</apex:outputPanel>
+						</apex:outputPanel>
+					</apex:pageBlockSectionItem>
+
+				</apex:pageBlockSection>
+
+				<apex:outputPanel id="orgSection">
+					<apex:pageBlockSection showHeader="false" rendered="{!oppApplicant == 'Organization'}">
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Organization" for="accountField" />
+							<apex:inputField id="accountField" value="{!opportunity.AccountId}">
+								<apex:actionSupport event="onchange" action="{!getOpenOpps}"
+									rerender="OpenOppsPanel" />								
+							</apex:inputField>
+						</apex:pageBlockSectionItem>
+					</apex:pageBlockSection>
+				</apex:outputPanel>
+
+				<apex:pageBlockSection showHeader="false" id="rectypeSection" columns="1">
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value="Record Type" for="oppRecordType" />
+						<apex:selectList size="1" id="oppRecordType" value="{!oppRecordTypeId}">
+							<apex:selectOptions value="{!recordTypeNameList}" />								
+						</apex:selectList>
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value="Close Date" for="closeDate" />
+						<apex:inputField id="closeDate" value="{!opportunity.CloseDate}" required="false" />
+					</apex:pageBlockSectionItem>
+				</apex:pageBlockSection>
+
+				<apex:outputPanel id="panelPaymentType">
+					<apex:pageBlockSection showHeader="false" columns="1" rendered="true">
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="" />
+							<apex:selectRadio id="rgPaymentType" value="{!strPaymentType}" >
+								<apex:selectOption itemLabel="Single Payment" itemValue="single" />
+								<apex:selectOption itemLabel="Pledge w/ Installments" itemValue="pledge" />
+								<apex:selectOption itemLabel="Recurring Payment" itemValue="recurring" rendered="{!oppApplicant == 'Contact'}" />
+								<apex:actionSupport event="onchange" rerender="orgError, panelPaymentInfo" status="status2" action="{!ChangePaymentType}" />
+							</apex:selectRadio>
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem >
+						<apex:outputLabel value=" " />
+						<apex:outputPanel style="color:red">
+							<apex:actionStatus startText="Working..." id="status2" />
+						</apex:outputPanel>
+					</apex:pageBlockSectionItem>					
+					</apex:pageBlockSection>
+				</apex:outputPanel>
+
+				<apex:outputPanel id="panelPaymentInfo">
+					<apex:pageBlockSection title="Payment Information"
+						collapsible="false"
+						rendered="{!strPaymentType != 'single'}"
+						columns="1">
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Payment Amount" />
+							<apex:inputField value="{!rpProfile.Amount__c}" required="false" />
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Repeats every" />
+							<apex:pageBlockSectionItem >
+						        <apex:selectList id="ddlFrequency" value="{!rpProfile.Frequency__c}" size="1" required="false" >
+						            <apex:selectOption itemValue="1" />
+						            <apex:selectOption itemValue="2" />
+						            <apex:selectOption itemValue="3" />
+						            <apex:selectOption itemValue="4" />
+						            <apex:selectOption itemValue="5" />
+						            <apex:selectOption itemValue="6" />
+						            <apex:selectOption itemValue="7" />
+						            <apex:selectOption itemValue="8" />
+						            <apex:selectOption itemValue="9" />
+						            <apex:selectOption itemValue="10" />
+						            <apex:selectOption itemValue="11" />
+						            <apex:selectOption itemValue="12" />
+						        </apex:selectList> 							
+						        <apex:selectList id="ddlPeriod" value="{!rpProfile.Payment_Period__c}" size="1" required="false" >
+						            <apex:selectOption itemValue="Day" itemLabel="Day(s)" />
+						            <apex:selectOption itemValue="Week" itemLabel="Week(s)" />
+						            <apex:selectOption itemValue="Month" itemLabel="Month(s)" />
+						            <apex:selectOption itemValue="Year" itemLabel="Year(s)" />
+						        </apex:selectList>
+					        </apex:pageBlockSectionItem> 							
+						</apex:pageBlockSectionItem>						
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Starts on"	for="paymentReceivedDate" />
+							<apex:inputField id="paymentReceivedDate" value="{!rpProfile.Start_Date__c}" required="false" />
+						</apex:pageBlockSectionItem>	
+						
+						<apex:pageBlockSectionItem rendered="{!strPaymentType == 'pledge'}" >
+ 							<apex:outputLabel value="Number of Installments" />
+ 							<apex:inputText value="{!cOccurrences}" style="width:30px;" />		 						
+						</apex:pageBlockSectionItem>	
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="First Payment Received?" for="paymentReceived"  />
+							<apex:inputCheckbox id="paymentReceived" value="{!paymentReceived}" />
+						</apex:pageBlockSectionItem>
+					</apex:pageBlockSection>
+				</apex:outputPanel>
+				<apex:pageBlockButtons >
+					<apex:commandButton action="{!save}"
+						value="Create & Edit Opportunity"
+						rerender="orgError,panelPaymentInfo" />
+					<apex:commandButton action="{!cancel}" value="Cancel" />
+				</apex:pageBlockButtons>
+
+			</apex:pageBlock>
+		</apex:form>
+	</apex:outputPanel>
+
+	<apex:outputPanel id="OpenOppsPanel">
+		<apex:pageBlock title="Unpaid Opportunities for this {!oppApplicant}">
+			<apex:pageBlockTable value="{!openOppList}" var="opp">
+				<apex:column >
+					<apex:facet name="header">Action</apex:facet>
+					<apex:outputLink value="/{!opp.id}/e?retURL={!$CurrentPage.URL}">Edit</apex:outputLink>
+				</apex:column>
+				<apex:column >
+					<apex:facet name="header">Opportunity</apex:facet>
+					<apex:outputLink value="/{!opp.id}">{!opp.Name}</apex:outputLink>
+				</apex:column>
+				<apex:column value="{!opp.RecordTypeId}" />
+				<apex:column value="{!opp.CloseDate}" />
+				<apex:column value="{!opp.StageName}" />
+				<apex:column value="{!opp.amount}" />
+				<apex:column value="{!opp.Total_Unpaid__c}" />
+				<apex:column value="{!opp.Next_Payment_Due_Date__c}" />
+				<apex:column value="{!opp.CampaignId}" />
+			</apex:pageBlockTable>
+		</apex:pageBlock>
+
+	</apex:outputPanel>
+
+</apex:page>

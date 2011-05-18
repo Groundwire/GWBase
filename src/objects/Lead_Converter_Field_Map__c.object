@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <customSettingsVisibility>Public</customSettingsVisibility>
+    <description>Fields that the Lead Converter (Importer) Visualforce page should automatically transfer from leads to contacts during conversion.</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Contact_Field__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>API name of the contact field (including the &quot;__c&quot; for custom fields) to which the lead field should be mapped.</inlineHelpText>
+        <label>Contact Field</label>
+        <length>50</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Field_Type__c</fullName>
+        <defaultValue>&quot;Text&quot;</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Should be either Text, Checkbox, or Multiselect.</inlineHelpText>
+        <label>Field Type</label>
+        <length>20</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Lead Converter Field Map</label>
+</CustomObject>

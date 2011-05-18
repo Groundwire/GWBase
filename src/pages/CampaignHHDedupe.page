@@ -1,0 +1,75 @@
+<apex:page controller="GW_CTRL_MarkCampaignHHDupes"
+	title="Mark Campaign Household Duplicates" tabStyle="Campaign"
+	action="{!startAction}">
+	<!--
+Visualforce Mark Campaign Household Duplicates Page
+Written by Evan Callahan, copyright (c) 2010 Groundwire, 1402 3rd Avenue, Suite 1000, Seattle, WA 98101
+This program is released under the GNU General Public License. http://www.gnu.org/licenses/
+
+Call the page with a campaign id, and optionally the id and name of a mailing list report, as follows:
+   
+   /apex/CampaignHHDedupe?id=[campaign-id]&reportId=[report-id]&reportName=[name-of-report]
+   
+-->
+<style>
+	ul.err li {
+		list-style-type: none;
+		color: #cc0000;
+		font-weight: bold;
+	}
+</style>
+	<apex:sectionHeader title="Mark Campaign Household Duplicates" />
+	<apex:outputPanel layout="block" style="margin-bottom: 18px;">
+		<apex:outputText >
+			This page looks for duplicate household members in the campaign and marks them as duplicates, 
+			so that you can view a mailing list report that includes only one contact per household.
+		</apex:outputText>
+	</apex:outputPanel>
+	<apex:form >
+		<apex:pageBlock title="STEP 1: Mark Household Duplicates">
+			<apex:messages styleClass="err" />
+			<apex:outputPanel layout="block" rendered="{!noCampaignId}"
+				style="font-weight:bold;">
+				You must specify a valid campaign id as a parameter to this page.
+			</apex:outputPanel>
+			<apex:outputPanel layout="block"
+				rendered="{!AND(NOT(batching),NOT(ISNULL(totalContacts)))}">
+				<apex:outputText value="Marked {0, number, 0} duplicates out of {1, number, 0} total contacts in the campaign.">
+					<apex:param value="{!dupesFound}" />
+					<apex:param value="{!totalContacts}" />
+				</apex:outputText>
+			</apex:outputPanel>
+			<apex:outputPanel layout="block" rendered="{!batching}">
+				Because there are 1000+ contacts in the campaign, batch apex is required to process duplicates.  When the batch process completes, click the report link in STEP 2 below.
+			</apex:outputPanel>
+		</apex:pageBlock>
+		<apex:outputPanel rendered="{!batching}">
+			<c:batchJobs batchComponentLabel="Batch Deduplication Progress"
+				numberOfJobs="1" />
+		</apex:outputPanel>
+		<apex:pageBlock rendered="{!NOT(noCampaignId)}"
+			title="STEP 2: Open Household Report">
+			<apex:outputPanel rendered="{!NOT(ISNULL(reportURL))}">
+				<apex:outputPanel layout="block">
+					<apex:outputLink value="{!reportURL}">{!reportName}</apex:outputLink>
+				</apex:outputPanel>
+			</apex:outputPanel>
+			<apex:outputText rendered="{!ISNULL(reportURL)}">
+				<p>This page tries to redirect you to a household mailing list
+				report. For the feature to work, you must specify a Salesforce ID
+				for the report you want it to open.</p>
+
+				<p>To do this, click the Reports tab, open the "Campaign Merge
+				List - Households" report, and then copy its 15-digit Salesforce ID
+				from the address bar. Then go to the Miscellaneous Base Settings
+				object (Setup | Develop | Custom Settings | Miscellaneous Base
+				Settings | Manage) and enter the ID in the Household Mailing List
+				Report Id box.</p>
+
+				<p>Alternatively, you can edit the custom link to this page so
+				that it provides the Salesforce Id of any report as the reportId
+				parameter in the URL.</p>
+			</apex:outputText>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

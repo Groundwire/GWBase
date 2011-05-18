@@ -1,0 +1,35 @@
+<apex:page controller="GW_CTRL_OppRollup" title="Opportunity Rollup"
+	tabStyle="Opportunity" action="{!startAction}">
+	<!--
+Visualforce Rollup Page
+Written by Evan Callahan, copyright (c) 2010 Groundwire, 1402 3rd Avenue, Suite 1000, Seattle, WA 98101
+This program is released under the GNU General Public License. http://www.gnu.org/licenses/
+-->
+	<style>
+ul.err li {
+	list-style-type: none;
+	color: #cc0000;
+	font-weight: bold;
+}
+</style>
+	<apex:sectionHeader title="Batch Opportunity Rollup" />
+	<apex:form >
+		<apex:pageBlock >
+			<apex:pageBlockButtons rendered="{!batching}">
+				<apex:commandButton action="{!rollup}" value="Continue"
+					disabled="{!batchRunning}" />
+				<apex:commandButton action="{!cancel}" value="Cancel" />
+			</apex:pageBlockButtons>
+			<apex:messages styleClass="err" />
+			<apex:outputText rendered="{!batching}">
+				Use this page to roll up totals for all closed opportunities, saving the results in
+				contact, household, and organization records. The process may take some time; you can
+				close this page and the process will continue in the background.
+			</apex:outputText>
+		</apex:pageBlock>
+		<apex:outputPanel rendered="{!batchRunning}">
+			<c:batchJobs batchComponentLabel="Batch Rollup Progress"
+				numberOfJobs="2" />
+		</apex:outputPanel>
+	</apex:form>
+</apex:page>

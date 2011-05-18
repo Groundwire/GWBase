@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApexPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>21.0</apiVersion>
+    <description>This is a simple VisualForce page that through Sites can be iframe&apos;d into any website to provide a WebToLead form.  Written by David Habib.</description>
+    <label>WebToLead</label>
+</ApexPage>

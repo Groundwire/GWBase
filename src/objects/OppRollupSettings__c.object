@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <customSettingsVisibility>Public</customSettingsVisibility>
+    <description>settings for Opportunities and rollups</description>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Assume_Fiscal_Year_Starts_January__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>If checked, opportunity rollup code will avoid an additional query by assuming that the fiscal year starts in January.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If checked, opportunity rollup code will avoid an additional query by assuming that the fiscal year starts in January.</inlineHelpText>
+        <label>Assume Fiscal Year Starts in January</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Enable_Opp_Rollup_Triggers__c</fullName>
+        <defaultValue>true</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box to update opportunity totals whenever opportunities are inserted or updated (as long as capacity allows).</inlineHelpText>
+        <label>Roll Up Opps in Triggers</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Excluded_Account_Opp_Rectypes__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Names of opportunity record types to exclude when rolling up account opportunities. Separate record type names with semicolons.</inlineHelpText>
+        <label>Opp Rectypes Excluded for Account Rollup</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Excluded_Account_Opp_Types__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Values for the opportunity Type field to exclude when rolling up account opportunities. Separate types with semicolons.</inlineHelpText>
+        <label>Opp Types Excluded for Account Rollup</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Excluded_Contact_Opp_Rectypes__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Names of opportunity record types to exclude when rolling up contact opportunities. Separate record type names with semicolons.</inlineHelpText>
+        <label>Opp Rectypes Excluded for Contact Rollup</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Excluded_Contact_Opp_Types__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Values for the opportunity Type field to exclude when rolling up contact opportunities. Separate types with semicolons.</inlineHelpText>
+        <label>Opp Types Excluded for Contact Rollup</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Membership_Record_Types__c</fullName>
+        <defaultValue>&quot;Membership&quot;</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Name of record types, such as Membership, that you want to roll up separately from other types. Separate record type names with semicolons.</inlineHelpText>
+        <label>Membership Record Type Names</label>
+        <length>100</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opp_Gift_Role_Contact_Donor__c</fullName>
+        <defaultValue>&quot;Donor&quot;</defaultValue>
+        <externalId>false</externalId>
+        <label>Opp Gift Role Contact Donor</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opp_Gift_Role_Contact_HH_Donor__c</fullName>
+        <defaultValue>&quot;Household Soft Credit&quot;</defaultValue>
+        <externalId>false</externalId>
+        <label>Opp Gift Role Contact HH Donor</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opp_Gift_Role_Matching_Donor__c</fullName>
+        <defaultValue>&quot;Donor - Corporate Match&quot;</defaultValue>
+        <externalId>false</externalId>
+        <label>Opp Gift Role Matching Donor</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opp_Gift_Role_Org_Donor__c</fullName>
+        <defaultValue>&quot;Organizational Donor&quot;</defaultValue>
+        <externalId>false</externalId>
+        <label>Opp Gift Role Org Donor</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opp_Name_Format_Monthly__c</fullName>
+        <defaultValue>&quot;[payer] [mm]/[yyyy] [rectype]&quot;</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Format for automatic opportunity name; the following fields will be replaced: [payer], [rectype], [mm], [dd], [yyyy], [amount], [type], [stage]</inlineHelpText>
+        <label>Opp Name Format - Monthly</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opp_Name_Format__c</fullName>
+        <defaultValue>&quot;[payer] [yyyy] [recurring] [rectype]&quot;</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Format for automatic opportunity name; the following fields will be replaced: [payer], [rectype], [mm], [dd], [yyyy], [amount], [type], [stage], [recurring]</inlineHelpText>
+        <label>Opp Name Format</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opp_Record_Type_Contact_Gift__c</fullName>
+        <defaultValue>&quot;Gift&quot;</defaultValue>
+        <externalId>false</externalId>
+        <label>Opp Rectype Contact Gift</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opp_Rectype_For_Tests_Default__c</fullName>
+        <defaultValue>&quot;Gift&quot;</defaultValue>
+        <externalId>false</externalId>
+        <label>Opp Rectype For Tests Default</label>
+        <length>255</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opp_Rectype_For_Tests_Member__c</fullName>
+        <defaultValue>&quot;Membership&quot;</defaultValue>
+        <externalId>false</externalId>
+        <label>Opp Rectype For Tests Member</label>
+        <length>255</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opp_Rectype_For_Tests_NonMember__c</fullName>
+        <defaultValue>&quot;Gift&quot;</defaultValue>
+        <externalId>false</externalId>
+        <label>Opp Rectype For Tests NonMember</label>
+        <length>255</length>
+        <required>true</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opp_Rectypes_Excluded_New_Opp_Contact__c</fullName>
+        <defaultValue>&quot;Grant&quot;</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Names of opportunity record types to exclude in the New Opp Wizard for contacts.</inlineHelpText>
+        <label>Opp Rectypes Excluded New Opp Contact</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opp_Rectypes_Excluded_New_Opp_Org__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Names of opportunity record types to exclude from the New Opp Wizard for Orgs. Separate record type names with semicolons</inlineHelpText>
+        <label>Opp Rectypes Excluded New Opp Org</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opp_Stage_Closed_Lost__c</fullName>
+        <defaultValue>&quot;Closed Lost&quot;</defaultValue>
+        <externalId>false</externalId>
+        <label>Opp Stage Closed Lost</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opp_Stage_Closed_Won__c</fullName>
+        <defaultValue>&quot;Closed Won&quot;</defaultValue>
+        <externalId>false</externalId>
+        <label>Opp Stage Closed Won</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opp_Stage_Default__c</fullName>
+        <defaultValue>&quot;Prospecting&quot;</defaultValue>
+        <externalId>false</externalId>
+        <label>Opp Stage Default</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opp_Stage_Pledged_Default__c</fullName>
+        <defaultValue>&quot;Pledged&quot;</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>The Opportunity Stage to use for Opportunities with Installments created from the New Opportunity Wizard.</inlineHelpText>
+        <label>Opp Stage Pledged Default</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opp_Stage_Recurring_Default__c</fullName>
+        <defaultValue>&quot;Recurring&quot;</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>The default Stage to set on an Opportunity that is part of a RecurringPaymentProfile, but has not yet been actually paid.</inlineHelpText>
+        <label>Opp Stage Recurring Default</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opp_Stage_Won_Not_Thanked__c</fullName>
+        <defaultValue>&quot;Won, Not Thanked&quot;</defaultValue>
+        <externalId>false</externalId>
+        <label>Opp Stage Won Not Thanked</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Roll_Up_Opps_for_Default_Account__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this if you want to roll up opportunities assigned to the default (Individual) account.  Do not select this option if you have more than 5000 total opportunities for that account.</inlineHelpText>
+        <label>Roll Up Opps for Default Account</label>
+        <type>Checkbox</type>
+    </fields>
+    <label>Opportunity &amp; Rollup Settings</label>
+</CustomObject>

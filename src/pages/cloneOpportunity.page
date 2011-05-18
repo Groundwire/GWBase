@@ -1,0 +1,3 @@
+<apex:page standardController="Opportunity"
+	extensions="ONEN_EXT_CloneOpportunity" action="{!cloneOpp}">
+</apex:page>

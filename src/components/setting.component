@@ -1,0 +1,23 @@
+<!-- 
+-- Visualforce "Custom Setting" component
+-- Written by Evan Callahan, copyright (c) 2010 Groundwire
+--
+-- Apex component that creates a hidden field for passing a setting from Visualforce to a controller.
+-- This allows you to have dynamic page settings - like constants in Apex, but you don't have to redeploy Apex code.
+--
+-- To use a setting, first put a string property in your apex controller:
+--
+--    public string mySetting { get; set; }
+-- 
+-- Then put your setting component and value in your page, inside any <apex:form> block:
+--
+--    <c:setting set="{!mySetting}" to="stringToProvide" />
+-->
+<apex:component >
+	<apex:attribute name="set" type="string" required="true"
+		description="Name of the hidden field." />
+	<apex:attribute name="to" type="string" required="true"
+		description="Value of the hidden field." />
+	<apex:inputhidden value="{!set}" id="hiddenSetting" />
+	<script type="text/javascript">document.getElementById('{!$Component.hiddenSetting}').value="{!to}";</script>
+</apex:component>

@@ -1,0 +1,44 @@
+<apex:page standardController="Contact"
+	extensions="ONEN_EXT_JobChangeWizard" title="Job Change">
+	<script>
+        //hack to override JavaScript that is setting focus on Date field
+        function setFocusOnLoad() {} 
+    </script>
+	<apex:sectionHeader title="Job Change">
+		<description>
+		<apex:outputText value="Use this page to record a job change for a Contact." />
+		<ul>
+			<li><apex:outputText value="Set the end date of the current employment relationship and choose the new Organization for this Contact." /></li>
+			<li><apex:outputText value="If you blank out the new Organization field, the Contact will be assigned to the Individual Organization." /></li>
+		</ul>
+		</description>
+	</apex:sectionHeader>
+	<apex:form >
+		<apex:pageMessages />
+		<apex:pageBlock title="Record a job change">
+			<apex:pageBlockSection title="Old Organization" columns="2">
+				<apex:outputField value="{!contact.Account.Name}" />
+				<apex:inputField value="{!relationship.To_Date__c}" />
+			</apex:pageBlockSection>
+			<apex:pageBlockSection title="New Organization" columns="1">
+				<apex:inputField value="{!contact.AccountId}" />
+			</apex:pageBlockSection>
+			<apex:pageBlockSection title="Contact Details" columns="2">
+				<apex:inputField value="{!contact.Email}" />
+				<apex:inputField value="{!contact.Secondary_Email__c}" />
+				<apex:inputField value="{!contact.Phone}" />
+			</apex:pageBlockSection>
+			<apex:pageBlockSection title="Contact Address" columns="1">
+				<apex:inputField value="{!contact.MailingStreet}" />
+				<apex:inputField value="{!contact.MailingCity}" />
+				<apex:inputField value="{!contact.MailingState}" />
+				<apex:inputField value="{!contact.MailingPostalCode}" />
+				<apex:inputField value="{!contact.MailingCountry}" />
+			</apex:pageBlockSection>
+			<apex:pageBlockButtons >
+				<apex:commandButton action="{!save}" value="Save" />
+			</apex:pageBlockButtons>
+
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

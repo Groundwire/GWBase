@@ -1,0 +1,59 @@
+<apex:page standardController="Opportunity" recordSetVar="opportunities"
+	extensions="ONEN_EXT_OppListExport"
+	contenttype="application/vnd.ms-excel">
+
+	<apex:dataTable var="opp" value="{!selectedOpps}" id="thetable"
+		cellpadding="3">
+		<apex:column >
+			<apex:facet name="header">Name</apex:facet>
+			<apex:outputText value="{!opp.Contact.Primary_Address_Household_Name__c}" />
+		</apex:column>
+		<apex:column >
+			<apex:facet name="header">Greeting</apex:facet>
+			<apex:outputText value="{!opp.Contact.Primary_Address_Household_Greeting__c}" />
+		</apex:column>
+		<apex:column >
+			<apex:facet name="header">Organization</apex:facet>
+			<apex:outputText value="{!opp.Contact.Primary_Address_Org_Name__c}" />
+		</apex:column>
+		<apex:column >
+			<apex:facet name="header">Title</apex:facet>
+			<apex:outputText value="{!opp.Contact.Primary_Address_Title__c}" />
+		</apex:column>
+
+		<apex:column >
+			<apex:facet name="header">Street</apex:facet>
+			<apex:outputField value="{!opp.Contact.Primary_Street__c}" />
+		</apex:column>
+		<apex:column >
+			<apex:facet name="header">City</apex:facet>
+			<apex:outputField value="{!opp.Contact.Primary_City__c}" />
+		</apex:column>
+		<apex:column >
+			<apex:facet name="header">State</apex:facet>
+			<apex:outputField value="{!opp.Contact.Primary_State_Province__c}" />
+		</apex:column>
+		<apex:column >
+			<apex:facet name="header">Zip</apex:facet>
+			<apex:outputField value="{!opp.Contact.Primary_Postal_Code__c}" />
+		</apex:column>
+		<apex:column >
+			<apex:facet name="header">Country</apex:facet>
+			<apex:outputField value="{!opp.Contact.Primary_Country__c}" />
+		</apex:column>
+		<apex:column >
+			<apex:facet name="header">Amount</apex:facet>
+			<apex:outputField value="{!opp.Opportunity.Amount}" />
+		</apex:column>
+		<apex:column >
+			<apex:facet name="header">Close Date</apex:facet>
+			<apex:outputField value="{!opp.Opportunity.CloseDate}" />
+		</apex:column>
+		<apex:column >
+			<apex:facet name="header">Opportunity Type</apex:facet>
+			<apex:outputField value="{!opp.Opportunity.RecordType.Name}" />
+		</apex:column>
+
+	</apex:dataTable>
+
+</apex:page>

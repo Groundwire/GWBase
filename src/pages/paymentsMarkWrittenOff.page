@@ -1,0 +1,5 @@
+<apex:page standardController="OppPayment__c"
+	recordSetVar="installments" extensions="ONEN_EXT_MarkPaymentsPaid"
+	action="{!markInstallmentsWrittenOff}">
+	<apex:param name="mark" value="writeoff" />
+</apex:page>

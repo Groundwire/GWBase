@@ -1,0 +1,60 @@
+<apex:page standardController="Opportunity" extensions="GW_EXT_OppContactRolesList" title="Opportunity Contact Role List" tabStyle="Opportunity">
+    <apex:outputPanel id="ContactRolePanel" layout="block" >
+        <apex:pageBlock mode="maindetail">
+            <apex:pageBlockSection columns="1">
+                <apex:outputPanel id="MessagePanel">
+                    <apex:pageMessages /> 
+                </apex:outputPanel>
+                <apex:form >
+                    <apex:pageBlockTable value="{!fullConRolesList}" var="ocr">  
+                        <apex:column headerValue="Action" width="10%">
+                            <apex:outputPanel rendered="{!ocr.id == editConRole.id}">
+                                <apex:commandLink value="Save" action="{!saveEdit}" rerender="ContactRolePanel"/>
+                                <apex:outputText value=" | "/>
+                                <apex:commandLink value="Cancel" action="{!cancelEdit}" rerender="ContactRolePanel" immediate="true"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!AND(ISBLANK(editConRole),OR(AND(ocr.IsPrimary,ISBLANK(ocr.Opportunity.ContactId__c)),!ocr.IsPrimary),ocr.Opportunity.ContactId__c!=ocr.ContactId)}">
+                                <apex:commandLink value="Edit" action="{!editOneConRole}" rerender="ContactRolePanel">
+                                    <apex:param name="editid" value="{!ocr.Id}"/>
+                                </apex:commandLink>
+                                <apex:outputText value=" | "/> 
+                                <apex:commandLink value="Delete" onclick="if(!confirm('Are you sure you want to delete this contact role?')) return;" action="{!delConRole}" rerender="ContactRolePanel">
+                                    <apex:param name="delid" value="{!ocr.Id}"/>
+                                </apex:commandLink>
+                            </apex:outputPanel>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Contact</apex:facet>
+                            <apex:inputField value="{!editConRole.ContactId}" rendered="{!ocr.id == editConRole.id || ocr.id == null}"  />
+                            <apex:outputLink value="{!URLFOR($Action.Contact.View, ocr.ContactId)}" rendered="{!ocr.id != editConRole.id}" target="_top">{!ocr.Contact.Name}</apex:outputLink>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Organization</apex:facet>
+                            <apex:outputField value="{!ocr.Contact.Account.Name}" />
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Email</apex:facet>
+                            <apex:outputField value="{!ocr.Contact.Email}" />
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Phone</apex:facet>
+                            <apex:outputField value="{!ocr.Contact.Phone}" />
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Role</apex:facet>
+                            <apex:inputField value="{!editConRole.Role}" rendered="{!ocr.id == editConRole.id || ocr.id == null}" />
+                            <apex:outputField value="{!ocr.Role}" rendered="{!ocr.id != editConRole.id}" />
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Primary</apex:facet>
+                            <apex:outputField value="{!ocr.isPrimary}" rendered="{!ocr.id != editConRole.id}"/>
+                            <apex:inputField value="{!editConRole.IsPrimary}" rendered="{!AND((ocr.id == editConRole.id || ocr.id == null),NOT(ISBLANK(ocr.Opportunity.AccountId)))}" />
+                        </apex:column>
+                    </apex:pageBlockTable>
+                    <br />
+                    <apex:commandLink action="{!addNewRow}" value="Add New Row" reRender="ContactRolePanel" immediate="true" rendered="{!nowAdding == false && ISBLANK(editConRole)}" />
+                </apex:form>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:outputPanel>
+</apex:page>

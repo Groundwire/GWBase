@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <externalId>false</externalId>
+        <label>Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Related Contacts</relationshipLabel>
+        <relationshipName>R00N700000020Qy3EAE</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>FirstOfPair__c</fullName>
+        <description>evaluates to &quot;True&quot; for the record in a pair of mirror relationsihps that was created first - arbitrary, but allows us to dedup relationship lists in reports</description>
+        <externalId>false</externalId>
+        <formula>IF (  VALUE(RIGHT(Name,5)) &lt;  VALUE(RIGHT(Mirror_Relationship__r.Name,5)) , &quot;True&quot; , &quot;False&quot; )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Is First Relationship Pair</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>From_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>From Date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Mirror_Relationship__c</fullName>
+        <externalId>false</externalId>
+        <label>Mirror Relationship</label>
+        <referenceTo>Contact_Relationship__c</referenceTo>
+        <relationshipLabel>Mirror Relationships</relationshipLabel>
+        <relationshipName>R00NR0000000UgQmMAK</relationshipName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Notes__c</fullName>
+        <externalId>false</externalId>
+        <label>Notes</label>
+        <length>32000</length>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Reciprocal_Relationship__c</fullName>
+        <description>How this contact is related back to the &quot;Related Contact.&quot;
+Apex code creates a corresponding relationship if this is filled in.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>How this contact is related back to the &quot;Related Contact&quot; (e.g. for Attorney, choose Client). If you don&apos;t specify a reciprocal relationship, the related contact won&apos;t have a relationship in its list.</inlineHelpText>
+        <label>Reciprocal Relationship</label>
+        <picklist>
+            <controllingField>Relationship__c</controllingField>
+            <picklistValues>
+                <fullName>Associate</fullName>
+                <controllingFieldValues>Associate</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Aunt</fullName>
+                <controllingFieldValues>Nephew</controllingFieldValues>
+                <controllingFieldValues>Niece</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Brother</fullName>
+                <controllingFieldValues>Brother</controllingFieldValues>
+                <controllingFieldValues>Sister</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Business Partner</fullName>
+                <controllingFieldValues>Business Partner</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Colleague</fullName>
+                <controllingFieldValues>Colleague</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cousin</fullName>
+                <controllingFieldValues>Cousin</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Daughter</fullName>
+                <controllingFieldValues>Father</controllingFieldValues>
+                <controllingFieldValues>Mother</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Domestic partner</fullName>
+                <controllingFieldValues>Domestic Partner</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Father</fullName>
+                <controllingFieldValues>Daughter</controllingFieldValues>
+                <controllingFieldValues>Son</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Friend</fullName>
+                <controllingFieldValues>Friend</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mother</fullName>
+                <controllingFieldValues>Daughter</controllingFieldValues>
+                <controllingFieldValues>Son</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Nephew</fullName>
+                <controllingFieldValues>Aunt</controllingFieldValues>
+                <controllingFieldValues>Uncle</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Niece</fullName>
+                <controllingFieldValues>Aunt</controllingFieldValues>
+                <controllingFieldValues>Uncle</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Sister</fullName>
+                <controllingFieldValues>Brother</controllingFieldValues>
+                <controllingFieldValues>Sister</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Son</fullName>
+                <controllingFieldValues>Father</controllingFieldValues>
+                <controllingFieldValues>Mother</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Spouse</fullName>
+                <controllingFieldValues>Spouse</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Uncle</fullName>
+                <controllingFieldValues>Nephew</controllingFieldValues>
+                <controllingFieldValues>Niece</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <controllingFieldValues>Other</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Related_Contact__c</fullName>
+        <externalId>false</externalId>
+        <label>Related Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Reciprocal Relationships</relationshipLabel>
+        <relationshipName>R00N700000020Qy7EAE</relationshipName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Relationship_Status__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( AND(NULLVALUE(From_Date__c, TODAY() ) &lt;= TODAY() ,NULLVALUE(To_Date__c, TODAY() ) &gt;= TODAY() ) , &quot;Active&quot;, &quot;Inactive&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Status of this relationship: active or inactive</inlineHelpText>
+        <label>Relationship Status</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Relationship__c</fullName>
+        <description>How the &quot;Related Contact&quot; is related to this contact.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>How the &quot;Related Contact&quot; is related to this contact.</inlineHelpText>
+        <label>Relationship</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Associate</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Aunt</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Brother</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Business Partner</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Colleague</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cousin</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Daughter</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Domestic Partner</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Father</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Friend</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mother</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Nephew</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Niece</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Sister</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Son</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Spouse</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Uncle</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Source_Name__c</fullName>
+        <description>Unique name for the person who is the &quot;source&quot; of the relationship, so user can filter in the report All Contact Relationships and add all this person&apos;s relationships to a campaign.</description>
+        <externalId>false</externalId>
+        <formula>Mirror_Relationship__r.Contact__r.FirstName &amp; &apos; &apos; &amp; Mirror_Relationship__r.Contact__r.LastName &amp; &apos; (&apos; &amp; Mirror_Relationship__r.Contact__r.Id &amp; &apos;)&apos;</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Source Name</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>To_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>To Date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>UniqueRelCode__c</fullName>
+        <description>Unique and human-readable relationship name for each relationship pair, enabling user to filter groups of relationships in All Contact Relationships report for Add to Campaign</description>
+        <externalId>false</externalId>
+        <formula>IF ( VALUE(RIGHT(Name,5)) &lt; VALUE(RIGHT(Mirror_Relationship__r.Name,5)) , Contact__r.LastName, Mirror_Relationship__r.Contact__r.LastName ) &amp;
+IF ( VALUE(RIGHT(Name,5)) &gt; VALUE(RIGHT(Mirror_Relationship__r.Name,5)) , Contact__r.LastName, Mirror_Relationship__r.Contact__r.LastName ) &amp;
+IF ( VALUE(RIGHT(Name,5)) &lt; VALUE(RIGHT(Mirror_Relationship__r.Name,5)) , Name, Mirror_Relationship__r.Name ) &amp;
+IF ( VALUE(RIGHT(Name,5)) &gt; VALUE(RIGHT(Mirror_Relationship__r.Name,5)) , Name, Mirror_Relationship__r.Name )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>UniqueRelCode</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Contact Relationship</label>
+    <nameField>
+        <displayFormat>CR-{00000}</displayFormat>
+        <label>Relationship Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Contact Relationships</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>Related_Contact_Not_Updatable</fullName>
+        <active>true</active>
+        <description>don&apos;t let someone change the relationship contacts after it has been created</description>
+        <errorConditionFormula>and(not( ISNEW()), ISCHANGED(Related_Contact__c ))</errorConditionFormula>
+        <errorDisplayField>Related_Contact__c</errorDisplayField>
+        <errorMessage>If you want to change the Contact in this relationship, delete the relationship and recreate it with the new Contacts</errorMessage>
+    </validationRules>
+</CustomObject>

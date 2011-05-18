@@ -1,0 +1,146 @@
+<apex:page standardController="Contact" extensions="GW_EXT_OppTotalsRT"
+	title="Contact Giving Totals">
+	<!--
+-- Visualforce page that displays opportunity fiscal year totals for display in a small VF "pagelet."
+-- Because it uses a standard controller, the pagelet is available to add to the Account page layout.
+-- Written by Evan Callahan, copyright (c) 2010 Groundwire
+-->
+	<style>
+.bold {
+	font-weight: bold
+}
+
+.lt {
+	text-align: left;
+	width: 80px;
+}
+
+.ctr {
+	text-align: center;
+	width: 90px;
+}
+
+.rt {
+	text-align: right;
+	width: 80px;
+}
+</style>
+	<apex:outputPanel layout="block" style="padding:4px 2px 20px 8px;">
+		<apex:dataTable value="{!detailRows}" var="o"
+			rendered="{!NOT(ISNULL(totalRow))}" cellpadding="2"
+			headerclass="pbSubheader tertiaryPalette" footerclass="bold">
+			<apex:column styleclass="lt" headerclass="lt" footerclass="lt">
+				<apex:facet name="header">Fiscal Year</apex:facet>
+				<apex:outputText value="{!o.oppYear}" />
+				<apex:facet name="footer">{!totalRow.oppYear}</apex:facet>
+			</apex:column>
+			<apex:column styleclass="rt" headerclass="ctr" footerclass="rt"
+				rendered="{!NOT(ISNULL(header2))}">
+				<apex:facet name="header">{!header1}</apex:facet>
+				<apex:outputText value="{0, number, currency}">
+					<apex:param value="{!o.rt1}" />
+				</apex:outputText>
+				<apex:facet name="footer">
+					<apex:outputText value="{0, number, currency}" styleclass="rt">
+						<apex:param value="{!totalRow.rt1}" />
+					</apex:outputText>
+				</apex:facet>
+			</apex:column>
+			<apex:column styleclass="rt" headerclass="ctr" footerclass="rt"
+				rendered="{!NOT(ISNULL(header2))}">
+				<apex:facet name="header">{!header2}</apex:facet>
+				<apex:outputText value="{0, number, currency}">
+					<apex:param value="{!o.rt2}" />
+				</apex:outputText>
+				<apex:facet name="footer">
+					<apex:outputText value="{0, number, currency}" styleclass="rt">
+						<apex:param value="{!totalRow.rt2}" />
+					</apex:outputText>
+				</apex:facet>
+			</apex:column>
+			<apex:column styleclass="rt" headerclass="ctr" footerclass="rt"
+				rendered="{!NOT(ISNULL(header3))}">
+				<apex:facet name="header">{!header3}</apex:facet>
+				<apex:outputText value="{0, number, currency}">
+					<apex:param value="{!o.rt3}" />
+				</apex:outputText>
+				<apex:facet name="footer">
+					<apex:outputText value="{0, number, currency}" styleclass="rt">
+						<apex:param value="{!totalRow.rt3}" />
+					</apex:outputText>
+				</apex:facet>
+			</apex:column>
+			<apex:column styleclass="rt" headerclass="ctr" footerclass="rt"
+				rendered="{!NOT(ISNULL(header4))}">
+				<apex:facet name="header">{!header4}</apex:facet>
+				<apex:outputText value="{0, number, currency}">
+					<apex:param value="{!o.rt4}" />
+				</apex:outputText>
+				<apex:facet name="footer">
+					<apex:outputText value="{0, number, currency}" styleclass="rt">
+						<apex:param value="{!totalRow.rt4}" />
+					</apex:outputText>
+				</apex:facet>
+			</apex:column>
+			<apex:column styleclass="rt" headerclass="ctr" footerclass="rt"
+				rendered="{!NOT(ISNULL(header5))}">
+				<apex:facet name="header">{!header5}</apex:facet>
+				<apex:outputText value="{0, number, currency}">
+					<apex:param value="{!o.rt5}" />
+				</apex:outputText>
+				<apex:facet name="footer">
+					<apex:outputText value="{0, number, currency}" styleclass="rt">
+						<apex:param value="{!totalRow.rt5}" />
+					</apex:outputText>
+				</apex:facet>
+			</apex:column>
+			<apex:column styleclass="rt" headerclass="ctr" footerclass="rt"
+				rendered="{!NOT(ISNULL(header6))}">
+				<apex:facet name="header">{!header6}</apex:facet>
+				<apex:outputText value="{0, number, currency}">
+					<apex:param value="{!o.rt6}" />
+				</apex:outputText>
+				<apex:facet name="footer">
+					<apex:outputText value="{0, number, currency}" styleclass="rt">
+						<apex:param value="{!totalRow.rt6}" />
+					</apex:outputText>
+				</apex:facet>
+			</apex:column>
+			<apex:column styleclass="rt" headerclass="ctr" footerclass="rt"
+				rendered="{!NOT(ISNULL(header7))}">
+				<apex:facet name="header">{!header7}</apex:facet>
+				<apex:outputText value="{0, number, currency}">
+					<apex:param value="{!o.rt7}" />
+				</apex:outputText>
+				<apex:facet name="footer">
+					<apex:outputText value="{0, number, currency}" styleclass="rt">
+						<apex:param value="{!totalRow.rt7}" />
+					</apex:outputText>
+				</apex:facet>
+			</apex:column>
+			<apex:column styleclass="rt" headerclass="ctr" footerclass="rt"
+				rendered="{!NOT(ISNULL(header8))}">
+				<apex:facet name="header">{!header8}</apex:facet>
+				<apex:outputText value="{0, number, currency}">
+					<apex:param value="{!o.rt8}" />
+				</apex:outputText>
+				<apex:facet name="footer">
+					<apex:outputText value="{0, number, currency}" styleclass="rt">
+						<apex:param value="{!totalRow.rt8}" />
+					</apex:outputText>
+				</apex:facet>
+			</apex:column>
+			<apex:column styleclass="rt" headerclass="rt" footerclass="rt">
+				<apex:facet name="header">Total Amount</apex:facet>
+				<apex:outputText value="{0, number, currency}">
+					<apex:param value="{!o.totalAmount}" />
+				</apex:outputText>
+				<apex:facet name="footer">
+					<apex:outputText value="{0, number, currency}" styleclass="rt">
+						<apex:param value="{!totalRow.totalAmount}" />
+					</apex:outputText>
+				</apex:facet>
+			</apex:column>
+		</apex:dataTable>
+	</apex:outputPanel>
+</apex:page>

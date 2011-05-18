@@ -1,0 +1,36 @@
+<apex:page standardController="Opportunity"
+	extensions="ONEN_CTRL_MatchingGiftWizard" title="Matching Gift Wizard"
+	tabStyle="Opportunity">
+	<script>
+        //hack to override JavaScript that is setting focus on Date field
+        function setFocusOnLoad() {} 
+    </script>
+	<apex:sectionHeader title="Corporate Match">
+		<description>
+		<apex:outputText value="Use this page to record a corporate Match for a Gift." />
+		<apex:outputText value="Pick the Organization that is the matcher of the gift from {!donor.ONEN_Household__r.Name}." />
+		</description>
+	</apex:sectionHeader>
+	<apex:form >
+		<apex:pageBlock title="Pick the matching Organization">
+			<apex:panelGrid columns="2">
+				<apex:outputLabel value="Matching Org" for="acct" />
+				<apex:inputField id="acct" value="{!opportunity.AccountId}" />
+				<apex:outputPanel rendered="{!$CurrentPage.parameters.error=='noAcct'}">
+					<apex:outputText value="Please Select an Organization" />
+				</apex:outputPanel>
+				<apex:outputLabel value="Close Date" for="closeDate" />
+				<apex:inputField id="closeDate" value="{!opportunity.CloseDate}" />
+				<apex:outputLabel value="Original Gift Amount" for="origAmt" />
+				<apex:outputField id="origAmt" value="{!opportunity.Amount}" />
+				<apex:outputLabel value="Match Multiplier (.5 = 50%)"
+					for="matchMult" />
+				<apex:inputText value="{!matchMult}" />
+			</apex:panelGrid>
+			<apex:pageBlockButtons >
+				<apex:commandButton action="{!save}" value="Save" />
+			</apex:pageBlockButtons>
+
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

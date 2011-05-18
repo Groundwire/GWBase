@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <fields>
+        <fullName>Account__c</fullName>
+        <externalId>false</externalId>
+        <label>Organization</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Related Organizations</relationshipLabel>
+        <relationshipName>Account_rel</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>FirstOfPair__c</fullName>
+        <description>evaluates to &quot;True&quot; for the record in a pair of mirror relationsihps that was created first - arbitrary, but allows us to dedup relationship lists in reports</description>
+        <externalId>false</externalId>
+        <formula>IF ( VALUE(RIGHT(Name,5)) &lt; VALUE(RIGHT(Mirror_Relationship__r.Name,5)) , &quot;True&quot; , &quot;False&quot; )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Is First Relationship Pair</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>From_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>From Date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Mirror_Relationship__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>connecting one relationship to it&apos;s mirror</inlineHelpText>
+        <label>Mirror Relationship</label>
+        <referenceTo>Interaccount_Relationship__c</referenceTo>
+        <relationshipName>R00NR0000000UhmFMAS</relationshipName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Notes__c</fullName>
+        <externalId>false</externalId>
+        <label>Notes</label>
+        <length>32000</length>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Reciprocal_Relationship__c</fullName>
+        <description>How this account is related back to the &quot;Related Account.&quot; 
+Apex code creates a corresponding relationship if this is filled in.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>How this account is related back to the &quot;Related Account&quot; (e.g. for Contractor, choose Client). If you don&apos;t specify a reciprocal relationship, the related account won&apos;t have a relationship in its list.</inlineHelpText>
+        <label>Reciprocal Relationship</label>
+        <picklist>
+            <controllingField>Relationship__c</controllingField>
+            <picklistValues>
+                <fullName>Affiliate</fullName>
+                <controllingFieldValues>Affiliate</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Branch / Department</fullName>
+                <controllingFieldValues>Core Organization</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Client</fullName>
+                <controllingFieldValues>Contractor</controllingFieldValues>
+                <controllingFieldValues>Vendor</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Contractor</fullName>
+                <controllingFieldValues>Client</controllingFieldValues>
+                <controllingFieldValues>Customer</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Core Organization</fullName>
+                <controllingFieldValues>Branch / Department</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Customer</fullName>
+                <controllingFieldValues>Contractor</controllingFieldValues>
+                <controllingFieldValues>Vendor</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Member</fullName>
+                <controllingFieldValues>Membership Association</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Membership Association</fullName>
+                <controllingFieldValues>Member</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Partner</fullName>
+                <controllingFieldValues>Partner</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Vendor</fullName>
+                <controllingFieldValues>Client</controllingFieldValues>
+                <controllingFieldValues>Customer</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <controllingFieldValues>Other</controllingFieldValues>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Related_Account__c</fullName>
+        <externalId>false</externalId>
+        <label>Related Organization</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipName>Account_related_rel</relationshipName>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Relationship_Status__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( AND(NULLVALUE(From_Date__c, TODAY() ) &lt;= TODAY() ,NULLVALUE(To_Date__c, TODAY() ) &gt;= TODAY() ) , &quot;Active&quot;, &quot;Inactive&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Is this relationship active?</inlineHelpText>
+        <label>Relationship Status</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Relationship__c</fullName>
+        <description>How the &quot;Related Account&quot; is related to this account.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>How the &quot;Related Account&quot; is related to this account.</inlineHelpText>
+        <label>Relationship</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Affiliate</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Branch / Department</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Client</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Contractor</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Core Organization</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Customer</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Member</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Membership Association</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Partner</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Vendor</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>To_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>To Date</label>
+        <required>false</required>
+        <type>Date</type>
+    </fields>
+    <label>Organization Relationship</label>
+    <nameField>
+        <displayFormat>IAR-{00000}</displayFormat>
+        <label>Relationship Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Organization Relationships</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>Related_Account_Not_editable</fullName>
+        <active>true</active>
+        <errorConditionFormula>and(not( ISNEW()), ISCHANGED(Related_Account__c ))</errorConditionFormula>
+        <errorDisplayField>Related_Account__c</errorDisplayField>
+        <errorMessage>If you want to change the Account in this relationship, delete the relationship and recreate it with the new Accounts</errorMessage>
+    </validationRules>
+</CustomObject>
