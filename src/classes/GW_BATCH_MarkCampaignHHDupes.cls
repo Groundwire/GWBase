@@ -1,7 +1,16 @@
-global class GW_BATCH_MarkCampaignHHDupes implements Database.Batchable<SObject>, Database.Stateful {
-// Batch apex class that marks duplicate household members in a campaign 
 // Written by Evan Callahan, copyright (c) 2010 Groundwire, 1402 3rd Avenue, Suite 1000, Seattle, WA 98101
 // This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
+
+/*******************************************************************************************************
+* @author Evan Callahan
+* @date 12/01/2010
+* @description Batch apex class that marks duplicate household members in a campaign. Checkbox field on 
+* Campaign Member called Household Duplicate, which can be used to filter campaign member reports. This class
+* is called from a Visualforce Command Link on the Campaign page (which passes in the Campaign Id).  The VF page
+* directs the user to the campaign member report with the Household Duplicate filter after running this batch.
+*/
+global class GW_BATCH_MarkCampaignHHDupes implements Database.Batchable<SObject>, Database.Stateful {
+
 
 	// the query you send to this batch must be campaign members, 
 	// because they are in HH id order, we can always tell if this is the first one in the HH
@@ -11,10 +20,21 @@ global class GW_BATCH_MarkCampaignHHDupes implements Database.Batchable<SObject>
 	// need to keep track of the last Id in the previous batch
 	private id lastHHid; 
 
+    /*******************************************************************************************************
+	* @description standard batch start method, must be global
+	* @param bc Database.BatchableContext - standard batch start method argument
+	* @return query - my chunk of records from the batch query, to process
+	*/ 
 	global database.Querylocator start(Database.BatchableContext bc) {
 		return Database.getQueryLocator(query);		 
 	}
 
+    /*******************************************************************************************************
+	* @description standard batch execute method.  Tallies up people in a household and marks additional household members in the 
+	* campaign with the Household Duplicate checkbox on campaign member.
+	* @param bc - Database.BatchableContext - standard batch execute method argument
+	* @param scope - list of sobjects - standard batch execute method argument
+	*/ 
 	global void execute(Database.BatchableContext bc, Sobject[] scope) {
 		
 		// update this set up 200 household members as to whether they are duplicates
@@ -30,6 +50,10 @@ global class GW_BATCH_MarkCampaignHHDupes implements Database.Batchable<SObject>
 		update cmsForUpdate;
 	}
 	
+	/*******************************************************************************************************
+	* @description standard batch finish method, must be global, nothing to see here
+	* @param bc - Database.BatchableContext - standard batch finish argument
+	*/ 
 	global void finish(Database.BatchableContext bc) {
 	}
 	

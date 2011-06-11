@@ -3,8 +3,8 @@
 
 trigger GW_OppPaymentTriggerAfter on OppPayment__c (after delete) {
 
-	// when deleting payments, see if they are all deleted and a mirror needs to be created.
-	if (GW_TriggerSettings.ts.Enable_Opportunity_Mirror_Payments__c) {
-		ONEN_OpportunityInstallments.ConvertDeletedInstallmentsToMirror(trigger.old);
-	}
+    // when deleting payments, see if they are all deleted and a mirror needs to be created.
+    if (GW_TriggerSettings.ts.Enable_Opportunity_Mirror_Payments__c) {
+        ONEN_OpportunityInstallments.ConvertDeletedInstallmentsToMirror(trigger.old);
+    }
 }

@@ -1,7 +1,14 @@
 // Written by David Habib, copyright (c) 2011 Groundwire, 1402 3rd Avenue, Suite 1000, Seattle, WA 98101
 // This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
 
-global with sharing class GW_TriggerSettings {
+/*******************************************************************************************************
+* @author David Habib
+* @date 01/01/2011
+* @description Class which sets default trigger settings. Avoids conflicts with DupBlocker and test 
+* classes.
+*/
+
+global class GW_TriggerSettings {
 	
 	private static void SetTriggerSettingDefaults(TriggerSettings__c ts) {
 		// must explicitly set the default values.  (doing new Obj doesn't use defaults!)
@@ -29,6 +36,9 @@ global with sharing class GW_TriggerSettings {
 		ts.Enable_Primary_Contact_On_Accounts__c = !GW_Utilities.IsDupBlockerInstalled;
 	}
 
+	/*******************************************************************************************************
+	* @description Sets trigger settings.
+	*/	
 	global static TriggerSettings__c ts {
 		get {			
 			if (ts == null) {

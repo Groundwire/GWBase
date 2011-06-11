@@ -33,6 +33,7 @@
         <type>Default</type>
     </actionOverrides>
     <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
     <enableActivities>false</enableActivities>
     <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
@@ -40,6 +41,7 @@
     <enableReports>true</enableReports>
     <fields>
         <fullName>Amount__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Installment Amount</label>
         <precision>18</precision>
@@ -49,6 +51,7 @@
     </fields>
     <fields>
         <fullName>Check_Date__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>date the check was written or dated</inlineHelpText>
         <label>Check Date</label>
@@ -57,15 +60,17 @@
     </fields>
     <fields>
         <fullName>Check_Number__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Check Number</label>
-        <length>15</length>
+        <length>80</length>
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
         <fullName>Date__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Installment Date</label>
         <required>false</required>
@@ -74,6 +79,7 @@
     <fields>
         <fullName>IsInstallment__c</fullName>
         <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Is Installment</label>
         <type>Checkbox</type>
@@ -81,16 +87,18 @@
     <fields>
         <fullName>Online_Transaction_ID__c</fullName>
         <caseSensitive>false</caseSensitive>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>For online payments, this is the Transaction Id of the installment payment assigned by the online payment service, such as Paypal.</inlineHelpText>
         <label>Online Transaction ID</label>
-        <length>20</length>
+        <length>255</length>
         <required>false</required>
         <type>Text</type>
         <unique>true</unique>
     </fields>
     <fields>
         <fullName>Opp_For_Installment__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The Opportunity this is an installment for.  If null, then this is a mirror payment for its master opportunity.</inlineHelpText>
         <label>Opp For Installment</label>
@@ -101,6 +109,7 @@
     </fields>
     <fields>
         <fullName>Opportunity__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Opportunity</label>
         <referenceTo>Opportunity</referenceTo>
@@ -112,12 +121,14 @@
     <fields>
         <fullName>Paid__c</fullName>
         <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Paid</label>
         <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Projection_Amount__c</fullName>
+        <deprecated>false</deprecated>
         <description>for use in projection reports</description>
         <externalId>false</externalId>
         <formula>Amount__c  *  Opportunity__r.Probability</formula>
@@ -130,6 +141,7 @@
     </fields>
     <fields>
         <fullName>Recurring_Payment_Profile__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>HYPERLINK(&quot;/&quot; &amp;  Opportunity__r.Recurring_Payment_Profile__c , Opportunity__r.Recurring_Payment_Profile__r.Name, &quot;_self&quot;)</formula>
         <label>Recurring Payment Profile</label>
@@ -140,6 +152,7 @@
     <fields>
         <fullName>Written_Off__c</fullName>
         <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Written Off</label>
         <type>Checkbox</type>
@@ -183,4 +196,28 @@
         <errorConditionFormula>AND (  Paid__c ,  Written_Off__c )</errorConditionFormula>
         <errorMessage>An installment cannot be both Paid and Written Off</errorMessage>
     </validationRules>
+    <webLinks>
+        <fullName>Mark_Paid</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Mark Paid</masterLabel>
+        <openType>sidebar</openType>
+        <page>paymentsMarkPaid</page>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+    </webLinks>
+    <webLinks>
+        <fullName>Mark_Written_Off</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Mark Written Off</masterLabel>
+        <openType>sidebar</openType>
+        <page>paymentsMarkWrittenOff</page>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+    </webLinks>
 </CustomObject>

@@ -3,6 +3,7 @@
     <enableFeeds>true</enableFeeds>
     <fields>
         <fullName>Address_Flag__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Address Flag</label>
         <picklist>
@@ -21,6 +22,7 @@
     </fields>
     <fields>
         <fullName>Campaign_Id__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>campaign id that is passed from Plone form</inlineHelpText>
         <label>Campaign Id</label>
@@ -32,6 +34,7 @@
     </fields>
     <fields>
         <fullName>Campaign_Member_Status__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Used during the import process, this allows you to set member status for leads on a campaign.</inlineHelpText>
         <label>Campaign Member Status</label>
@@ -43,6 +46,7 @@
     </fields>
     <fields>
         <fullName>Communication_Preference__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Communication Preference</label>
         <picklist>
@@ -65,6 +69,7 @@
     </fields>
     <fields>
         <fullName>Contact_Id__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Contact Id passed in from form</inlineHelpText>
         <label>Contact Id</label>
@@ -77,6 +82,7 @@
     <fields>
         <fullName>Do_Not_Mail__c</fullName>
         <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Do Not Mail</label>
         <trackFeedHistory>false</trackFeedHistory>
@@ -85,6 +91,7 @@
     <fields>
         <fullName>Do_Not_Solicit__c</fullName>
         <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Do Not Solicit</label>
         <trackFeedHistory>false</trackFeedHistory>
@@ -93,6 +100,7 @@
     <fields>
         <fullName>Do_Not_Trade__c</fullName>
         <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Do not trade, rent or otherwise share this person&apos;s contact information with third parties.</inlineHelpText>
         <label>Do Not Trade</label>
@@ -101,9 +109,10 @@
     </fields>
     <fields>
         <fullName>Donation_Id__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Donation Id</label>
-        <length>25</length>
+        <length>255</length>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
@@ -111,9 +120,10 @@
     </fields>
     <fields>
         <fullName>External_Id__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>true</externalId>
         <label>External Id</label>
-        <length>80</length>
+        <length>255</length>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
@@ -121,6 +131,7 @@
     </fields>
     <fields>
         <fullName>Home_City__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Home City</inlineHelpText>
         <label>Home City</label>
@@ -132,6 +143,7 @@
     </fields>
     <fields>
         <fullName>Home_Country__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Home Country</inlineHelpText>
         <label>Home Country</label>
@@ -143,6 +155,7 @@
     </fields>
     <fields>
         <fullName>Home_Phone__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Home Phone</label>
         <required>false</required>
@@ -151,10 +164,11 @@
     </fields>
     <fields>
         <fullName>Home_PostalCode__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Home Zip/Postal Code</inlineHelpText>
         <label>Home Postal Code</label>
-        <length>12</length>
+        <length>20</length>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
@@ -162,6 +176,7 @@
     </fields>
     <fields>
         <fullName>Home_State__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Home State</inlineHelpText>
         <label>Home State</label>
@@ -173,6 +188,7 @@
     </fields>
     <fields>
         <fullName>Home_Street__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Home street address</inlineHelpText>
         <label>Home Street</label>
@@ -352,6 +368,7 @@
     </fields>
     <fields>
         <fullName>Opportunity_Amount__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Opportunity Amount</label>
         <precision>12</precision>
@@ -362,6 +379,7 @@
     </fields>
     <fields>
         <fullName>Opportunity_Date__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Opportunity Date</label>
         <required>false</required>
@@ -370,6 +388,7 @@
     </fields>
     <fields>
         <fullName>Opportunity_Description__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Opportunity Description</label>
         <length>32000</length>
@@ -379,9 +398,14 @@
     </fields>
     <fields>
         <fullName>Opportunity_Record_Type__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Opportunity Record Type</label>
         <picklist>
+            <picklistValues>
+                <fullName>Event Registration</fullName>
+                <default>false</default>
+            </picklistValues>
             <picklistValues>
                 <fullName>Gift</fullName>
                 <default>true</default>
@@ -391,7 +415,7 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Event Registration</fullName>
+                <fullName>Membership</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -401,6 +425,7 @@
     </fields>
     <fields>
         <fullName>Opportunity_Stage__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Opportunity Stage</label>
         <picklist>
@@ -409,7 +434,7 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Won Not Thanked</fullName>
+                <fullName>Won, Not Thanked</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -420,14 +445,6 @@
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Picklist</type>
-    </fields>
-    <fields>
-        <fullName>OtherAddress__c</fullName>
-        <externalId>false</externalId>
-        <label>Other Address</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <type>TextArea</type>
     </fields>
     <fields>
         <fullName>Rating</fullName>
@@ -514,6 +531,6 @@
         <masterLabel>Convert</masterLabel>
         <openType>sidebar</openType>
         <protected>false</protected>
-        <url>/apex/leadConverter?id={!Lead.Id}</url>
+        <url>/apex/GWBase__leadConverter?id={!Lead.Id}</url>
     </webLinks>
 </CustomObject>

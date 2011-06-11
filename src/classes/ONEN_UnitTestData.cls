@@ -1,10 +1,19 @@
-global class ONEN_UnitTestData { 
 // Written by Matthew Scholtz, copyright (c) 2007 ONE/Northwest
 // This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
 
-// create data for use in unit tests
-// should not be referenced by production code
+/*******************************************************************************************************
+* @author Matthew Scholtz
+* @date 01/01/2007
+* @description ONEN_UnitTestData is a class that handles data for use in unit test code. These methods
+* should not be used by production code.
+*/
+global class ONEN_UnitTestData { 
 
+	/*******************************************************************************************************
+	* @description Method that creates a Contact for use in unit test code.
+	* @param n Identifies unique set of Contact field values for n values 1, 2 and 3.
+	* @return A Contact record.
+	*/
 	global static contact CreateTestContact (integer n) {
 		
 		// create one contact
@@ -30,6 +39,11 @@ global class ONEN_UnitTestData {
 		return newCon;
 	}
 	
+	/*******************************************************************************************************
+	* @description Method that creates a list of Contacts for use in unit test code.
+	* @param n The number of Contacts to be added to the list.
+	* @return A list of Contact records of size n.
+	*/
 	global static list<Contact> CreateMultipleTestContacts (integer n) {
 		
 		list<contact> ContactsToAdd = New list<contact> ();
@@ -48,7 +62,13 @@ global class ONEN_UnitTestData {
 		
 		return ContactsToAdd;
 	}
-	
+
+	/*******************************************************************************************************
+	* @description Method that creates a partner Contact and a Household for each Contact in a list, for use 
+	* in unit test code.
+	* @param firstContactList A list of contacts.
+	* @return A list of contacts, with each contact being in a household with the respective contact from firstContactList.
+	*/
 	global static list<Contact> CreateMultipleTestContactsInHouseholds (List<Contact> firstContactList) {
 		
 		list<contact> ContactsToAdd = New list<contact> ();
@@ -68,7 +88,19 @@ global class ONEN_UnitTestData {
 		
 		return ContactsToAdd;
 	}
-	
+
+	/*******************************************************************************************************
+	* @description Method that creates one Opportunity each to a given list of Contacts for use in unit test 
+	* code. 
+	* @param Cons A list of Contacts to add Opportunities to.
+	* @param CampId A Campaign ID to link Opportunities to.
+	* @param Stage An Opportunity stage.
+	* @param Close An Opportunity closing date.
+	* @param Amt An Opportunity amount.
+	* @param rectype A record type.
+	* @param oppType An Opportunity type.
+	* @return A list of Opportunities associated with Cons.
+	*/
 	global static list<Opportunity> OppsForContactList (list<Contact> Cons, id CampId, string Stage, date Close, double Amt, string rectype, string oppType) {
 	 
 		// given a list of Contacts,
@@ -97,8 +129,11 @@ global class ONEN_UnitTestData {
 		
 	}
 	
-
-
+	/*******************************************************************************************************
+	* @description Method that returns a list of Accounts for use in unit test code.
+	* @param n The number of Accounts to be returned.
+	* @return A list of Accounts records of size n.
+	*/
 	global static list<Account> CreateMultipleTestAccounts (integer n) {
 		
 		list<Account> AcctsToAdd = New list<Account> ();
@@ -113,8 +148,17 @@ global class ONEN_UnitTestData {
 		return AcctsToAdd;
 	}
 	
-
-		global static list<Opportunity> OppsForAccountList (list<Account> Accts, id CampId, string Stage, date Close, double Amt, string rectype) {
+	/*******************************************************************************************************
+	* @description Method that returns one Opportunity each for a given list of Accounts.
+	* @param Accts A list of Accounts to add Opportunities to.
+	* @param CampId A Campaign ID to link Opportunities to.
+	* @param Stage An Opportunity stage.
+	* @param Close An Opportunity closing date.
+	* @param Amt An Opportunity amount.
+	* @param rectype A record type.
+	* @return A list of Opportunities associated with Accts.
+	*/
+	global static list<Opportunity> OppsForAccountList (list<Account> Accts, id CampId, string Stage, date Close, double Amt, string rectype) {
 	
 		// given a list of accounts,
 		// add one Opp per acct w/ the specified data
@@ -140,8 +184,15 @@ global class ONEN_UnitTestData {
 		return OppsToAdd;
 		
 	}
-	
-	global Static CampaignMember CreateCampaignMember (id CampId, id ConId, string CMStatus) {
+
+	/*******************************************************************************************************
+	* @description Method that returns a Campaign Member for use in unit test code.
+	* @param CampId A Campaign ID.
+	* @param ConId A Contact ID.
+	* @param CMStatus A Campaign Member Status.
+	* @return A list of Accounts records of size n.
+	*/
+	global static CampaignMember CreateCampaignMember (id CampId, id ConId, string CMStatus) {
 	
 		CampaignMember newCM = new CampaignMember (
 			CampaignId = CampId,
@@ -154,7 +205,10 @@ global class ONEN_UnitTestData {
 		
 	}
 	
-	
+	/*******************************************************************************************************
+	* @description Method that deletes all records in a custom setting table.
+	* @param objname A custom setting table.
+	*/
 	global static void DeleteListCustomSettingRecs (string objname) {
 		// given the name of a custom setting table, delete all the records in it
         string qstr = 'SELECT Id,Name FROM ' + objname;

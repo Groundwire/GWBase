@@ -3,11 +3,11 @@
 
 trigger GW_CampaignTriggerBefore on Campaign (before insert) {
 
-	for (Campaign c : Trigger.new) {
-		
-		//Set Campaign active checkbox to true
-		if (GW_TriggerSettings.ts.Enable_Active_Campaign__c) {
-			c.IsActive = true; 
-		}
-	}
+    for (Campaign c : Trigger.new) {
+        
+        //Set Campaign active checkbox to true
+        if (GW_TriggerSettings.ts.Enable_Active_Campaign__c) {
+            c.IsActive = true; 
+        }
+    }
 }

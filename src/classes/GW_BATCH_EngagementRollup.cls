@@ -1,22 +1,27 @@
-global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sobject> {
 // Written by Matthew Scholtz, copyright (c) 2010 Groundwire, 1402 3rd Avenue, Suite 1000, Seattle, WA 98101
 // This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
+
+/*******************************************************************************************************
+* @author Matthew Scholtz
+* @date 01/01/2010
+* @description NULL_DESCRIPTION
+*/
+global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sobject>, Schedulable {
 
     public String Query;
     public boolean isTest; 
     boolean filterTestConsOnly = false;
-    //foo
-
+    
     public map<integer,string> lvlNameMap = new map<integer,string>();
     map<integer,string> lvlNameSettingMap = new map<integer,string> {
-    	1=>GW_Utilities.StrTokenNSPrefix('Level_1_Name__c') , 
-    	2=>GW_Utilities.StrTokenNSPrefix('Level_2_Name__c') , 
-    	3=>GW_Utilities.StrTokenNSPrefix('Level_3_Name__c') , 
-    	4=>GW_Utilities.StrTokenNSPrefix('Level_4_Name__c') , 
-    	5=>GW_Utilities.StrTokenNSPrefix('Level_5_Name__c') , 
-    	6=>GW_Utilities.StrTokenNSPrefix('Level_6_Name__c') , 
-    	7=>GW_Utilities.StrTokenNSPrefix('Level_7_Name__c') , 
-    	8=>GW_Utilities.StrTokenNSPrefix('Level_8_Name__c')}; 
+        1=>GW_Utilities.StrTokenNSPrefix('Level_1_Name__c') , 
+        2=>GW_Utilities.StrTokenNSPrefix('Level_2_Name__c') , 
+        3=>GW_Utilities.StrTokenNSPrefix('Level_3_Name__c') , 
+        4=>GW_Utilities.StrTokenNSPrefix('Level_4_Name__c') , 
+        5=>GW_Utilities.StrTokenNSPrefix('Level_5_Name__c') , 
+        6=>GW_Utilities.StrTokenNSPrefix('Level_6_Name__c') , 
+        7=>GW_Utilities.StrTokenNSPrefix('Level_7_Name__c') , 
+        8=>GW_Utilities.StrTokenNSPrefix('Level_8_Name__c')}; 
     integer[] lvlsNoNeedResp = new integer[0];
     map<string,EngagementContactFieldSettings__c> fieldSettingsMap = new map<string,EngagementContactFieldSettings__c>(); 
     map<string,EngagementFrequencySettings__c> freqSettingsMap = new map<string,EngagementFrequencySettings__c>(); 
@@ -26,12 +31,36 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
     private date cutoffDateMedium; 
     private integer NewMbrLvl;
     private integer RetMbrLvl;
-
+    
+    /*******************************************************************************************************
+	* @description This constructor is needed to allow this class to be schedulable.
+	*/
+    global GW_BATCH_EngagementRollup() { }
+    
+    
+    /*******************************************************************************************************
+	* @description NULL_DESCRIPTION
+	*/
     global GW_BATCH_EngagementRollup (boolean isTestArg) {
         isTest = isTestArg;
         GW_OppRollups.isTest = isTestArg;
         getSettingParams();
         constructQuery();
+    }
+    
+    /*******************************************************************************************************
+	* @description NULL_DESCRIPTION
+	*/    
+    global void execute(SchedulableContext SC) {
+        
+        EngagementTrackerSettings__c settings = EngagementTrackerSettings__c.getOrgDefaults();
+        integer batchSize = 50;  // default
+        if (settings.Batch_Size__c > 0) {
+            batchSize = settings.Batch_Size__c.intvalue(); 
+        }
+         
+        GW_BATCH_EngagementRollup ladderBatch = new GW_BATCH_EngagementRollup(false);
+        id batchinstanceid = database.executeBatch (ladderBatch, batchSize);  
     }
 
     protected void getSettingParams() {
@@ -71,9 +100,9 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
         querySOQL +=        'ONEN_Household__r.OppsClosedLastNDays__c,ONEN_Household__r.Best_Gift_Year__c,ONEN_Household__r.Best_Gift_Year_Total__c,';
         querySOQL +=        'MembershipJoinDate__c,MembershipEndDate__c,LastMembershipLevel__c,LastMembershipOrigin__c,LastMembershipDate__c,LastMembershipAmount__c,';
 
-		// add our namespace prefix to fields we own.
-		querySOQL = GW_Utilities.StrAllNSPrefix(querySOQL);
-		
+        // add our namespace prefix to fields we own.
+        querySOQL = GW_Utilities.StrAllNSPrefix(querySOQL);
+        
         // include any checkbox fields from settings in the query
         if (fieldSettingsMap.size()>0) {
             for (EngagementContactFieldSettings__c s : fieldSettingsMap.values() ) {
@@ -91,12 +120,22 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
         //system.debug (Logginglevel.WARN,'query string: ' + querySOQL);
         Query = querySOQL;      
     }
-    
+
+    /*******************************************************************************************************
+	* @description NULL_DESCRIPTION
+	* @param BC NULL_PARAMETER
+	* @return NULL_RETURN
+	*/    
     global Database.QueryLocator start(Database.BatchableContext BC){
         return Database.getQueryLocator(Query);
     }
 
-
+    /*******************************************************************************************************
+	* @description NULL_DESCRIPTION
+	* @param BC NULL_PARAMETER
+	* @param SBatch NULL_PARAMETER
+	* @return NULL_RETURN
+	*/
     global void execute(Database.BatchableContext BC, List<Sobject> SBatch){
         system.debug (Logginglevel.WARN,'running execute!');
         Map<id,Contact> conMap = new Map<id,Contact>();
@@ -194,9 +233,9 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
                 qstr +=         ' FROM CampaignMember WHERE ContactId IN :conIDs AND Campaign.Leadership_Level__c!=Null ';
                 qstr +=         ' AND (HasResponded=True OR Campaign.Engagement_Level_Numeric__c IN :lvlsNoNeedResp) ';
                 qstr +=         ' AND Effective_Action_Date__c >= :cutoffDateRecent ';
-				// add our namespace prefix to fields we own.
+                // add our namespace prefix to fields we own.
                 qstr = GW_Utilities.StrAllNSPrefix(qstr);
-        		// fields coming from settings we can't assume should be namespace prefixed.
+                // fields coming from settings we can't assume should be namespace prefixed.
                 qstr +=         ' AND Campaign.' + fqset.Fieldname_1__c + '= \'' + fqset.Field_Value_1__c + '\' ';
                 qstr +=         GW_Utilities.StrAllNSPrefix(' GROUP BY ROLLUP ( ContactId, Calendar_Year(Effective_Action_Date__c) )');
                 //system.debug (Logginglevel.WARN,'querystring: ' + qstr);
@@ -368,7 +407,11 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
         }
         
     }
-    
+
+    /*******************************************************************************************************
+	* @description NULL_DESCRIPTION
+	* @param BC NULL_PARAMETER
+	*/      
     global void finish(Database.BatchableContext BC){
         
     }
@@ -393,43 +436,43 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
 
     }
 
-	// called from the Contact before trigger
-	public static void ContactEngagementLvlOverride() {    
-		// when engagement lvl override gets set, apply the default time limit unless user has specified otherwise
-		// can't do this w/ workflow due to limitations in date arithmetic
-		
-		Contact[] cons = new Contact[0];
-		EngagementTrackerSettings__c settings = EngagementTrackerSettings__c.getOrgDefaults();
-		integer months = 12;  // overall default if none other specified
-		if (settings!=null) months = (settings.Override_Default_Duration__c==null) ? months : settings.Override_Default_Duration__c.intvalue();
-		
-		date defDate;
-		
-		for (SObject obj : trigger.new) {
-			Contact con = (Contact)obj;
-			if (con.Engagement_Level_Override__c!=null) {
-				Contact oldCon;
-				boolean dateChgd = false;
-				boolean lvlChgd = false;
-				if (trigger.isUpdate) {
-					oldCon = (Contact)trigger.oldMap.get(con.Id);
-					dateChgd = (con.Engagement_Override_End_Date__c!=oldCon.Engagement_Override_End_Date__c ? true : false );
-					lvlChgd = (con.Engagement_Level_Override__c!=oldCon.Engagement_Level_Override__c ? true : false );
-				}
-				if ( (trigger.isInsert && con.Engagement_Override_End_Date__c==null) || (trigger.isUpdate && lvlChgd && !dateChgd) ) {
-					cons.add(con);
-				}			
-			}		  
-		}
-		
-		if (cons.size() > 0) {
-			// optimization: do date math after first loop
-			defDate = system.today().addMonths(months);
-			for (Contact con:cons) {
-				con.Engagement_Override_End_Date__c = defDate;
-			}
-		}
-	}
+    // called from the Contact before trigger
+    public static void ContactEngagementLvlOverride() {    
+        // when engagement lvl override gets set, apply the default time limit unless user has specified otherwise
+        // can't do this w/ workflow due to limitations in date arithmetic
+        
+        Contact[] cons = new Contact[0];
+        EngagementTrackerSettings__c settings = EngagementTrackerSettings__c.getOrgDefaults();
+        integer months = 12;  // overall default if none other specified
+        if (settings!=null) months = (settings.Override_Default_Duration__c==null) ? months : settings.Override_Default_Duration__c.intvalue();
+        
+        date defDate;
+        
+        for (SObject obj : trigger.new) {
+            Contact con = (Contact)obj;
+            if (con.Engagement_Level_Override__c!=null) {
+                Contact oldCon;
+                boolean dateChgd = false;
+                boolean lvlChgd = false;
+                if (trigger.isUpdate) {
+                    oldCon = (Contact)trigger.oldMap.get(con.Id);
+                    dateChgd = (con.Engagement_Override_End_Date__c!=oldCon.Engagement_Override_End_Date__c ? true : false );
+                    lvlChgd = (con.Engagement_Level_Override__c!=oldCon.Engagement_Level_Override__c ? true : false );
+                }
+                if ( (trigger.isInsert && con.Engagement_Override_End_Date__c==null) || (trigger.isUpdate && lvlChgd && !dateChgd) ) {
+                    cons.add(con);
+                }           
+            }         
+        }
+        
+        if (cons.size() > 0) {
+            // optimization: do date math after first loop
+            defDate = system.today().addMonths(months);
+            for (Contact con:cons) {
+                con.Engagement_Override_End_Date__c = defDate;
+            }
+        }
+    }
     
 
     // *** TESTS **********************************************************************
@@ -531,14 +574,14 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
         // this stuff basically repeated from the class - need this looked up for the test as well
         map<integer,string> lvlNameMapTest = new map<integer,string>();
         map<integer,string> lvlNameSettingMap = new map<integer,string>{
-        	1=>GW_Utilities.StrTokenNSPrefix('Level_1_Name__c') , 
-        	2=>GW_Utilities.StrTokenNSPrefix('Level_2_Name__c') , 
-        	3=>GW_Utilities.StrTokenNSPrefix('Level_3_Name__c') , 
-        	4=>GW_Utilities.StrTokenNSPrefix('Level_4_Name__c') , 
-        	5=>GW_Utilities.StrTokenNSPrefix('Level_5_Name__c') , 
-        	6=>GW_Utilities.StrTokenNSPrefix('Level_6_Name__c') , 
-        	7=>GW_Utilities.StrTokenNSPrefix('Level_7_Name__c') , 
-        	8=>GW_Utilities.StrTokenNSPrefix('Level_8_Name__c')};
+            1=>GW_Utilities.StrTokenNSPrefix('Level_1_Name__c') , 
+            2=>GW_Utilities.StrTokenNSPrefix('Level_2_Name__c') , 
+            3=>GW_Utilities.StrTokenNSPrefix('Level_3_Name__c') , 
+            4=>GW_Utilities.StrTokenNSPrefix('Level_4_Name__c') , 
+            5=>GW_Utilities.StrTokenNSPrefix('Level_5_Name__c') , 
+            6=>GW_Utilities.StrTokenNSPrefix('Level_6_Name__c') , 
+            7=>GW_Utilities.StrTokenNSPrefix('Level_7_Name__c') , 
+            8=>GW_Utilities.StrTokenNSPrefix('Level_8_Name__c')};
         
         /* TBD
         for (integer i=1 ; i<=lvlNameSettingMap.keyset().size() ; i++) {

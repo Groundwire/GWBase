@@ -2,8 +2,6 @@ public class ONEN_OpportunityContactRoles {
 // Written by Steve Andersen, copyright (c) 2008 ONE/Northwest
 // This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
 
-    //public static boolean haveCheckedContactRoles = false;
-
     public static Id GetPrimaryContactId (Id oppID){
 
         Id primaryId;       

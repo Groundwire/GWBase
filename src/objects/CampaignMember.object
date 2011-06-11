@@ -3,6 +3,7 @@
     <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>Effective_Action_Date__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>IF (  Campaign.StartDate &lt;=  FirstRespondedDate &amp;&amp; Campaign.EndDate &gt;= FirstRespondedDate &amp;&amp; NOT(ISBLANK(Campaign.StartDate)) &amp;&amp; NOT(ISBLANK(Campaign.EndDate)) &amp;&amp; NOT(ISBLANK(FirstRespondedDate)) , FirstRespondedDate , Campaign.StartDate)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -14,6 +15,7 @@
     <fields>
         <fullName>Household_Duplicate__c</fullName>
         <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>If checked, this person is not the first from his/her household to be added to this campaign.  Filter out records with this box checked to avoid sending mail to a given household address more than once.</inlineHelpText>
         <label>Household Duplicate</label>

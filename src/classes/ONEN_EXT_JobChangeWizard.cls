@@ -1,4 +1,4 @@
-public class ONEN_EXT_JobChangeWizard {
+public with sharing class ONEN_EXT_JobChangeWizard {
 // Written by Dave Manelski, copyright (c) 2008 ONE/Northwest
 // This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
 

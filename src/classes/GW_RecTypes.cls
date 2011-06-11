@@ -1,15 +1,17 @@
-global class GW_RecTypes {
-/*-----------------------------------------------------------------------------------------------
-* Written by Evan Callahan, copyright (c) 2010 Groundwire
-* This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
-* 
-* This class is meant to allow for access to Record Type information from within other classes.
-*
+// Written by Evan Callahan, copyright (c) 2010 Groundwire, 1402 3rd Avenue, Suite 1000, Seattle, WA 98101
+// This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
+
+/*******************************************************************************************************
+* @author Evan Callahan
+* @date 01/01/2010
+* @description GW_RecTypes is a class that is meant to allow for access to Record Type information from
+* within other classes.
 * It is called statically, and therefore will supply the same information to all calls made from
 * within one transaction, or set of trigger calls. This is beneficial because this info should
 * be the same for all calls in a transaction, and by calling it statically we reduce the calls
-* that are made, making the total transaction more efficient
------------------------------------------------------------------------------------------------*/
+* that are made, making the total transaction more efficient.
+*/
+global class GW_RecTypes {
 	
 	//maps to hold the record type info
 	private static Map<String, Schema.SObjectType> gd;
@@ -31,9 +33,12 @@ global class GW_RecTypes {
 		}
 	}
 
-	/*******************************************
-	* Gives record type Id from a given record type name
-	********************************************/
+	/*******************************************************************************************************
+	* @description Gives record type ID from a given record type name.
+	* @param objectName The name of an Object.
+	* @param RecordTypeName The name of a Record Type.
+	* @return The Record Type's ID.
+	*/
 	global static Id GetRecordTypeId(String objectName, String RecordTypeName) {
 		// make sure we have this object's record types mapped
 		if (!recordTypesByName.containsKey(objectName)) 
@@ -48,9 +53,12 @@ global class GW_RecTypes {
 		}
 	}
 		
-	/*******************************************
-	* Gives record type Name from a given record type Id
-	********************************************/
+	/*******************************************************************************************************
+	* @description Gives record name from a given Record Type ID.
+	* @param objectName The name of an Object.
+	* @param RecordTypeId The ID of a Record Type.
+	* @return The Record Type's name.
+	*/
 	global static String GetRecordTypeName(String objectName, Id RecordTypeId) {
 		// make sure we have this object's record types mapped
 		if (!recordTypesById.containsKey(objectName)) 
@@ -64,10 +72,13 @@ global class GW_RecTypes {
 			return null;
 		}
 	}
-	
-	/*******************************************
-	* Gives a set of record type Ids from a given set of names
-	********************************************/
+
+	/*******************************************************************************************************
+	* @description Gives a set of record type IDs from a given set of names.
+	* @param objectName The name of an Object.
+	* @param RecordTypeNameSet A Set of Record Type names.
+	* @return A Set of Record Type IDs.
+	*/
 	global static set<Id> GetRecordTypeIdSet(String objectName, set<string> RecordTypeNameSet) {
 		set<Id> recordTypeIds = new set<Id>();
 
@@ -87,9 +98,11 @@ global class GW_RecTypes {
 		return recordTypeIds;
 	}
 	
-	/*******************************************
-	* Gives a map of record type Ids from a given set of names
-	********************************************/
+	/*******************************************************************************************************
+	* @description Gives a map of record type Ids from a given object name.
+	* @param objectName The name of an Object.
+	* @return A Map of Record Type IDs.
+	*/
 	global static Map<String, Id> GetRecordTypeIdMap(String objectName) {
 		Map<String, Id> recordTypeMap = new Map<String, Id>();  
 		// make sure we have this object's record types mapped
@@ -126,9 +139,11 @@ global class GW_RecTypes {
 	}
 	********************************************/
 	
-	/****************************************************************
-	* function to get a list of select options for a Visualforce picklist of record types. 
-	*****************************************************************/
+	/*******************************************************************************************************
+	* @description Gives a list of select options for a Visualforce picklist of record types. 
+	* @param objectName The name of an Object.
+	* @return A list of Select Options.
+	*/
 	global static List<SelectOption> getRecordTypesForSelectList(String objectName) {
 		
    	 	List<SelectOption> recordTypesOptions = new List<SelectOption>();

@@ -1,11 +1,19 @@
 // Written by Dave Habib, copyright (c) 2011 Groundwire
 // This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
 
-global with sharing class GW_Utilities { 
+/*******************************************************************************************************
+* @author David Habib
+* @date 5/20/2011
+* @description Class which holds static methods for common utilities, 
+* such as detecting whether we are in a managed package, and some string helpers.
+********************************************************************************************************/
+global class GW_Utilities { 
 	
-	//---------------------------------------------------------------------------------------------
-	// track whether we are running in our managed packaged, or unmanaged code.
-	//---------------------------------------------------------------------------------------------
+	/******************************************************************************************************
+	* @author David Habib
+	* @date 5/23/2011
+	* @description boolean property which tracks whether we are running in our managed packaged, or unmanaged code.
+	*******************************************************************************************************/	
 	private static boolean fCheckedForManagedPackage = false;
 	global static boolean InManagedPackage {
 		get {
@@ -21,9 +29,10 @@ global with sharing class GW_Utilities {
 	}
 	
 	
-	//---------------------------------------------------------------------------------------------
-	// utility to detect DupBlocker, so we can avoid tests that fail with DupBlocker installed.
-	//---------------------------------------------------------------------------------------------
+	/*******************************************************************************************************
+	* @description boolean property to track whether DupBlocker is installed, so we can avoid tests that fail 
+	* with DupBlocker installed.
+	********************************************************************************************************/	
 	private static boolean fCheckedForDupBlocker = false;
 	global static boolean IsDupBlockerInstalled {
 		get {
@@ -38,10 +47,14 @@ global with sharing class GW_Utilities {
 	}
 	
 
-	//---------------------------------------------------------------------------------------------
-	// if we are in a managed package, tokens in dynamic SOQL must include the package namespace prefix
-	// if you ever deploy this package as unmanaged to a client, this routine will do nothing!
-	//---------------------------------------------------------------------------------------------
+	/*******************************************************************************************************
+	* @description It takes a string of a potential field name or object name.  
+	*     If it is a custom object, it prepends the namespace prefix if required.
+	*     If we are in a managed package, tokens in dynamic SOQL must include the package namespace prefix
+	*     If you ever deploy this package as unmanaged to a client, this routine will do nothing!
+	* @param str token name 
+	* @return token name, with namespace prefix, if required.
+	********************************************************************************************************/
 	global static string StrTokenNSPrefix(string str) {
 		if (!InManagedPackage) return str;
 		if (str.endsWith('__c')) {
@@ -51,10 +64,13 @@ global with sharing class GW_Utilities {
 	}
 	
 	
-	//---------------------------------------------------------------------------------------------
-	// if we are in a managed package, tokens in dynamic SOQL must include the package namespace prefix
-	// if you ever deploy this package as unmanaged to a client, this routine will do nothing!
-	//---------------------------------------------------------------------------------------------
+	/*******************************************************************************************************
+	* @description It takes a string of a multiple potential field names or object names.  
+	* If we are in a managed package, tokens in dynamic SOQL must include the package namespace prefix
+	* If you ever deploy this package as unmanaged to a client, this routine will do nothing!
+	* @param str string that contains 0 or more token names 
+	* @return same string with token names, namespace prefixed, if required.
+	********************************************************************************************************/
 	global static string StrAllNSPrefix(string str) {
 		if (!InManagedPackage) return str;
 		Pattern pat = Pattern.Compile('[a-zA-z0-9]*__c');
@@ -63,9 +79,11 @@ global with sharing class GW_Utilities {
 	}
 	
 	
-	//---------------------------------------------------------------------------------------------
-	// routine to lookup a reportId given its Developer Name.
-	//---------------------------------------------------------------------------------------------
+	/*******************************************************************************************************
+	* @description Routine to lookup a reportId given its Developer Name.
+	* @param strDevName DeveloperName of the report 
+	* @return reportId
+	********************************************************************************************************/
 	global static ID reportIdFromDevName(string strDevName) { 
 		Id reportId = null;
 		Report[] rpts = [select Id from Report where DeveloperName = :strDevName];
@@ -73,8 +91,7 @@ global with sharing class GW_Utilities {
 		return reportId;
 	}
 	
-	
-	
+
 	//---------------------------------------------------------------------------------------------
 	// TEST CODE
 	//---------------------------------------------------------------------------------------------

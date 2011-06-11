@@ -8,6 +8,7 @@
     <fields>
         <fullName>Campaign_Member_Status_Donated__c</fullName>
         <defaultValue>&quot;Donated&quot;</defaultValue>
+        <deprecated>false</deprecated>
         <description>The Campaign Member Status value to use when our Opportunity trigger adds a contact to a campaign based off a donation.</description>
         <externalId>false</externalId>
         <inlineHelpText>The Campaign Member Status value to use when our Opportunity trigger adds a contact to a campaign based off a donation.</inlineHelpText>
@@ -19,6 +20,7 @@
     </fields>
     <fields>
         <fullName>Individual_Account_Id__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>To increase code efficiency, set this to the ID of the &quot;Individual&quot; bucket account.</inlineHelpText>
         <label>Individual Account Id</label>
@@ -30,6 +32,7 @@
     <fields>
         <fullName>Individual_Account_Name__c</fullName>
         <defaultValue>&quot;Individual&quot;</defaultValue>
+        <deprecated>false</deprecated>
         <description>The name of the special individual bucket account.</description>
         <externalId>false</externalId>
         <inlineHelpText>The name of the special individual bucket account.</inlineHelpText>
@@ -42,6 +45,7 @@
     <fields>
         <fullName>Job_Change_Wizard_Relationship__c</fullName>
         <defaultValue>&quot;Employee&quot;</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The relationship to specify with the previous employer.</inlineHelpText>
         <label>Job Change Wizard Relationship</label>
@@ -53,6 +57,7 @@
     <fields>
         <fullName>Lead_Converter_Account_Name_Not_Provided__c</fullName>
         <defaultValue>&quot;[not provided]&quot;</defaultValue>
+        <deprecated>false</deprecated>
         <description>The text leads can have for their account, when it isn&apos;t provided by the user. These will be mapped to the Individual bucket account.</description>
         <externalId>false</externalId>
         <inlineHelpText>The text leads can have for their account, when it isn&apos;t provided by the user. These will be mapped to the Individual bucket account.</inlineHelpText>

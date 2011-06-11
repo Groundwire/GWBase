@@ -542,6 +542,10 @@ public class GW_OppRollups {
 			boolean nochange = true;
 			// string[] rollupFields = HH_ROLLUP_FIELDS.split(',');
 			for (string field : HHRollupFields) {
+				// handle missing households
+				if (hh1 == null || hh2 == null) {
+					break;
+				}
 				if (hh1.get(field)!=hh2.get(field)) {
 					nochange = false;
 					break;
@@ -1578,7 +1582,9 @@ public class GW_OppRollups {
 		System.assertEquals (0,c.OppAmountLastYearHH__c);
 		System.assertEquals (datClose,c.LastCloseDateHH__c );
 		System.assertEquals (375,c.Total_Household_Gifts__c);
-		System.assertEquals (datClose.addYears(-2).year(),c.ONEN_Household__r.Best_Gift_Year__c);
+		
+		// adjust for fiscal year
+		System.assertEquals (datClose.addYears(-2).year() - ((thisYear == system.today().year()) ? 0 : 1),c.ONEN_Household__r.Best_Gift_Year__c);
 		System.assertEquals (200,c.ONEN_Household__r.Best_Gift_Year_Total__c);
 		
 		

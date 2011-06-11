@@ -1,4 +1,4 @@
-public class GW_EXT_OppContactRolesList {
+public with sharing class GW_EXT_OppContactRolesList {
 
     //list of all contact roles, existing and blank for the page
     public List<OpportunityContactRole> conRolesList { get; set; }

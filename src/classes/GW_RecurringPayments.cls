@@ -1,30 +1,30 @@
 // Written by Dave Habib, copyright (c) 2011 Groundwire
 // This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
 
-public with sharing class GW_RecurringPayments {
-
+/*******************************************************************************************************
+* @author David Habib
+* @date 01/01/2011
+* @description NULL_DESCRIPTION
+*/
+global class GW_RecurringPayments {
+	
 	//------------------------------------------------------------------------------
 	// return a RecurringPaymentProfile name given its information.	
 	//------------------------------------------------------------------------------
 	public static string strNameForRPP(Recurring_Payment_Profile__c rpp) {
 		string strName;
 		if (rpp.Account__c != null) {
-			Account acc = [select Name from Account where Id = :rpp.Account__c limit 1];
-			strName = acc.Name;
+			Account[] accs = [select Name from Account where Id = :rpp.Account__c limit 1];
+			strName = accs.size() > 0 ? accs[0].Name : null;
 		} else if (rpp.Contact__c != null) {
-			Contact con = [select FirstName, LastName, HouseholdName__c from Contact where Id = :rpp.Contact__c limit 1];
-			strName = (con.HouseholdName__c != null) ? con.HouseholdName__c : 
-					((con.FirstName == null) ? con.LastName : (con.FirstName + ' ' + con.LastName));		
-		} else {
+			Contact[] cons = [select FirstName, LastName, HouseholdName__c from Contact where Id = :rpp.Contact__c limit 1];
+			strName = (cons.size() == 0) ? null : (cons[0].HouseholdName__c != null) ? cons[0].HouseholdName__c : 
+					((cons[0].FirstName == null) ? cons[0].LastName : (cons[0].FirstName + ' ' + cons[0].LastName));		
+		} else { 
 			return null;
-		}
-		
-		string strYear;
-		if (rpp.Start_Date__c != null) {
-			strYear = string.valueOf(rpp.Start_Date__c.year());
 		} 
 		
-		return strName + ' ' + strYear + ' Recurring Payment Profile';
+		return strName + ' Recurring Payment Profile';
 	}
 
 
@@ -129,7 +129,18 @@ public with sharing class GW_RecurringPayments {
 		// create them.
 		insert listOppsToCreate;			
 	}
-	
+	/* started to abstract this for Online payments but put on hold
+	global Recurring_Payment_Profile__c createRecurringPayment(Recurring_Payment_Profile__c rp) {
+
+		if (rp.start_Date__c == null) rp.start_Date__c = system.today();
+		if (rp.Payment_Period__c == null) rp.Payment_Period__c = 'Month');
+		
+		rp.name = strNameForRPP(rp);
+		
+		insert rp;
+		return rp; 
+	}
+	*/
 	//------------------------------------------------------------------------------
 	// Tests
 	//------------------------------------------------------------------------------

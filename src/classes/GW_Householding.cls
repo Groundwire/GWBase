@@ -1,3 +1,8 @@
+/**
+* @author Evan Callahan
+* @date 1/1/2010
+* @description Class to manage household names and addresses syncing
+*/
 public class GW_Householding {
 // Written by Evan Callahan, copyright (c) 2007 NPower Seattle
 // Portions written by Steve Andersen, (c) 2008 Groundwire
@@ -5,7 +10,7 @@ public class GW_Householding {
 // This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
 
 // Class to manage household names and addresses syncing
-    
+
     // set to true if you want Mr. and Mrs. in the household name
     static final boolean includeSalutation = true;  
         
@@ -17,7 +22,13 @@ public class GW_Householding {
     //public static set<id> secondContactIds;
     public static contact[] secondContacts = new contact[]{};
     
+    
     // fix the specified household records -- gets called when contact names or households are changed
+/**
+* @description fix the specified household records -- gets called when contact names or households are changed
+* @param Set<Id> a set of Household object Id's 
+* @return void
+*/
     public void UpdateNames(Set<Id> households) {
         onen_household__c[] hhs = [select id, name, greeting__c, auto_hhName__c, auto_hhGreeting__c, 
         	(SELECT Id, Salutation, FirstName, LastName, not_in_hh_name__c 
@@ -55,8 +66,12 @@ public class GW_Householding {
         } 
         nowUpdating = false;
     }
-    
-    // propogate addresses -- gets called when contact other address is changed
+
+/**
+* @description propogate addresses -- gets called when contact other address is changed
+* @param Map<Id, contact> a map of Hosehold Id's to Contact objects 
+* @return void
+*/    // propogate addresses -- gets called when contact other address is changed
     public void UpdateAddresses(Map<Id, contact> households) {
 
         // query for all contacts in the household map

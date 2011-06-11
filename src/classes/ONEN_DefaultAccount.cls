@@ -1,22 +1,35 @@
 // Written by Evan Callahan, copyright (c) 2011 Groundwire
+
+/*******************************************************************************************************
+* @author Evan Callahan
+* @date 01/01/2011
+* @description ONEN_DefaultAccount is a class that handles the Individual account, a catch-all Account 
+* for all Contacts that aren't associated with any other Account.
+*/
+
 global class ONEN_DefaultAccount {
 
     private static Id individualAccountId; 
     private static Id individualAcctForTests;
 
-    global static final string individualAcctName =
-    	 Test.isRunningTest() ? 'IndividualAccountForTests' : ONEN_Constants.INDIVIDUAL_ACCOUNT_NAME;
-    	
-	// method that returns the id of the individual account
+	/*******************************************************************************************************
+	* @description String that contains the name of the Individual account.
+	*/	
+    global static final string individualAcctName = ONEN_Constants.INDIVIDUAL_ACCOUNT_NAME;
+
+	/*******************************************************************************************************
+	* @description Method that returns the ID of the Individual account.
+	*/	
     global static id getIndividualAccountId () {
     	
     	// tests should get a separate individual account
     	if (Test.isRunningTest()) {
 
     		// create a test account if we haven't already
-    		if (individualAcctForTests == null)
-	            individualAcctForTests = newAcct();
-
+    		if (individualAcctForTests == null) {
+		    	Account[] acct = [select id from account where Name =:ONEN_Constants.INDIVIDUAL_ACCOUNT_NAME LIMIT 1];
+	            individualAcctForTests = (acct.isEmpty()) ? newAcct() : acct[0].id;     			
+    		}
     		return individualAcctForTests;
     			
     	} else {

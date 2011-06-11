@@ -1,10 +1,14 @@
-global virtual class ONEN_LeadConversion {
 // Written by Evan Callahan (evan@groundwire.org) and Dave Manelski (davem@groundwire.org)
 // Copyright (c) 2008, NPower Seattle, 403 23rd Ave S, Seattle, WA 98144
 // Portions copyright (c) 2010 Groundwire, 1402 3rd Ave., Suite 1000, Seattle, WA 98101
 // This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
 
-// class to assist in converting leads in bulk
+/*******************************************************************************************************
+* @author Evan Callahan and Dave Manelski
+* @date 01/01/2008
+* @description helper class to assist in converting leads in bulk through a visualforce interface
+*/
+global with sharing virtual class ONEN_LeadConversion {
 
 	// constants for lead conversion
 	public static final string OppWonStageName = ONEN_Constants.OPP_DEFAULT_WON_NOT_THANKED_STAGE;
@@ -23,7 +27,10 @@ global virtual class ONEN_LeadConversion {
 	Contact con = new Contact();
 	Contact[] contactFixes = new Contact[0];
 
-	// class that represents the set of possible contact/account matches for a given lead
+
+	/*******************************************************************************************************
+	* @description inner class that represents the set of possible contact/account/opportunity matches for a given lead
+	*/ 		
 	global class LeadMatchup {
 		public lead theLead;
 		public map<id, string> conMatchMap;  //create a map to store the matching criteria
@@ -65,8 +72,11 @@ global virtual class ONEN_LeadConversion {
 	// need to grab the list of multiselect fields we want to map after converting, if any
 	public string multiselectFields = '';
 	
-	// constructor - specify the maximum number of leads to load (defaults to 100)
 	integer queryLimit;
+	/*******************************************************************************************************
+	* @description Constructor - specify the maximum number of leads to load (defaults to 100).
+	* @param integer - the number of leads to process/convert, this is passed in from the VF controller or batch
+	*/ 	
 	global ONEN_LeadConversion(integer leadLimit) {
 		queryLimit = (leadLimit==null || leadLimit<1) ? 100 : leadLimit;
 		matchMap = new map<id, LeadMatchup>();
@@ -156,7 +166,14 @@ global virtual class ONEN_LeadConversion {
 		}
 	}
 
-	// fill the matchMap with all the possible accounts, contacts, and opps for the entire lead list
+	/*******************************************************************************************************
+	* @description Fill the matchMap with all the possible accounts, contacts, and opps for the entire lead list.
+	* matching contacts first looks for a Contact Id, then an External Id (field on contact), then email, then First and Last Name, then Last Name.
+	* Contact Id and External Id matches are presented to the user as sure matches and no choice is given. Email Match is presented to the user
+	* as a suggested match but a choice is given to match to another contact.  First and Last Name is also presented as a suggested match, with a choise and 
+	* Last Name only is presented as choices but Create New is suggested. When merging with an existing contact, the option to choose any other account besides
+	* existing contact account is disabled.
+	*/ 		
 	global virtual void matchLeads() {
 		matchMap.clear();
 		
@@ -406,7 +423,15 @@ global virtual class ONEN_LeadConversion {
 	    return conversions;
 	    
 	}
-	
+		
+	/*******************************************************************************************************
+	* @description after pushing leads through the Salesforce Convertlead() database method, create opportunities for
+	* those leads that contained opportunity information. Pass the opportunities to another method to add any custom processing
+	* that is necessary for specific opp requirements for different clients (always create an Opp Line Item, for example).
+	* We also call a method to fix contacts and overwrite any fields mapped from contact to lead (from the Lead Field Mapping setting)
+	* and perform an update DML on contacts and accounts with these overwrites.  The example here is overwriting an address from lead to contact or
+	* a checkbox field that does not get overwritten with the standard ConvertLead() method when merging a lead to an existing contact.
+	*/ 		
 	global virtual void postProcessAndPrepareOpps (Database.leadConvertResult[] lcrs) {
 		// factored out 8/09 MS for the sake of modularity/overrideability
 		// TBD split out opp prep to separate method??
@@ -490,10 +515,18 @@ global virtual class ONEN_LeadConversion {
 		if (!leadsWithOppUpdates.isEmpty()) update leadsWithOppUpdates.values();
 	}
 	
+	/*******************************************************************************************************
+	* @description a placeholder method for adding any additional custom opp processing required for a specific
+	* client.  The example here would be creating a custom parent or child record, like an Opportunity Product (Line Item).
+	*/ 	
 	global virtual void customOppProcessing (map<id, Opportunity> newOpps, map<id, Opportunity> oppFixes, map<id, contact> cMap, list<Database.leadConvertResult> lcrs) {
 		// override this with custom processing steps
 	}
 
+	/*******************************************************************************************************
+	* @description a placeholder method for adding any additional custom opp processing required for a specific
+	* client.  The example here would be creating a custom parent or child record, or some complex logic to write in a contact field value.
+	*/ 	
 	global virtual void customContactProcessing (Database.leadConvertResult[] lcrs, map<id, contact> cMap) {
 		// override this with custom processing steps
 	}
@@ -591,6 +624,13 @@ global virtual class ONEN_LeadConversion {
 		return lcs;
 	}
 	
+	/*******************************************************************************************************
+	* @description method for overwriting fields from the lead to the contact after conversion. Home and Work addresses
+	* are overwritten as a block (e.g. not just street). Other field overwrites can be defined in a Custom Setting, the processing of 
+	* which takes place in this method.  The three types of fields that can be overwritten are checkboxes, text (includes picklists), and multi-select picklists.
+	* @param lcr - the variable returned as a result of a successful lead conversion (via the convertlead() method). It includes a contact Id, Lead Id, Account Id, and Opp Id
+	* @return List<Contact> - all spruced up with overwrites from the lead
+	*/ 		
 	global virtual List<Contact> fixContact(Database.leadConvertResult lcr) {
 		
 		// makes field changes to a single contact after lead conversion
@@ -648,7 +688,12 @@ global virtual class ONEN_LeadConversion {
 		contactFixes.add(c);
 		return contactFixes;
 	}
-	
+
+	/*******************************************************************************************************
+	* @description add any custom logic or processing of field overwrites. An example here would be deriving a field value from a series of other field values
+	* @param lcr lcr - the variable returned as a result of a successful lead conversion (via the convertlead() method). It includes a contact Id, Lead Id, Account Id, and Opp Id
+	* @param Contact c - all spruced up with custom overwrites from the lead
+	*/ 		
 	global virtual void customContactFix (Database.leadConvertResult lcr, Contact c) {
 		// override this with custom processing steps
 	}

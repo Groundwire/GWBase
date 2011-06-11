@@ -1,13 +1,22 @@
-global virtual class ONEN_AccountMaintenance {
 // Written by Evan Callahan, copyright (c) 2007 NPower Seattle
 // Modifications by Matthew Scholtz, copyright (c) 2009 Groundwire, 1402 3rd Avenue, Suite 1000, Seattle, WA 98101
 // This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
 	
+/*******************************************************************************************************
+* @author Evan Callahan
+* @date 01/01/2011
+* @description NULL_DESCRIPTION
+*/
+global virtual class ONEN_AccountMaintenance {
+
 	// mod 2/09 MMS: allow off-brand primary contacts, and don't record title
 	  
 	private static boolean firstRun = true;
-	 
-	// this function sets a primary contact for each account you pass in -- and fixes the primary
+	  
+	/*******************************************************************************************************
+	* @description This function sets a primary contact for each account you pass in -- and fixes the primary.
+	* @param acctIds NULL_PARAMETER
+	*/ 	
     global void SetPrimaryContact(set<Id> acctIds) {
     	//SWA: added support for ignoring default account
     	//SWA: get default account id
@@ -101,9 +110,13 @@ global virtual class ONEN_AccountMaintenance {
 	   	}
 	   	firstrun=true;
 	}
-	
-	// Client should override this method if they have DupeBlocker installed,
-	// so that they can disable/reenable DupeBlocker's triggers.
+
+	/*******************************************************************************************************
+	* @description Client should override this method if they have DupeBlocker installed, so that they can
+	* disable/reenable DupeBlocker's triggers.
+	* @param objectName NULL_PARAMETER
+	* @return NULL_RETURN
+	*/ 	
 	global virtual void UpdateAccounts(list<Account> listAccts) {
 
     	if (GW_Utilities.IsDupBlockerInstalled) {
@@ -116,7 +129,12 @@ global virtual class ONEN_AccountMaintenance {
 		update listAccts;
 		// CRMfusionDBR101.DB_Globals.triggersDisabled = false;		
 	}
-	
+
+	/*******************************************************************************************************
+	* @description NULL_DESCRIPTION
+	* @param indAcctName NULL_PARAMETER
+	* @return NULL_RETURN
+	*/ 		
 	global static integer getIndAcctCount (string indAcctName) {
 		integer count = database.countquery('SELECT count() FROM Account WHERE Name=\'' + indAcctName + '\'');
 		if (count == null) {
@@ -124,8 +142,13 @@ global virtual class ONEN_AccountMaintenance {
 		}
 		return count;
 	}
-	
-	// called by the Account after trigger
+
+	/*******************************************************************************************************
+	* @description Called by the Account after trigger
+	* @param listAcctNew NULL_PARAMETER
+	* @param listAcctOld NULL_PARAMETER
+	* @return NULL_RETURN
+	*/ 
 	global void SetPrimaryContactForAccounts(list<Account> listAcctNew, list<Account> listAcctOld) {
 
 		// update primary contact for all the accounts that were changed
@@ -147,8 +170,14 @@ global virtual class ONEN_AccountMaintenance {
 			//system.debug('ONEN_Account_SetPrimaryContact DID NOT EXECUTE');	
 		}
 	}
-	
-	// called by the Contact after trigger
+
+	/*******************************************************************************************************
+	* @description Called by the Contact after trigger
+	* @param listConNew NULL_PARAMETER
+	* @param listConOld NULL_PARAMETER
+	* @param isInsert NULL_PARAMETER
+	* @param isDelete NULL_PARAMETER
+	*/ 
 	global void SetPrimaryContacts(list<Contact> listConNew, list<Contact> listConOld, boolean isInsert, boolean isDelete) {
 		// update primary contact for all the accounts that were changed
 		Set<Id> acctIds = new Set<ID>();	

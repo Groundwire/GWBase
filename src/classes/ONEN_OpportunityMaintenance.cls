@@ -15,23 +15,24 @@ Global virtual class ONEN_OpportunityMaintenance {
 		
 	}
 	
-	global Opportunity thisOpp { get; set; }
+	global Opportunity thisOpp;
 	
-	global Opportunity newOpp { get; set; }
+	global Opportunity newOpp;
+	
 	//list of opps for the primary donor
 	global List<Opportunity> openOpportunitiesForDonor = new List<Opportunity>();
 	
 	//contact to hold donor data
-	global Contact donorForMatchingGift  { get; set; }
+	global Contact donorForMatchingGift;
 	
 	//role for the donor
 	global OpportunityContactRole donorRoleOnMatchedGift = new OpportunityContactRole();
 	global Id donorIdOnMatchedGift;
 	
 	//new matching gift
-	global Opportunity matchingGift { get; set; }
+	global Opportunity matchingGift;
 	
-	global virtual String matchingGiftName(Date closeDate) {
+	global String matchingGiftName(Date closeDate) {
 		//grab Account Name
 		Account thisAccount = [Select Name from Account where Id = :matchingGift.AccountId limit 1];
 		return thisAccount.Name + ' ' + closeDate.year() +' Matching Gift for ' + donorForMatchingGift.ONEN_Household__r.Name;
@@ -49,15 +50,25 @@ Global virtual class ONEN_OpportunityMaintenance {
 	
 	//get the primary contact from the id
 	//if the client of the NewOppWizard wants to add additional contact fields on the page, they need to override this soql.
-	global virtual Contact getPrimaryContact() {
-		primaryContact = [select HouseholdName__c, FirstName, LastName, Anonymous__c from Contact where Id=:primaryContactId];
+	global virtual Contact getPrimaryContact() {		
+		Contact[] contacts = [select HouseholdName__c, FirstName, LastName, Anonymous__c from Contact where Id=:primaryContactId];
+		if (contacts.size() == 0) {
+			primaryContact = null; 
+		} else {
+			primaryContact = contacts[0];
+		}
+		
 		return primaryContact;
 	}
 	//get the primary account from the id
 	//if the client of the NewOppWizard wants to add additional Account fields on the page, they need to override this soql.
 	global virtual Account getPrimaryAccount() {
 		if(primaryAccountId!=null) {
-			primaryAccount = [select Name from Account where Id=:primaryAccountId];
+			Account[] accs = [select Name from Account where Id=:primaryAccountId];
+			if (accs.size() == 0) {
+				return null;
+			}
+			primaryAccount = accs[0];
 			if(primaryAccount.Name == ONEN_Constants.INDIVIDUAL_ACCOUNT_NAME) {
 				isIndividualAccount = true;
 			} else {

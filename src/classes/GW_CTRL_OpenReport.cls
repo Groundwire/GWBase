@@ -1,14 +1,14 @@
 // Written by Dave Habib, copyright (c) 2011 Groundwire
 // This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
 
-global with sharing class GW_CTRL_OpenReport {
+public with sharing class GW_CTRL_OpenReport {
 	
 	//---------------------------------------------------------------------------------------------
 	// Main routine that gets invoked as a page action to redirect to open the specified report.
 	// note that it expects a DeveloperName, and it will append any Url parameters to the report,
 	// so that you can filter the report.
 	//---------------------------------------------------------------------------------------------
-	global PageReference OpenReportDevName() {
+	public PageReference OpenReportDevName() {
 		string strDevName = ApexPages.currentPage().getParameters().get('ReportDevName');
 		if (strDevName == null || strDevName == '') {
 			return null;

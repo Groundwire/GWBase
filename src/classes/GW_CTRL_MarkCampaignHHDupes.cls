@@ -21,6 +21,7 @@ public with sharing class GW_CTRL_MarkCampaignHHDupes {
 	public integer totalContacts { get; private set; }
 	public string reportURL { get; private set; }
 	public string reportDevName { get; private set; }
+	public string reportName { get; private set; }
 
 	// object id passed in via parameter
 	string objectId;
@@ -40,7 +41,11 @@ public with sharing class GW_CTRL_MarkCampaignHHDupes {
 			cmpid = objectId;
 			reportDevName = ApexPages.currentPage().getParameters().get('reportDevName');
 			if (reportDevName == null) reportDevName = 'Campaign_Household_Mailing_List';
-			reportURL = '/' + GW_Utilities.reportIdFromDevName(reportDevName);	
+			Report[] rpts = [select Id, name from Report where DeveloperName = :reportDevName];
+			if (!rpts.isEmpty()) {
+				reportURL = '/' + rpts[0].Id;	
+				reportName = rpts[0].Name;
+			}	
 		} catch (exception e) {		
 		}  		
 		noCampaignId = (cmpid == null); 

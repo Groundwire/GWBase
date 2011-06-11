@@ -33,6 +33,7 @@
         <type>Default</type>
     </actionOverrides>
     <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
     <enableActivities>false</enableActivities>
     <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
@@ -40,6 +41,7 @@
     <enableReports>true</enableReports>
     <fields>
         <fullName>Account__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Organization</label>
         <referenceTo>Account</referenceTo>
@@ -51,6 +53,7 @@
     </fields>
     <fields>
         <fullName>FirstOfPair__c</fullName>
+        <deprecated>false</deprecated>
         <description>evaluates to &quot;True&quot; for the record in a pair of mirror relationsihps that was created first - arbitrary, but allows us to dedup relationship lists in reports</description>
         <externalId>false</externalId>
         <formula>IF ( VALUE(RIGHT(Name,5)) &lt; VALUE(RIGHT(Mirror_Relationship__r.Name,5)) , &quot;True&quot; , &quot;False&quot; )</formula>
@@ -62,6 +65,7 @@
     </fields>
     <fields>
         <fullName>From_Date__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>From Date</label>
         <required>false</required>
@@ -69,6 +73,7 @@
     </fields>
     <fields>
         <fullName>Mirror_Relationship__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>connecting one relationship to it&apos;s mirror</inlineHelpText>
         <label>Mirror Relationship</label>
@@ -78,6 +83,7 @@
     </fields>
     <fields>
         <fullName>Notes__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Notes</label>
         <length>32000</length>
@@ -86,6 +92,7 @@
     </fields>
     <fields>
         <fullName>Reciprocal_Relationship__c</fullName>
+        <deprecated>false</deprecated>
         <description>How this account is related back to the &quot;Related Account.&quot; 
 Apex code creates a corresponding relationship if this is filled in.</description>
         <externalId>false</externalId>
@@ -158,6 +165,7 @@ Apex code creates a corresponding relationship if this is filled in.</descriptio
     </fields>
     <fields>
         <fullName>Related_Account__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Related Organization</label>
         <referenceTo>Account</referenceTo>
@@ -166,6 +174,7 @@ Apex code creates a corresponding relationship if this is filled in.</descriptio
     </fields>
     <fields>
         <fullName>Relationship_Status__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>IF( AND(NULLVALUE(From_Date__c, TODAY() ) &lt;= TODAY() ,NULLVALUE(To_Date__c, TODAY() ) &gt;= TODAY() ) , &quot;Active&quot;, &quot;Inactive&quot;)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -177,6 +186,7 @@ Apex code creates a corresponding relationship if this is filled in.</descriptio
     </fields>
     <fields>
         <fullName>Relationship__c</fullName>
+        <deprecated>false</deprecated>
         <description>How the &quot;Related Account&quot; is related to this account.</description>
         <externalId>false</externalId>
         <inlineHelpText>How the &quot;Related Account&quot; is related to this account.</inlineHelpText>
@@ -232,6 +242,7 @@ Apex code creates a corresponding relationship if this is filled in.</descriptio
     </fields>
     <fields>
         <fullName>To_Date__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>To Date</label>
         <required>false</required>
