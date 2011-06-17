@@ -766,11 +766,10 @@ public class GW_OppRollups {
 		}
 		
 		// need to preprend the namespace prefix GWBase__ to all Account fields in the batch query to workaround a SF
-		// managed package bug
-		GW_Utilities.StrAllNSPrefix(ACCOUNT_ROLLUP_FIELDS);
+		// managed package bug	
 
 		// start the batch to roll up all accounts
-		GW_BATCH_OppRollup batch = new GW_BATCH_OppRollup( 'SELECT id, ' + ACCOUNT_ROLLUP_FIELDS + ' FROM account'
+		GW_BATCH_OppRollup batch = new GW_BATCH_OppRollup( 'SELECT id, ' + GW_Utilities.StrAllNSPrefix(ACCOUNT_ROLLUP_FIELDS) + ' FROM account'
 			+ (isTest ? ' WHERE name like \'%test%\' LIMIT 200' : '') );
 		id batchProcessId = database.executeBatch(batch, batchSize);		
 	}	
@@ -792,9 +791,8 @@ public class GW_OppRollups {
 		
 		// need to preprend the namespace prefix GWBase__ to all HH fields in the batch query to workaround a SF
 		// managed package bug
-		GW_Utilities.StrAllNSPrefix(HH_ROLLUP_FIELDS);
 
-		GW_BATCH_OppRollup batch = new GW_BATCH_OppRollup( 'SELECT id,' + HH_ROLLUP_FIELDS + ' FROM GWBase__onen_household__c'
+		GW_BATCH_OppRollup batch = new GW_BATCH_OppRollup( 'SELECT id,' + GW_Utilities.StrAllNSPrefix(HH_ROLLUP_FIELDS) + ' FROM GWBase__onen_household__c'
 			+ (isTest ? ' WHERE Name like \'%doppleganger%\' LIMIT 200' : '') );
 		id batchProcessId = database.executeBatch(batch, batchSize);		
 	}
