@@ -3,8 +3,9 @@
 
 /*******************************************************************************************************
 * @author David Habib
-* @date 01/01/2011
-* @description NULL_DESCRIPTION
+* @date 05/01/2011
+* @description Helper class of useful utility methods for handling the Recurring Payment Profile object.
+* Currently, none are globally exposed, due to lack of a use case.
 */
 global class GW_RecurringPayments {
 	
@@ -129,8 +130,9 @@ global class GW_RecurringPayments {
 		// create them.
 		insert listOppsToCreate;			
 	}
+	
 	/* started to abstract this for Online payments but put on hold
-	global Recurring_Payment_Profile__c createRecurringPayment(Recurring_Payment_Profile__c rp) {
+	//global Recurring_Payment_Profile__c createRecurringPayment(Recurring_Payment_Profile__c rp) {
 
 		if (rp.start_Date__c == null) rp.start_Date__c = system.today();
 		if (rp.Payment_Period__c == null) rp.Payment_Period__c = 'Month');
@@ -141,6 +143,7 @@ global class GW_RecurringPayments {
 		return rp; 
 	}
 	*/
+	
 	//------------------------------------------------------------------------------
 	// Tests
 	//------------------------------------------------------------------------------

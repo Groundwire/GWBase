@@ -531,6 +531,7 @@ public with sharing class ONEN_CTRL_LeadConverter {
         
         controller.leadsource = 'bogus_leadsource';
         List<LeadResult> theList = controller.getResults();
+        system.assert(theList != null);
         integer partnerCount = theList.size(); 
         system.assert(theList.size()>=2); 
         system.assertEquals(theList[0].noChoice, false); 
@@ -562,6 +563,7 @@ public with sharing class ONEN_CTRL_LeadConverter {
         theList[1].selected = true;
         controller.deleteLeads();
         theList = controller.getResults();
+        system.assert(theList != null);
         system.assert(theList.size() == partnerCount - 1);
         
         // do a conversion
@@ -686,6 +688,7 @@ public with sharing class ONEN_CTRL_LeadConverter {
         
         controller.leadsource = 'bogus_leadsource'; 
         List<LeadResult> theList = controller.getResults();
+        system.assert(theList != null);
         integer partnerCount = theList.size(); 
         system.assert(theList.size() > 19);
         system.assert(theList[0].getlead().lastname.startswith('Black'));

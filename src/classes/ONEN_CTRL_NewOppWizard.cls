@@ -2,34 +2,44 @@
 // This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
 
 /*******************************************************************************************************
-* @author Steve Andersen
-* @date 01/01/2008
-* @description NULL_DESCRIPTION
+* @author Steve Andersen, David Habib
+* @date 01/01/2008, 04/01/2011
+* @description Visualforce page Controller class for the NewOppWizard.  The NewOppWizard is a custom
+* Visualforce page that GWBase provides to override the standard Salesforce page for New Opportunity.
+* The wizard provides a nicer ui that handles both contact and organization opportunities, such as
+* gifts, grants, membership, etc.  Custom settings allow the customization of behavior for the NewOppWizard,
+* such as only exposing the Opportunity record types that are appropriate for contacts, when a contact
+* is selected.  See the help property for these settings in the Opportunity & Rollup Settings custom
+* settings object.  The NewOppWizard also handles creating three specific types of opportunities: 1) Single
+* Payments, 2) Pledges with a fixed number of installments, and 3) Recurring Payments, with an ongoing 
+* payment schedule.  GWBase exposes this controller and some of its methods and properties globally, to
+* allow clients to customize the behavior of the wizard.
 */
 global with sharing virtual class ONEN_CTRL_NewOppWizard {
     
     /**
-	* @description object to hold opportunity
+	* @description The Opportunity object being created by the wizard.
 	*/
     global Opportunity opportunity = new Opportunity();
     
     /**
-	* @description object to hold the RecurringPaymentProfile
+	* @description The RecurringPaymentProfile object being created by the wizard.  This will be null
+	* for Single Payments and Pledges.
 	*/
     global Recurring_Payment_Profile__c rpProfile { get; set; }
     
     /**
-	* @description we instantiate this dummy object to get the Contact lookup field. we never submit the object, just use it for it's picker
+	* @description A temporary object to get the Contact lookup field. It is never saved to Saelsforce; just used for it's picker
 	*/
     global OpportunityContactRole contactRole { get; set; }
     
     /**
-	* @description boolean to indicate whether or not the first recurring gift is received or not
+	* @description boolean to indicate whether or not the first Pledge Installment is received or not
 	*/
     global Boolean paymentReceived { get; set; }
     
     /**
-	* @description string to hold type of payment we are creating: single, pledge, or recurring.
+	* @description string to hold type of payment we are creating: Single, Pledge, or Recurring.
 	*/
     global string strPaymentType { get; set; } 
     
@@ -39,69 +49,69 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
     global integer cOccurrences { get; set; }
     
     /**
-	* @description primary Contact
+	* @description primary Contact for the opportunity.
 	*/
     global Contact primaryContact = new Contact();
     /**
-	* @description primary Account
+	* @description primary Account for the opportunity.
 	*/
     global Account primaryOrg = new Account();
     /**
-	* @description NULL_DESCRIPTION
+	* @description Id of the primary contact.
 	*/    
     global id primaryContactId; 
     /**
-	* @description NULL_DESCRIPTION
+	* @description Id of the primary account.
 	*/
     global id primaryAccountId;
     
     /**
-	* @description the currently selected record type
+	* @description The currently selected record type. (Bound to the recordtype picklist).
 	*/
     global Id oppRecordTypeId { get; set; }
     
     /**
-	* @description the list of allowed record types for the contact or account
+	* @description The list of allowed record types for the contact or account.
 	*/
     global List<RecordType> recordTypeList { get; set; }
 
     /**
-	* @description NULL_DESCRIPTION
+	* @description A string to report any errors to the user on Save.
 	*/    
     global String errorMessageText { get; set; }
     
     /**
-	* @description NULL_DESCRIPTION
+	* @description A specific error message string.
 	*/
     global String errorMessageIndividualOrgForOrgOpp = 'You cannot create Organizational gifts for the Individual Organization. Create a gift for the Contact or create an Organizational gift for a different Organization.';
 
     /**
-	* @description NULL_DESCRIPTION
+	* @description A specific error message string.
 	*/
     global String errorMessageNoOrgForOrgOpp = 'You must select an Organization for gifts that are applied to an Organization.';
 
     /**
-	* @description NULL_DESCRIPTION
+	* @description A specific error message string.
 	*/
     global String errorMessageNoContactForContactOpp = 'You must select a Contact for gifts that are applied to a Contact.';
  
     /**
-	* @description NULL_DESCRIPTION
+	* @description A specific error message string.
 	*/
     global String errorMessageNoCloseDate = 'Please specify a Close Date.';
  
     /**
-	* @description NULL_DESCRIPTION
+	* @description A specific error message string.
 	*/
     global String errorMessageNoAmount = 'Please specify a Payment Amount.';
  
     /**
-	* @description NULL_DESCRIPTION
+	* @description A specific error message string.
 	*/
     global String errorMessageNoStartDate = 'Please specify a Payment Start Date.';
   
     /**
-	* @description NULL_DESCRIPTION
+	* @description A specific error message string.
 	*/
     global String errorMessageNoOccurrences = 'Please specify the Number of Payments.';
     
@@ -116,13 +126,14 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
     global List<SelectOption> recordTypeNameList {get{return recordTypeNameList;}set{recordTypeNameList = value;}}
 
     /**
-	* @description NULL_DESCRIPTION
+	* @description Holds the Opportunity & Rollup Settings custom settings object, which provides access to
+	* various settings the NewOppWizard uses. 
 	*/    
     global OppRollupSettings__c oppSettings;
     
 	/*******************************************************************************************************
-	* @description Controller.
-	* @param controller NULL_PARAMETER
+	* @description Constructor for this controller class.
+	* @param controller The standard controller object for an Opportunity.
 	*/ 		
     global ONEN_CTRL_NewOppWizard (ApexPages.StandardController controller) {
 
@@ -162,13 +173,13 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
     }
     
     /*******************************************************************************************************
-	* @description overridable function to create the Opp Maintenance helper class.
+	* @description property that holds the current instance of the ONEN_OpportunityMaintenance helper class.
 	*/
     global ONEN_OpportunityMaintenance newOpp { get; set; }
     
     /*******************************************************************************************************
-	* @description NULL_DESCRIPTION
-	* @return NULL_RETURN
+	* @description overridable function to create the ONEN_OpportunityMaintenance helper class.
+	* @return an instance of ONEN_OpportunityMaintenance
 	*/ 		
     global virtual ONEN_OpportunityMaintenance NewOppMaintenance() {
         if (newOpp == null) {
@@ -178,7 +189,7 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
     }
     
     /*******************************************************************************************************
-	* @description NULL_DESCRIPTION
+	* @description Called by the constructor to initialize the wizard, and handle any parameters passed to it.
 	*/ 	   
     global virtual void setOppDefaults () {
         // called by constructor on load
@@ -203,7 +214,8 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
     }
     
     /*******************************************************************************************************
-	* @description NULL_DESCRIPTION
+	* @description Tells the wizard to refill its list of record types for the given state of the wizard 
+	* (Contact vs. Organization).
 	*/ 	     
     global virtual void setRecordTypes () {
         //get the list of acceptable recordTypes
@@ -212,8 +224,11 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
         errorMessageText = null;
     }
     
-    //string from radio selector
-    global String oppApplicant { 
+    
+    /*******************************************************************************************************
+	* @description string from radio selector 
+	*/ 
+	global String oppApplicant { 
         get {
             return oppApplicant;
         }
@@ -226,7 +241,8 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
     }
 
     /*******************************************************************************************************
-	* @description get open opps for this donor
+	* @description Get open opps for this donor.  Clients can override this method if they want to customize
+	* which open opportunities get displayed in the wizard.
 	*/ 	     
     global virtual void getOpenOpps(){
         if (oppApplicant=='Contact') {
@@ -243,7 +259,7 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
     }
     
     /*******************************************************************************************************
-	* @description get a list of acceptable record types
+	* @description get the list of acceptable record types for the given oppApplicant.  
 	*/ 	    
     global virtual void resetRecordTypeArray() {
         //blank out the list for the select options
@@ -282,7 +298,7 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
 
     
     /*******************************************************************************************************
-	* @description save the opportunity
+	* @description Save the opportunity
 	*/ 	
     global virtual PageReference save() {
 
@@ -424,10 +440,10 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
 
 
     /*******************************************************************************************************
-	* @description Routine to check for all required fields and dependent constraints.Some of our fields we
+	* @description Routine to check for all required fields and dependent constraints.  Some of our fields we
 	* can't mark required in the visualforce page, because they are only required if another control is set, 
 	* and visualforce doesn't support dynamic changing of required.
-    * @return NULL_RETURN
+    * @return true if there is an error, false if there is no error.
 	*/ 		
     global virtual boolean saveErrorCheck () {
         //if this is an org gift for the individual account, flag that as a problem
@@ -466,14 +482,15 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
     }
     
     /*******************************************************************************************************
-	* @description Called when the user changes the Payment Type.  Clear errors.
+	* @description Called when the user changes the Payment Type.  Clears errors.
 	*/
     global void ChangePaymentType() {
         errorMessageText = null;
     }
 
     /*******************************************************************************************************
-	* @description NULL_DESCRIPTION
+	* @description Virtual method called during the save operation.  The client can override this method
+	* to provide there own custom code.  This is called just before the Opportunity is inserted.
 	*/
     global virtual void CustomOppProcessing () {
         // override w/ custom code

@@ -6,19 +6,15 @@
 * @date 04/20/2011
 * @description batch utility method for creating missing contact roles not created via trigger upon data import, called from the
 * system log. Looks for opps without contact roles who also have a value in CR_Contact_Id__c != null AND AccountId = null
+* run this from the system log window by pasting in the following code (example is using a batch size of 100):
+*        GW_BATCH_FixMissingConroles batch = new GW_BATCH_FixMissingConroles();
+*        id batchinstanceid = database.executeBatch (batch, 100);   
 */
 global class GW_BATCH_FixMissingConroles implements Database.Batchable<SObject> {
 
-    /* run this from the system log window by pasting in the following code (example is using a batch size of 100):
-        
-        GW_BATCH_FixMissingConroles batch = new GW_BATCH_FixMissingConroles();
-        id batchinstanceid = database.executeBatch (batch, 100);   
-        
-    */
     //to fix missing contact roles from import
     
     string Query;
-
     
     // constructors
     /*******************************************************************************************************

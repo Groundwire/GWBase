@@ -10,8 +10,6 @@
 global class GW_Utilities { 
 	
 	/******************************************************************************************************
-	* @author David Habib
-	* @date 5/23/2011
 	* @description boolean property which tracks whether we are running in our managed packaged, or unmanaged code.
 	*******************************************************************************************************/	
 	private static boolean fCheckedForManagedPackage = false;
@@ -48,10 +46,10 @@ global class GW_Utilities {
 	
 
 	/*******************************************************************************************************
-	* @description It takes a string of a potential field name or object name.  
-	*     If it is a custom object, it prepends the namespace prefix if required.
-	*     If we are in a managed package, tokens in dynamic SOQL must include the package namespace prefix
-	*     If you ever deploy this package as unmanaged to a client, this routine will do nothing!
+	* @description Static method that takes a string of a potential field name or object name.  
+	* If it is a custom object (name ends with __c), it prepends the namespace prefix if required.
+	* If we are in a managed package, tokens in dynamic SOQL must include the package namespace prefix.
+	* If you ever deploy this package as unmanaged to a client, this routine will do nothing!
 	* @param str token name 
 	* @return token name, with namespace prefix, if required.
 	********************************************************************************************************/
@@ -65,8 +63,8 @@ global class GW_Utilities {
 	
 	
 	/*******************************************************************************************************
-	* @description It takes a string of a multiple potential field names or object names.  
-	* If we are in a managed package, tokens in dynamic SOQL must include the package namespace prefix
+	* @description Static method that takes a string of a multiple potential field names or object names.  
+	* If we are in a managed package, tokens in dynamic SOQL must include the package namespace prefix.
 	* If you ever deploy this package as unmanaged to a client, this routine will do nothing!
 	* @param str string that contains 0 or more token names 
 	* @return same string with token names, namespace prefixed, if required.
@@ -80,7 +78,9 @@ global class GW_Utilities {
 	
 	
 	/*******************************************************************************************************
-	* @description Routine to lookup a reportId given its Developer Name.
+	* @description Static method to lookup a reportId given its Developer Name.  This is useful when creating
+	* custom links and buttons in Salesforce, that want to load a report, without having to know its specific
+	* id in the given Salesforce instance.
 	* @param strDevName DeveloperName of the report 
 	* @return reportId
 	********************************************************************************************************/

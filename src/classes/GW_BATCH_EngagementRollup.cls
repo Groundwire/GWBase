@@ -4,7 +4,8 @@
 /*******************************************************************************************************
 * @author Matthew Scholtz
 * @date 01/01/2010
-* @description NULL_DESCRIPTION
+* @description This is the primary class for Engagement Tracker.  This class calculates and assigns engagement levels for contacts based on custom settings and
+*  Campaign, Opp, and Contact data.  Currently this class only runs during batch, not from a trigger, so in general we recommend scheduling it to run nightly.  
 */
 global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sobject>, Schedulable {
 
@@ -39,7 +40,7 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
     
     
     /*******************************************************************************************************
-	* @description NULL_DESCRIPTION
+	* @description Main constructor.  The arg should be set to true only in a test.
 	*/
     global GW_BATCH_EngagementRollup (boolean isTestArg) {
         isTest = isTestArg;
@@ -49,7 +50,8 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
     }
     
     /*******************************************************************************************************
-	* @description NULL_DESCRIPTION
+	* @description Standard schedulable execute method.  This simply gets the batch started when called from a scheduled job.  Note, this uses a batch size of 50 unless
+	*  a different batch size is given in the settings.
 	*/    
     global void execute(SchedulableContext SC) {
         
@@ -122,19 +124,15 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
     }
 
     /*******************************************************************************************************
-	* @description NULL_DESCRIPTION
-	* @param BC NULL_PARAMETER
-	* @return NULL_RETURN
+	* @description Standard batch start method.   This doesn't do anything interesting.  
 	*/    
     global Database.QueryLocator start(Database.BatchableContext BC){
         return Database.getQueryLocator(Query);
     }
 
     /*******************************************************************************************************
-	* @description NULL_DESCRIPTION
-	* @param BC NULL_PARAMETER
-	* @param SBatch NULL_PARAMETER
-	* @return NULL_RETURN
+	* @description The main batch execute method.  This is where the majority of the real work is done for the engagement calculation.  This method looks at custom settings, 
+	*  and then all related Campaigns and Opps for each contact, to determine the correct score to assign.  It only makes a write to the contact if any of the rollup fields need changing.  
 	*/
     global void execute(Database.BatchableContext BC, List<Sobject> SBatch){
         system.debug (Logginglevel.WARN,'running execute!');
@@ -409,8 +407,7 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
     }
 
     /*******************************************************************************************************
-	* @description NULL_DESCRIPTION
-	* @param BC NULL_PARAMETER
+	* @description The standard batch finish method.  Currently does nothing.
 	*/      
     global void finish(Database.BatchableContext BC){
         

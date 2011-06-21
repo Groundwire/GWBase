@@ -3,9 +3,13 @@
 
 /*******************************************************************************************************
 * @author David Habib
-* @date 01/01/2011
-* @description Class which sets default trigger settings. Avoids conflicts with DupBlocker and test 
-* classes.
+* @date 04/01/2011
+* @description Class which provides the interface to GWBase's TriggerSettings custom settings object.
+* By going through this class, the object will only get loaded once, and if is not present, will be
+* set to useful defaults.  For a full description of each setting, please see the description and
+* help text in the Salesforce administration interface for this custom setting.  In general, each 
+* setting enables or disables a specific piece of functionality handled by one of the Triggers in
+* GWBase.
 */
 
 global class GW_TriggerSettings {
@@ -37,7 +41,9 @@ global class GW_TriggerSettings {
 	}
 
 	/*******************************************************************************************************
-	* @description Sets trigger settings.
+	* @description ts is the TriggerSettings object, which loads up the current settings in the Salesforce
+	* instance, or provides useful defaults if the TriggerSettings object has no records.  Also provides
+	* useful defaults when running tests, rather than using the current settings.
 	*/	
 	global static TriggerSettings__c ts {
 		get {			
