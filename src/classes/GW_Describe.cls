@@ -88,8 +88,8 @@ global class GW_Describe {
 
 	/*******************************************************************************************************
 	* @description Returns new object of given type.
-	* @param objectName NULL_PARAMETER
-	* @return NULL_RETURN
+	* @param objectName the name of the object to create
+	* @return the new SObject
 	*/ 	
 	global static SObject getPrototypeObject(String objectName) {
 		// make sure we have this object's schema mapped
@@ -101,8 +101,8 @@ global class GW_Describe {
 
 	/*******************************************************************************************************
 	* @description Returns object friendly name.
-	* @param objectName NULL_PARAMETER
-	* @return NULL_RETURN
+	* @param objectName the name of the object to lookup 
+	* @return the Label of the object
 	*/ 	
 	global static string getObjectLabel(String objectName) {
 		// make sure we have this object's schema mapped
@@ -114,8 +114,8 @@ global class GW_Describe {
 
 	/*******************************************************************************************************
 	* @description Returns object describe data.
-	* @param objectName NULL_PARAMETER
-	* @return NULL_RETURN
+	* @param objectName the name of the object to lookup 
+	* @return Schema.DescribeSObjectResult of the object
 	*/ 	
 	global static Schema.DescribeSObjectResult getObjectDescribe(String objectName) {
 		// make sure we have this object's schema mapped
@@ -127,9 +127,9 @@ global class GW_Describe {
 
 	/*******************************************************************************************************
 	* @description Compares Id to verify object type
-	* @param salesforceId NULL_PARAMETER
-	* @param objectName NULL_PARAMETER
-	* @return NULL_RETURN
+	* @param salesforceId of the object
+	* @param objectName 
+	* @return true if the Id is for the given object type, false otherwise.
 	*/ 	
 	global static boolean isObjectIdThisType(Id salesforceId, String objectName) {
 		// make sure we have this object's schema mapped
@@ -148,8 +148,8 @@ global class GW_Describe {
 	
 	/*******************************************************************************************************
 	* @description Returns all field describe data
-	* @param objectName NULL_PARAMETER
-	* @return NULL_RETURN
+	* @param objectName the name of the object to look up
+	* @return Map<String, Schema.DescribeFieldResult> a map of object names to describe file results.
 	*/ 	
 	global static Map<String, Schema.DescribeFieldResult> getAllFieldsDescribe(String objectName) {
 
@@ -163,9 +163,9 @@ global class GW_Describe {
 	/*******************************************************************************************************
 	* @description Gives field type name - ID, STRING, TEXTAREA, DATE, DATETIME, BOOLEAN, REFERENCE, 
 	* PICKLIST, MULTIPICKLIST, CURRENCY, DOUBLE, INTEGER, PERCENT, PHONE, EMAIL
-	* @param objectName NULL_PARAMETER
-	* @param fieldName NULL_PARAMETER
-	* @return NULL_RETURN
+	* @param objectName the name of the object to look up
+	* @param fieldName the name of the field to look up
+	* @return string the name of the of the field's type
 	*/ 	
 	global static string getFieldType(String objectName, String fieldName) {
 		// make sure we have this field's schema mapped
@@ -178,9 +178,9 @@ global class GW_Describe {
 
 	/*******************************************************************************************************
 	* @description Returns field describe data 
-	* @param objectName NULL_PARAMETER
-	* @param fieldName NULL_PARAMETER
-	* @return NULL_RETURN
+	* @param objectName the name of the object to look up
+	* @param fieldName the name of the field to look up
+	* @return Schema.DescribeFieldResult the describe field result for the given field
 	*/ 
 	global static Schema.DescribeFieldResult getFieldDescribe(String objectName, String fieldName) {
 		// make sure we have this field's schema mapped
@@ -194,9 +194,9 @@ global class GW_Describe {
 
 	/*******************************************************************************************************
 	* @description Gives field friendly name 
-	* @param objectName NULL_PARAMETER
-	* @param fieldName NULL_PARAMETER
-	* @return NULL_RETURN
+	* @param objectName the name of the object to look up
+	* @param fieldName the name of the field to look up
+	* @return string the label of the field
 	*/ 
 	global static string getFieldLabel(String objectName, String fieldName) {
 		// make sure we have this field's schema mapped
