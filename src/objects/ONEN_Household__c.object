@@ -425,6 +425,6 @@
         <masterLabel>Update Giving History</masterLabel>
         <openType>sidebar</openType>
         <protected>false</protected>
-        <url>/apex/opportunityrollup?id={!ONEN_Household__c.Id}</url>
+        <url>/apex/GWBase__opportunityrollup?id={!ONEN_Household__c.Id}</url>
     </webLinks>
 </CustomObject>
