@@ -145,6 +145,9 @@ global class ONEN_DefaultAccount {
     
     private static id newAcct() {
     	
+    	/* commented out 7/8/11 by Matthew
+    	I don't think this is needed, and is problematic because it short-circuits the creation of the ind. acct in tests
+    	
     	// in order to play nicely with DupBlocker, we can't actually create an account at this point
     	// in the call stack.  So we will assume the instance has the account already created, and
     	// we'll give an error if they don't.
@@ -156,6 +159,7 @@ global class ONEN_DefaultAccount {
     		}
     		return a.id;
     	}
+    	*/
     	
     	account a = new Account( name = individualAcctName );
     	//CRMfusionDBR101.DB_Globals.triggersDisabled = true;
