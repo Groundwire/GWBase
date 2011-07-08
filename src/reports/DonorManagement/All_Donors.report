@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>FIRST_NAME</field>
+    </columns>
+    <columns>
+        <field>LAST_NAME</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT.NAME</field>
+    </columns>
+    <columns>
+        <field>TITLE</field>
+    </columns>
+    <columns>
+        <field>EMAIL</field>
+    </columns>
+    <columns>
+        <field>Contact.LastCloseDate__c</field>
+    </columns>
+    <columns>
+        <field>Contact.OppAmountLastNDays__c</field>
+    </columns>
+    <columns>
+        <field>Contact.TotalOppAmount__c</field>
+    </columns>
+    <columns>
+        <field>Contact.Total_Household_Gifts__c</field>
+    </columns>
+    <columns>
+        <field>CONTACT_OWNER</field>
+    </columns>
+    <description>List of all contacts with at least one donation</description>
+    <filter>
+        <criteriaItems>
+            <column>Contact.LastCloseDate__c</column>
+            <operator>notEqual</operator>
+        </criteriaItems>
+    </filter>
+    <format>Tabular</format>
+    <name>All Donors</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>ContactList</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Contact.TotalOppAmount__c</sortColumn>
+    <sortOrder>Desc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>CREATED_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

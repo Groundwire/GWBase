@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>SALUTATION</field>
+    </columns>
+    <columns>
+        <field>FIRST_NAME</field>
+    </columns>
+    <columns>
+        <field>LAST_NAME</field>
+    </columns>
+    <columns>
+        <field>TITLE</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT.NAME</field>
+    </columns>
+    <columns>
+        <field>Contact.LastOppAmount__c</field>
+    </columns>
+    <columns>
+        <field>Contact.LastCloseDate__c</field>
+    </columns>
+    <columns>
+        <field>Contact.OppAmountLastYear__c</field>
+    </columns>
+    <columns>
+        <field>Contact.TotalOppAmount__c</field>
+    </columns>
+    <description>(Last Year But Unfortunately Not This year) - lists all ind. donors who gave last CY but not yet this CY, campaign-friendly</description>
+    <filter>
+        <criteriaItems>
+            <column>Contact.OppAmountLastYear__c</column>
+            <operator>greaterThan</operator>
+            <value>0.0</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Contact.OppAmountThisYear__c</column>
+            <operator>equals</operator>
+            <value>0.0</value>
+        </criteriaItems>
+    </filter>
+    <format>Matrix</format>
+    <name>LYBUNT List - Individuals</name>
+    <reportType>ContactList</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>CREATED_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

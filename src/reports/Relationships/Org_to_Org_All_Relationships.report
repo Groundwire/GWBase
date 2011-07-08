@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>ACCOUNT.NAME</field>
+    </columns>
+    <columns>
+        <field>FK_NAME</field>
+    </columns>
+    <columns>
+        <field>Interaccount_Relationship__c.From_Date__c</field>
+    </columns>
+    <columns>
+        <field>Interaccount_Relationship__c.To_Date__c</field>
+    </columns>
+    <columns>
+        <field>Interaccount_Relationship__c.Relationship_Status__c</field>
+    </columns>
+    <columns>
+        <field>Interaccount_Relationship__c.Notes__c</field>
+    </columns>
+    <description>All Relationships Between Orgs</description>
+    <filter>
+        <criteriaItems>
+            <column>Interaccount_Relationship__c.FirstOfPair__c</column>
+            <operator>equals</operator>
+            <value>true</value>
+        </criteriaItems>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Account.Acronym__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Interaccount_Relationship__c.Relationship__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Org to Org - All Relationships</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>AccountCustomEntity$Interaccount_Relationship__c@Interaccount_Relationship__c.Related_Account__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>DUE_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

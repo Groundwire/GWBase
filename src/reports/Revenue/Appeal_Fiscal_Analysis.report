@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>NUM_WON_OPPORTUNITIES:SUM / Campaign.Effective_Number_Sent__c:SUM</calculatedFormula>
+        <datatype>percent</datatype>
+        <developerName>FORMULA1</developerName>
+        <isActive>false</isActive>
+        <masterLabel>Won %</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>Campaign.Net_Revenue__c:SUM / NUM_WON_OPPORTUNITIES:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <description>total $ won divided by # of donors (gifts, actually, but they&apos;re usually the same)</description>
+        <developerName>FORMULA2</developerName>
+        <isActive>false</isActive>
+        <masterLabel>Net Revenue per Donor</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>Campaign.Net_Revenue__c:SUM / Campaign.Effective_Number_Sent__c:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <description>total $ won divided by effective # sent</description>
+        <developerName>FORMULA3</developerName>
+        <isActive>false</isActive>
+        <masterLabel>Net Revenue per Piece Sent</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <aggregate>Sum</aggregate>
+            <axisBinding>y</axisBinding>
+            <column>Campaign.Effective_Number_Sent__c</column>
+        </chartSummaries>
+        <chartType>HorizontalBarGrouped</chartType>
+        <enableHoverLabels>false</enableHoverLabels>
+        <expandOthers>false</expandOthers>
+        <groupingColumn>Campaign.Parent_Campaign_Group__c</groupingColumn>
+        <legendPosition>Right</legendPosition>
+        <location>CHART_BOTTOM</location>
+        <secondaryGroupingColumn>Campaign.Parent_Campaign_Start_Date__c</secondaryGroupingColumn>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Large</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>9</textSize>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <field>START_DATE</field>
+    </columns>
+    <columns>
+        <field>CAMPAIGN_NAME</field>
+    </columns>
+    <columns>
+        <field>CAMPAIGN_STATUS</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Campaign.Effective_Number_Sent__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>NUM_WON_OPPORTUNITIES</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>ACTUAL_COST</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AMOUNT_WON</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Campaign.Net_Revenue__c</field>
+    </columns>
+    <columns>
+        <field>ROI</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AVGCOST_CUST</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AVGCOST_RESP</field>
+    </columns>
+    <columns>
+        <field>NUM_RESPONSES</field>
+    </columns>
+    <description>gives total $ raised, ROI, % of recipients who gave, etc., for all fundraising campaigns this FY</description>
+    <filter>
+        <criteriaItems>
+            <column>Campaign.Parent_Campaign_Start_Date__c</column>
+            <operator>equals</operator>
+            <value>THIS_FISCAL_YEAR</value>
+        </criteriaItems>
+    </filter>
+    <format>Matrix</format>
+    <groupingsDown>
+        <dateGranularity>Month</dateGranularity>
+        <field>Campaign.Parent_Campaign_Start_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Campaign.Parent_Campaign_Group__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Campaign Fiscal Analysis this FY</name>
+    <params>
+        <name>scopeid</name>
+        <value></value>
+    </params>
+    <reportType>CampaignList</reportType>
+    <scope>orgAll</scope>
+    <showDetails>true</showDetails>
+</Report>

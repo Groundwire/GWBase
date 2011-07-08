@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>FIRST_NAME</field>
+    </columns>
+    <columns>
+        <field>LAST_NAME</field>
+    </columns>
+    <columns>
+        <field>PHONE4</field>
+    </columns>
+    <columns>
+        <field>EMAIL</field>
+    </columns>
+    <columns>
+        <field>Contact.Primary_Street__c</field>
+    </columns>
+    <columns>
+        <field>Contact.Primary_City__c</field>
+    </columns>
+    <columns>
+        <field>Contact.Primary_Postal_Code__c</field>
+    </columns>
+    <columns>
+        <field>Contact.Primary_State_Province__c</field>
+    </columns>
+    <description>Current board members based on checkbox on contact</description>
+    <filter>
+        <criteriaItems>
+            <column>Contact.BoardMember__c</column>
+            <operator>equals</operator>
+            <value>Current</value>
+        </criteriaItems>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>ACCOUNT.NAME</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Board Members - Current</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>ContactList</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>CREATED_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

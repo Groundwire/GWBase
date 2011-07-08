@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AMOUNT</field>
+    </columns>
+    <columns>
+        <field>Contact.Contact_Name_Last_First__c</field>
+    </columns>
+    <description>donor totals for closed/won individual gifts/memberships, including soft credits &amp; household giving</description>
+    <filter>
+        <booleanFilter>(1 OR (2 AND (3 OR 4)) OR 5) AND 6</booleanFilter>
+        <criteriaItems>
+            <column>ROLE</column>
+            <operator>contains</operator>
+            <value>Soft Credit</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>PRIMARY</column>
+            <operator>equals</operator>
+            <value>1</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>ACCOUNT.NAME</column>
+            <operator>equals</operator>
+            <value>Individual</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>ACCOUNT.NAME</column>
+            <operator>equals</operator>
+        </criteriaItems>
+        <criteriaItems>
+            <column>ROLE</column>
+            <operator>contains</operator>
+            <value>Household</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>RECORDTYPE</column>
+            <operator>equals</operator>
+            <value>Opportunity.Gift</value>
+        </criteriaItems>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>RECORDTYPE</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity.Anonymous__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Recognition Report - Individual Giving</name>
+    <params>
+        <name>include</name>
+        <value>won</value>
+    </params>
+    <reportType>OpportunityContact</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>CLOSE_DATE</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

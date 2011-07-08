@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>FIRST_NAME</field>
+    </columns>
+    <columns>
+        <field>LAST_NAME</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT.NAME</field>
+    </columns>
+    <columns>
+        <field>EMAIL</field>
+    </columns>
+    <columns>
+        <field>PHONE1</field>
+    </columns>
+    <columns>
+        <field>Account.Membership_Status__c</field>
+    </columns>
+    <columns>
+        <field>Account.MembershipEndDate__c</field>
+    </columns>
+    <description>list of all the primary contacts for all member orgs (current/grace), campaign-friendly</description>
+    <filter>
+        <criteriaItems>
+            <column>Contact.Is_Org_Primary_Contact__c</column>
+            <operator>equals</operator>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Membership_Status__c</column>
+            <operator>equals</operator>
+            <value>Current,Grace Period</value>
+        </criteriaItems>
+    </filter>
+    <format>Tabular</format>
+    <name>Org Member Contact List</name>
+    <reportType>ContactList</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>CREATED_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>
