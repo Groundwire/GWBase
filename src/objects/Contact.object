@@ -1177,7 +1177,7 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
         <externalId>false</externalId>
         <formula>IF(OR(ISBLANK(TEXT(Override_Prospect_Level__c)) ,  ISPICKVAL(Override_Prospect_Level__c, &apos;Do Not Override&apos;)), 
 
-        IF( ISNULL( TotalOppAmount__c ),&apos;&apos;, 
+        IF( OR(ISNULL( TotalOppAmount__c ),TotalOppAmount__c =0),&apos;&apos;, 
             IF(  OppAmountLastYear__c  &gt;= 250 ||  OppAmountThisYear__c  &gt;= 250 ,&apos;Major Donor&apos;, 
             IF(OppAmountLastYear__c  = 0 &amp;&amp; OppAmountThisYear__c  = 0, &apos;Lapsed Donor&apos;, &apos;Donor&apos;))), 
 
