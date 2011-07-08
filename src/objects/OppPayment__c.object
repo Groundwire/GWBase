@@ -43,7 +43,7 @@
         <fullName>Amount__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <label>Installment Amount</label>
+        <label>Payment Amount</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -72,7 +72,7 @@
         <fullName>Date__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <label>Installment Date</label>
+        <label>Payment Date</label>
         <required>false</required>
         <type>Date</type>
     </fields>
@@ -101,9 +101,9 @@
         <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The Opportunity this is an installment for.  If null, then this is a mirror payment for its master opportunity.</inlineHelpText>
-        <label>Opp For Installment</label>
+        <label>Opp For Payment</label>
         <referenceTo>Opportunity</referenceTo>
-        <relationshipLabel>Installments</relationshipLabel>
+        <relationshipLabel>Payments</relationshipLabel>
         <relationshipName>Payments_Installments</relationshipName>
         <type>Lookup</type>
     </fields>
@@ -157,37 +157,52 @@
         <label>Written Off</label>
         <type>Checkbox</type>
     </fields>
-    <label>Opp Installment</label>
+    <label>Payment</label>
     <listViews>
         <fullName>All</fullName>
-        <filterScope>Everything</filterScope>
-        <label>All</label>
-    </listViews>
-    <listViews>
-        <fullName>test</fullName>
-        <columns>NAME</columns>
+        <columns>Opportunity__c</columns>
         <columns>Amount__c</columns>
         <columns>Date__c</columns>
         <columns>Paid__c</columns>
-        <columns>Opportunity__c</columns>
+        <columns>Written_Off__c</columns>
         <filterScope>Everything</filterScope>
-        <filters>
-            <field>Date__c</field>
-            <operation>equals</operation>
-            <value>LAST_90_DAYS</value>
-        </filters>
-        <label>test</label>
+        <label>All</label>
     </listViews>
     <nameField>
         <displayFormat>{00000000}</displayFormat>
-        <label>Installment Nbr</label>
+        <label>Payment Nbr</label>
         <type>AutoNumber</type>
     </nameField>
-    <pluralLabel>Opp Installments</pluralLabel>
+    <pluralLabel>Payments</pluralLabel>
     <searchLayouts>
+        <customTabListAdditionalFields>Amount__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>IsInstallment__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Opp_For_Installment__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Paid__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Written_Off__c</customTabListAdditionalFields>
         <excludedStandardButtons>New</excludedStandardButtons>
         <excludedStandardButtons>Accept</excludedStandardButtons>
         <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <listViewButtons>Mark_Paid</listViewButtons>
+        <listViewButtons>Mark_Written_Off</listViewButtons>
+        <lookupDialogsAdditionalFields>Amount__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Date__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>IsInstallment__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Opp_For_Installment__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Paid__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Written_Off__c</lookupDialogsAdditionalFields>
+        <searchFilterFields>Amount__c</searchFilterFields>
+        <searchFilterFields>Date__c</searchFilterFields>
+        <searchFilterFields>IsInstallment__c</searchFilterFields>
+        <searchFilterFields>Opp_For_Installment__c</searchFilterFields>
+        <searchFilterFields>Paid__c</searchFilterFields>
+        <searchResultsAdditionalFields>Amount__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Date__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>IsInstallment__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Opp_For_Installment__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Paid__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Written_Off__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <validationRules>
