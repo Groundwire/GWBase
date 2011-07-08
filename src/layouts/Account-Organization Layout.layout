@@ -349,6 +349,7 @@
     </relatedLists>
     <relatedLists>
         <fields>OBJECT_ID</fields>
+        <fields>Contact.Contact_Name_Last_First__c</fields>
         <fields>Relationship__c</fields>
         <fields>Relationship_Status__c</fields>
         <relatedList>Account_Relationship__c.Related_Account__c</relatedList>
@@ -382,7 +383,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h80000001cK0E</masterLabel>
+        <masterLabel>00hC000000IdLD6</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>
