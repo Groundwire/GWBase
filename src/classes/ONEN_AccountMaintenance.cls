@@ -1,21 +1,19 @@
-// Written by Evan Callahan, copyright (c) 2007 NPower Seattle
-// Modifications by Matthew Scholtz, copyright (c) 2009 Groundwire, 1402 3rd Avenue, Suite 1000, Seattle, WA 98101
+// Copyright (c) 2009 Groundwire, 1402 3rd Avenue, Suite 1000, Seattle, WA 98101
 // This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
-	
+
 /*******************************************************************************************************
-* @author Evan Callahan
+* @author Evan Callahan, Matthew Scholtz, Steve Andersen
 * @date 01/01/2011
-* @description NULL_DESCRIPTION
+* @description This class contains helper methods for maintaining accounts.
 */
 global virtual class ONEN_AccountMaintenance {
 
-	// mod 2/09 MMS: allow off-brand primary contacts, and don't record title
-	  
 	private static boolean firstRun = true;
 	  
 	/*******************************************************************************************************
 	* @description This function sets a primary contact for each account you pass in -- and fixes the primary.
-	* @param acctIds NULL_PARAMETER
+	* Used when inserting new accounts
+	* @param acctIds Set of account ids for which you want a primary contact
 	*/ 	
     global void SetPrimaryContact(set<Id> acctIds) {
     	//SWA: added support for ignoring default account
@@ -70,18 +68,7 @@ global virtual class ONEN_AccountMaintenance {
 				//SWA: ignore the default account
 				if (a.Id!=DefaultAccountId) {
 					Id pcid = a.primary_contact__c;
-					// String pct = a.primary_contact_title__c;   #MMS: don't worry about title
 					
-					// first, check to make sure the contact is in this account
-				   	if (pcid != null) {
-			   			if (cMap.containsKey(pcid) && cMap.get(pcid).AccountId==a.id) {
-		   				} else {
-							// not in the account, so clear the primary contact
-							// MMS 10/14/08 don't do this for SX, allow off-brand primaries
-							// pcid = null;
-				   		}
-				   	}
-				
 					// now get a new contact if needed
 				   	if (pcid == null) {
 				   		if (primaryMap.containsKey(a.id)) {
@@ -112,10 +99,19 @@ global virtual class ONEN_AccountMaintenance {
 	}
 
 	/*******************************************************************************************************
-	* @description Client should override this method if they have DupeBlocker installed, so that they can
-	* disable/reenable DupeBlocker's triggers.
-	* @param objectName NULL_PARAMETER
-	* @return NULL_RETURN
+	* @description This is used by the SetPrimaryContact method to save changes to accounts.  
+	* Client should override this method if they have DupeBlocker installed, so that they can
+	* disable/reenable DupeBlocker's triggers. The override should look like this:
+	*
+	*	global virtual void UpdateAccountsDB(list<Account> listAccts) {
+	*		CRMfusionDBR101.DB_Globals.triggersDisabled = true;
+	*		update listAccts;
+	*		CRMfusionDBR101.DB_Globals.triggersDisabled = false;
+	*	}
+	*			
+	* and should be called in an account after insert/update trigger.
+	*
+	* @param listAccts The list of updated accounts objects that need to be saved.
 	*/ 	
 	global virtual void UpdateAccounts(list<Account> listAccts) {
 
@@ -131,9 +127,10 @@ global virtual class ONEN_AccountMaintenance {
 	}
 
 	/*******************************************************************************************************
-	* @description NULL_DESCRIPTION
-	* @param indAcctName NULL_PARAMETER
-	* @return NULL_RETURN
+	* @description Used by the individual account maintenance methods to discover whether there is one and 
+	* only one "Individual" or bucket account
+	* @param indAcctName The name of the Individual or bucket account (usually "Individual")
+	* @return Returns the number of accounts in the database that have the name of the Individual account.
 	*/ 		
 	global static integer getIndAcctCount (string indAcctName) {
 		integer count = database.countquery('SELECT count() FROM Account WHERE Name=\'' + indAcctName + '\'');
@@ -144,10 +141,9 @@ global virtual class ONEN_AccountMaintenance {
 	}
 
 	/*******************************************************************************************************
-	* @description Called by the Account after trigger
-	* @param listAcctNew NULL_PARAMETER
-	* @param listAcctOld NULL_PARAMETER
-	* @return NULL_RETURN
+	* @description Called by the Account after update trigger; sets the primary contact flag for the contact
+	* @param listAcctNew List of accounts from trigger.new
+	* @param listAcctOld List of accounts from trigger.old
 	*/ 
 	global void SetPrimaryContactForAccounts(list<Account> listAcctNew, list<Account> listAcctOld) {
 
@@ -164,19 +160,16 @@ global virtual class ONEN_AccountMaintenance {
 		} 
 		// call the update code for the set of accounts
 		if (!acctIds.isEmpty()) {
-			//system.debug('ONEN_Account_SetPrimaryContact EXECUTED');
 			SetPrimaryContact(acctIds); 
-		} else {
-			//system.debug('ONEN_Account_SetPrimaryContact DID NOT EXECUTE');	
 		}
 	}
 
 	/*******************************************************************************************************
-	* @description Called by the Contact after trigger
-	* @param listConNew NULL_PARAMETER
-	* @param listConOld NULL_PARAMETER
-	* @param isInsert NULL_PARAMETER
-	* @param isDelete NULL_PARAMETER
+	* @description Called by the Contact After trigger; updates primary contact on accounts
+	* @param listConNew Trigger new list
+	* @param listConOld Trigger old list
+	* @param isInsert Trigger isInsert
+	* @param isDelete Trigger isDelete
 	*/ 
 	global void SetPrimaryContacts(list<Contact> listConNew, list<Contact> listConOld, boolean isInsert, boolean isDelete) {
 		// update primary contact for all the accounts that were changed
@@ -208,10 +201,7 @@ global virtual class ONEN_AccountMaintenance {
 		
 		// call the update code for the set of accounts
 		if (!acctIds.isEmpty()) {
-		//	system.debug('ONEN_Contact_SetPrimaryContact EXECUTED');
 			SetPrimaryContact(acctIds); 	
-		}else {
-		//	system.debug('ONEN_Contact_SetPrimaryContact DID NOT EXECUTE');
 		} 
 	}		
 	
