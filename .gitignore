@@ -2,3 +2,7 @@
 /salesforce.schema
 
 src/package.xml
+
+src/.gitignore
+
+.gitignore
