@@ -262,6 +262,9 @@
         <fields>Probability</fields>
     </miniLayout>
     <relatedLists>
+        <customButtons>Mark_Paid</customButtons>
+        <customButtons>Mark_Written_Off</customButtons>
+        <excludeButtons>New</excludeButtons>
         <fields>NAME</fields>
         <fields>Date__c</fields>
         <fields>Amount__c</fields>
