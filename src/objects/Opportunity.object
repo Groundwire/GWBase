@@ -1283,7 +1283,7 @@
         <availability>online</availability>
         <displayType>button</displayType>
         <linkType>url</linkType>
-        <masterLabel>Add Installments</masterLabel>
+        <masterLabel>Add Payments</masterLabel>
         <openType>replace</openType>
         <protected>false</protected>
         <url>/apex/GWBase__installmentWizard?id={!Opportunity.Id}</url>
