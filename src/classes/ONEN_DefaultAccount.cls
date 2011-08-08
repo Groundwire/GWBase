@@ -7,7 +7,7 @@
 * for all Contacts that aren't associated with any other Account.
 */
 
-global class ONEN_DefaultAccount {
+global virtual class ONEN_DefaultAccount {
 
     private static Id individualAccountId; 
     private static Id individualAcctForTests;
@@ -18,9 +18,9 @@ global class ONEN_DefaultAccount {
     global static final string individualAcctName = ONEN_Constants.INDIVIDUAL_ACCOUNT_NAME;
 
 	/*******************************************************************************************************
-	* @description Method that returns the ID of the Individual account.
+	* @description Method that returns the ID of the Individual account (aka bucket accounts).  This newer non-static method should be the one used in all new code.
 	*/	
-    global static id getIndividualAccountId () {
+	global id getIndividualAccountIdNonStatic () {
     	
     	// tests should get a separate individual account
     	if (Test.isRunningTest()) {
@@ -53,9 +53,23 @@ global class ONEN_DefaultAccount {
     	}
     }
     
-	// called from the Contact before trigger
-	public static void SetIndividualAccount() {
-		Id DefaultAccountId = getIndividualAccountId();
+	/*******************************************************************************************************
+	* @description Method that returns the ID of the Individual account (aka bucket accounts).  This static method calls the newer instance method above.
+	*  We would simply change this method to non-static if we could, but that is not possible for a global static method that has been included in a managed package.
+	*  Any new code that needs to fetch the bucket account Id should use the instance method.
+	*/	
+    global static id getIndividualAccountId () {
+ 		ONEN_DefaultAccount defAcct = new ONEN_DefaultAccount();
+ 		return defAcct.getIndividualAccountIdNonStatic(); 	
+    }
+  
+    
+	/*******************************************************************************************************
+	* @description Called from the Contact before trigger, sets the account of the contact to the individual (bucket) account if no other account was provided.
+	*  Note that this method used to be static but was changed to an instance method.
+	*/	
+	global void SetIndividualAccount() {
+		Id DefaultAccountId = getIndividualAccountIdNonStatic();
 		if (DefaultAccountId!=null) {
 			for (SObject obj: Trigger.New) {
 				Contact c = (Contact)obj;
@@ -69,15 +83,18 @@ global class ONEN_DefaultAccount {
 	}
 
 
-	// called from the Account before trigger
-	public static void ProtectIndividualAccount() {
+	/*******************************************************************************************************
+	* @description Called from the Account before trigger, prevents the individual (bucket) account from being deleted, renamed, or duplicated.
+	*  Note that this method used to be static but was changed to an instance method.
+	*/	
+	global void ProtectIndividualAccount() {
 		string indName = ONEN_DefaultAccount.individualAcctName;
 	
 		// don't allow the default account to be deleted.
 		if (trigger.isDelete) {
 			for (SObject obj  : trigger.old ) {
 				Account thisAccount = (Account)obj;
-				if ( thisAccount.Id == ONEN_DefaultAccount.getIndividualAccountId() ) {
+				if ( thisAccount.Id == getIndividualAccountIdNonStatic() ) {
 					thisAccount.addError ('You cannot delete the ' + indName + ' organization.');
 				}
 			}
@@ -143,28 +160,14 @@ global class ONEN_DefaultAccount {
 	}    
     
     
-    private static id newAcct() {
-    	
-    	/* commented out 7/8/11 by Matthew
-    	I don't think this is needed, and is problematic because it short-circuits the creation of the ind. acct in tests
-    	
-    	// in order to play nicely with DupBlocker, we can't actually create an account at this point
-    	// in the call stack.  So we will assume the instance has the account already created, and
-    	// we'll give an error if they don't.
-    	if (GW_Utilities.IsDupBlockerInstalled) {
-    		account a = [select Id from Account where Name = :individualAcctName limit 1];
-    		if (a == null) {
-    			system.debug('DUPBLOCKER IS INSTALLED, SO THIS INSTANCE NEEDS THE ACCOUNT IndividualAccountForTests ALREADY CREATED.');
-    			system.assert(false);
-    		}
-    		return a.id;
-    	}
-    	*/
-    	
+	/*******************************************************************************************************
+	* @description This method is only used internally in this class, but is global so that it can be overridden (for dupeblocker compatibility, etc.)
+	*  It simply creates a new account with the proper name to be used as bucket account either in production or in a test.
+	*  Note that this method used to be static but was changed to an instance method.
+	*/	
+    global virtual id newAcct() {
     	account a = new Account( name = individualAcctName );
-    	//CRMfusionDBR101.DB_Globals.triggersDisabled = true;
 	    insert a;
-	    //CRMfusionDBR101.DB_Globals.triggersDisabled = false;
     	return a.id;
     }
     

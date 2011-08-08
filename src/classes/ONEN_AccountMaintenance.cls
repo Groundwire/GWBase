@@ -9,6 +9,7 @@
 global virtual class ONEN_AccountMaintenance {
 
 	private static boolean firstRun = true;
+
 	  
 	/*******************************************************************************************************
 	* @description This function sets a primary contact for each account you pass in -- and fixes the primary.
@@ -16,10 +17,7 @@ global virtual class ONEN_AccountMaintenance {
 	* @param acctIds Set of account ids for which you want a primary contact
 	*/ 	
     global void SetPrimaryContact(set<Id> acctIds) {
-    	//SWA: added support for ignoring default account
-    	//SWA: get default account id
-		// new method to lookup individual acct id
-		Id DefaultAccountId = ONEN_DefaultAccount.GetIndividualAccountId();
+		Id DefaultAccountId = getIndAcctId();
 		//system.debug ('defaultaccountID: ' + DefaultAccountId);		
 		
 	   	// don't allow recursion
@@ -97,6 +95,18 @@ global virtual class ONEN_AccountMaintenance {
 	   	}
 	   	firstrun=true;
 	}
+
+	
+	/*******************************************************************************************************
+	* @description This function simply fetches the individual (bucket) account from the DefaultAccount class.
+	* Refactored this into separate method so can be overridden for compatibility w/ dupeblocker
+	*/ 	
+	global virtual id getIndAcctId() {
+		ONEN_DefaultAccount defAcct = new ONEN_DefaultAccount();
+		return defAcct.getIndividualAccountIdNonStatic();
+	}
+	
+
 
 	/*******************************************************************************************************
 	* @description This is used by the SetPrimaryContact method to save changes to accounts.  
@@ -186,8 +196,8 @@ global virtual class ONEN_AccountMaintenance {
 				cNew = listConNew[i];
 			}			 
 			if (cOld!=null && cNew!=null) {
-		     	// check if the person's account or title has changed
-		   		if (cNew.AccountID != cOld.AccountID || cNew.Title != cOld.Title) {		
+		     	// check if the person's account has changed (used to look for chgs to title here, but don't need to do that since title is now handled via cross-obj formula)
+		   		if (cNew.AccountID != cOld.AccountID) {		
 		   			// update contacts old and new accounts, if they exist
 		   			if (cOld.AccountId!=null) acctIds.add(cOld.AccountId);
 		   			if (cNew.AccountId!=null) acctIds.add(cNew.AccountId);

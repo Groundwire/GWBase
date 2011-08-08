@@ -5,7 +5,8 @@ trigger GW_AccountTriggerBefore on Account (before delete, before insert, before
 
     // prevent deletions, renames, or duplicates for the Individual Account
     if (GW_TriggerSettings.ts.Enable_Individual_Account__c) {
-        ONEN_DefaultAccount.ProtectIndividualAccount();
+    	ONEN_DefaultAccount defAcct = new ONEN_DefaultAccount();
+        defAcct.ProtectIndividualAccount();
     }
     
     if (trigger.isInsert || trigger.isUpdate) {

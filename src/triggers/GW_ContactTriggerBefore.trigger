@@ -6,7 +6,8 @@ trigger GW_ContactTriggerBefore on Contact (before insert, before update) {
          
     // assign them to the bucket account if they don't have one specified.
     if (GW_TriggerSettings.ts.Enable_Individual_Account__c) {
-        ONEN_DefaultAccount.SetIndividualAccount();
+    	ONEN_DefaultAccount defAcct = new ONEN_DefaultAccount();
+        defAcct.SetIndividualAccount();
     }
     
     // set empty fields we can derive from zip.

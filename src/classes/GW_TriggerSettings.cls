@@ -22,7 +22,6 @@ global class GW_TriggerSettings {
 		ts.Enable_Default_Campaign_Member_Statuses__c = true;
 		ts.Enable_Engagement_Tracker__c = true;
 		ts.Enable_Households__c = true;
-		ts.Enable_Individual_Account__c = true;
 		ts.Enable_InterAccount_Relationships__c = true;
 		ts.Enable_Lead_Add_To_Campaign__c = true;
 		ts.Enable_Lead_Smart_Fields__c = true;
@@ -35,9 +34,12 @@ global class GW_TriggerSettings {
 		ts.Enable_Opportunity_Recurring_Creation__c = true;
 		ts.Enable_RPP_Opportunity_Closing__c = true;
 		
-		// if DupBlocker is in this instance, we can't allow our code to do this.
-		// the client code must handle this to avoid DupBlocker issues.
+		// if DupBlocker is installed, tests shouldn't run these standard triggers, because they cause errs in dupeblocker tests
+		// instead, alternate triggers that run overridden versions of the classes that are dupeblocker safe should be run
+		// that code is available as a separate package
 		ts.Enable_Primary_Contact_On_Accounts__c = !GW_Utilities.IsDupBlockerInstalled;
+ 		ts.Enable_Individual_Account__c = !GW_Utilities.IsDupBlockerInstalled;
+
 	}
 
 	/*******************************************************************************************************
