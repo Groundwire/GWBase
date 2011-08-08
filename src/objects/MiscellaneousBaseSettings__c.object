@@ -19,6 +19,27 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>GW_Help_Docs_Password__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>GW Help Docs Password</label>
+        <length>50</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>GW_Help_Docs_Username__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>username for Groundwire help docs account</inlineHelpText>
+        <label>GW Help Docs Username</label>
+        <length>100</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Individual_Account_Id__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>

@@ -1,8 +1,8 @@
-<apex:page sidebar="false" tabStyle="Help_Docs__tab">
+<apex:page sidebar="false" tabStyle="Help_Docs__tab" controller="GW_CTRL_HelpDocs">
 	<!-- TODO: replace src string with appropriate login for your client:
-		src="http://salesforcehelp.groundwire.org/login_form?__ac_name=CLIENTNAME&__ac_password=CLIENTPASSWORD&form.submitted=1&came_from=http://salesforcehelp.groundwire.org/default-help-documentation/"
+		src="http://salesforcehelp.groundwire.org/login_form?__ac_name=CLIENTNAME&__ac_password=CLIENTPASSWORD&form.submitted=1&came_from=http://salesforcehelp.groundwire.org/documentation/"
 	-->
 	<iframe
-		src="http://salesforcehelp.groundwire.org"
-		width="100%" height="600" frameborder="no"> </iframe>
+		src="{!docsFullURL}"
+		width="100%" height="850" frameborder="no"> </iframe>
 </apex:page>
