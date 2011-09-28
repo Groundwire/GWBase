@@ -380,7 +380,7 @@
         <fullName>Membership_Status__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <formula>if (  MembershipEndDate__c  &lt;today(), if ( MembershipEndDate__c  &gt; ( TODAY() - 31 )  , &quot;Grace Period&quot; , &quot;Expired&quot;) , if(isnull(MembershipEndDate__c ),&quot;&quot;,&quot;Current&quot;))</formula>
+        <formula>if (  MembershipEndDate__c  &lt;today(), if ( MembershipEndDate__c  &gt; ( TODAY() -  $Setup.GWBase__OppRollupSettings__c.GWBase__Membership_Grace_Period__c  )  , &quot;Grace Period&quot; , &quot;Expired&quot;) , if(isnull(MembershipEndDate__c ),&quot;&quot;,&quot;Current&quot;))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Membership Status</label>
         <required>false</required>
