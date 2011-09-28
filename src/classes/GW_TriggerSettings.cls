@@ -17,6 +17,7 @@ global class GW_TriggerSettings {
 	private static void SetTriggerSettingDefaults(TriggerSettings__c ts) {
 		// must explicitly set the default values.  (doing new Obj doesn't use defaults!)
 		ts.Enable_Active_Campaign__c = true;
+		ts.Enable_Auto_Membership_Dates__c = true;
 		ts.Enable_Contact_Relationships__c = true;
 		ts.Enable_Contact_Smart_Fields__c = true;
 		ts.Enable_Default_Campaign_Member_Statuses__c = true;

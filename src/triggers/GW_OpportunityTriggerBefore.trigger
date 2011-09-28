@@ -7,5 +7,9 @@ trigger GW_OpportunityTriggerBefore on Opportunity (before insert, before update
     if (Trigger.IsInsert && GW_TriggerSettings.ts.Enable_Opportunity_AutoName__c) {
         ONEN_OpportunityMaintenance.OpportunityAutoName(trigger.New);
     }
-    
+	
+	// add membership origin, start, and end dates to membership opportunities
+	if (Trigger.IsInsert && GW_TriggerSettings.ts.Enable_Auto_Membership_Dates__c) {
+		GW_AutoMemberDates.memberDates(trigger.New);
+	}
 }

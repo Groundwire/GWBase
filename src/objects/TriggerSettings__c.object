@@ -14,6 +14,13 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Enable_Auto_Membership_Dates__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Enable Auto Membership Dates</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Enable_Contact_Relationships__c</fullName>
         <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>

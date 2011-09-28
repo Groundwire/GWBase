@@ -69,6 +69,30 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Membership_Grace_Period__c</fullName>
+        <defaultValue>30</defaultValue>
+        <description>Membership grace period in days. Determines how many days after membership expiration a contact&apos;s Membership Status is &quot;Grace Period&quot;.</description>
+        <externalId>false</externalId>
+        <label>Membership Grace Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Membership_Period__c</fullName>
+        <defaultValue>365</defaultValue>
+        <description>Length of membership in days. This setting determines the number of days after start date a membership lasts.</description>
+        <externalId>false</externalId>
+        <label>Membership Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Membership_Record_Types__c</fullName>
         <defaultValue>&quot;Membership&quot;</defaultValue>
         <deprecated>false</deprecated>
@@ -79,6 +103,26 @@
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Membership_Renewal_Period__c</fullName>
+        <defaultValue>30</defaultValue>
+        <description>Membership renewal period in days. Determines how many days after membership expiration a member&apos;s origin is &quot;Renewal&quot; instead of &quot;Reacquire&quot;, and whether the start date should be set to the previous membership&apos;s expiration date.</description>
+        <externalId>false</externalId>
+        <label>Membership Renewal Period</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Membership_Rolling_Start_Date__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>This setting determines whether auto membership dates should start when the previous membership expires. Expired members will have membership retroactively applied if they are within the Membership Renewal Period. If this setting is disabled, the Membership Start Date always defaults to the Close Date.</description>
+        <externalId>false</externalId>
+        <label>Membership Rolling Start Date</label>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Opp_Gift_Role_Contact_Donor__c</fullName>
