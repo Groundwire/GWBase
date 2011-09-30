@@ -137,7 +137,7 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
     global void execute(Database.BatchableContext BC, List<Sobject> SBatch){
         system.debug (Logginglevel.WARN,'running execute!');
         Map<id,Contact> conMap = new Map<id,Contact>();
-        Map<id,ConWrapper> conWrapMap = new Map<id,ConWrapper>();
+        Map<id,engTrackConWrapper> conWrapMap = new Map<id,engTrackConWrapper>();
         set<id> conIDs = new set<id>();
         EngagementTrackerSettings__c settings = EngagementTrackerSettings__c.getOrgDefaults();
         Contact[] consToUpd = new Contact[0]; 
@@ -149,7 +149,7 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
         for (sobject s: SBatch) {
             Contact con = (Contact)s;
             conIDs.add(con.Id);
-            ConWrapper cw = new ConWrapper(con.Id);
+            engTrackConWrapper cw = new engTrackConWrapper(con.Id);
             cw.con = con.clone(true,true);
             conWrapMap.put (con.Id,cw);
             conMap.put (con.Id,con);
@@ -182,7 +182,7 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
                 ORDER BY GROUPING(Campaign.Leadership_Level__c) desc , GROUPING(ContactId) 
               ] ) {
                     //system.debug (LoggingLevel.WARN,'agg obj:' + r);
-                    ConWrapper cw;
+                    engTrackConWrapper cw;
                     if (r.get('subtCon')==0) {
                         Id conid = (id)r.get('ContactId');
                         cw = conWrapMap.get(conid);
@@ -218,7 +218,7 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
                     Id conid = (id)r.get('ContactId');
                     Double lvldbl = (double)r.get('MaxLevel');
                     Integer lvl = lvldbl.intvalue();
-                    ConWrapper cw = conWrapMap.get(conid);
+                    engTrackConWrapper cw = conWrapMap.get(conid);
                     cw.PeakLvl = lvl;
                     if (cw.LastActionDate==null) cw.LastActionDate = (date)r.get('LastDate');
         }
@@ -243,7 +243,7 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
                     if (row.get('subtCon')==0 && row.get('yr')==null && count >= fqset.Number_Of_Actions_Required__c) {
                         // if this is con row, and we meet the frequency criteria, assign lvl to con as appropriate
                         Id conid = (id)row.get('ContactId');
-                        ConWrapper cw = conWrapMap.get(conid);
+                        engTrackConWrapper cw = conWrapMap.get(conid);
                         Contact con = cw.con;
                         if (fqset.Level_To_Assign__c > cw.CurrLvl) {
                             cw.CurrLvl = fqset.Level_To_Assign__c.intvalue();
@@ -255,7 +255,7 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
                     } else if (row.get('yr')!=null && row.get('subtCon')==0 && count >= fqset.Number_Of_Actions_Required__c) {
                         // if this is a detail row (per con and per yr) then see if constitutes a higher peak
                         Id conid = (id)row.get('ContactId');
-                        ConWrapper cw = conWrapMap.get(conid);
+                        engTrackConWrapper cw = conWrapMap.get(conid);
                         if (fqset.Level_To_Assign__c > cw.PeakLvl) {
                             cw.PeakLvl = fqset.Level_To_Assign__c.intvalue();
                         }
@@ -265,7 +265,7 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
         }
     
         // now loop back through our contacts and apply contact-centric level rules
-        for (ConWrapper cw : conWrapMap.values() ) {
+        for (engTrackConWrapper cw : conWrapMap.values() ) {
             Contact con = cw.con;       
         
             // consider con fields
@@ -381,6 +381,9 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
             }   
             
             //system.debug (Logginglevel.WARN,'conwrapper map after calcs: ' + conWrapMap);
+            
+            // do any final custom processing implemented via override
+            customFinalLvlAssign (conWrapMap, conIDs);
         
             // write chgs to contacts, but only if something actually changed
             string lvlStr = lvlNameMap.get(cw.CurrLvl);
@@ -405,6 +408,20 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
         }
         
     }
+    
+    
+    /*******************************************************************************************************
+	* @description an empty hook method intended for overriding - this will get called once all of the regular logic has been run and all contacts in the batch have been asssigned
+	*  an engagement level (in memory only, not yet written to database)
+	*  This gives developers an opportunity to tweak the levels according to custom logic before those levels get written
+	*  In order to utilize this, extend the engagementRollup class, override this method, and then schedule the subclass to run, and disable any schedules using the superclass
+	*/      
+    global virtual void customFinalLvlAssign (Map<id,engTrackConWrapper> conWrapMap, set<id> conIDs){
+        
+    }
+    
+
+    
 
     /*******************************************************************************************************
 	* @description The standard batch finish method.  Currently does nothing.
@@ -417,17 +434,17 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
     // *** WRAPPER CLASS **************************************************************
     
     
-    public virtual class conWrapper {
+    global class engTrackConWrapper {
         private id conId;
-        public Contact con;
+        global Contact con;
         
-        public integer CurrLvl=0;
-        public integer PeakLvl=0;
-        public date LastActionDate;
-        public date FirstActionDateInLvl;
+        global integer CurrLvl=0;
+        global integer PeakLvl=0;
+        global date LastActionDate;
+        global date FirstActionDateInLvl;
 
         //constructor 
-        public conWrapper (id argId) {
+        public engTrackConWrapper (id argId) {
             conId = argId;  
         }   
 

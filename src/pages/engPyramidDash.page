@@ -1,0 +1,33 @@
+<apex:page controller="GW_CTRL_EngagementDashboard" showHeader="false" sidebar="false" standardStylesheets="false" cache="false">
+
+	<apex:stylesheet value="{!$Resource.PyramidChartCSS}"/>
+
+	<apex:includeScript value="{!$Resource.jquery}"/>
+	<apex:includeScript value="{!$Resource.RaphaelJSLib}"/>
+	<apex:includeScript value="{!$Resource.PyramidChartJSLib}"/>
+
+    <script type="text/javascript" charset="utf-8">
+        (function ($) {
+            $(function () {
+               $('table[id$=pyramidTable]').pyramidChart({
+                   colors: ['#FFFF66', '#FFCC33', '#FF9900', '#FF6600', '#CC0000', '#FF0000'],
+                   height: 200,
+                   width: 300
+                });
+            });
+        })(jQuery);
+    </script>
+
+
+		<apex:dataTable value="{!rows}" var="row" id="pyramidTable">
+			<apex:column >
+				<apex:facet name="header">Engagement Level</apex:facet>
+				<apex:outputText value="{!row.levelName}" />
+			</apex:column>
+			<apex:column >
+				<apex:facet name="header">Count</apex:facet>
+				<apex:outputText value="{!row.countCons}" />
+			</apex:column>
+		</apex:dataTable>
+
+</apex:page>
