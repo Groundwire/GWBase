@@ -16,6 +16,7 @@
     <fields>
         <fullName>Enable_Auto_Membership_Dates__c</fullName>
         <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Enable Auto Membership Dates</label>
         <type>Checkbox</type>
