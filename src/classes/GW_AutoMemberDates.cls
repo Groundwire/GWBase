@@ -7,17 +7,19 @@
 
 public class GW_AutoMemberDates {
 
-	public static void memberDates(List<Opportunity> opplist) {
-		
-		set<id> conset = new set<id>();
-		set<id> accset = new set<id>();
-		map<id,Contact> conmap = new map<id,Contact>();
-		map<id,Account> accmap = new map<id,Account>();
-		list<Opportunity> oppstoprocess = new list<Opportunity>();
-		set<String> membershipRecTypes = new set<String>();
+	private OppRollupSettings__c ors;
+	
+	private map<id,Contact> conmap = new map<id,Contact>();
+	private map<id,Account> accmap = new map<id,Account>();
+	private set<id> conset = new set<id>();
+	private set<id> accset = new set<id>();
+	private set<String> membershipRecTypes = new set<String>();
+
+	//constructor - instantiates settings variables
+	public GW_AutoMemberDates() {
 		
 		//if there is no instance of settings, set membership period to 1 year and don't do rolling dates.
-		OppRollupSettings__c ors = OppRollupSettings__c.getInstance();
+		ors = OppRollupSettings__c.getInstance();
 		if (ors == null) {
 			ors = new OppRollupSettings__c(
 				Membership_Period__c=365,
@@ -26,15 +28,18 @@ public class GW_AutoMemberDates {
 				Membership_Record_Types__c='Membership'
 			);
 		}
-
+	
 		//create a set of membership record types based on the setting
 		if (ors.Membership_Record_Types__c==NULL) {
 			membershipRecTypes.add('Membership');
-		} else { 
-			for (String s : ors.Membership_Record_Types__c.split(';')) { 
-				membershipRecTypes.add(s); 
-			}
+		} else for (String s : ors.Membership_Record_Types__c.split(';')) {
+			membershipRecTypes.add(s); 
 		}
+	} 
+
+	public void memberDates(List<Opportunity> opplist) {
+		
+		list<Opportunity> oppstoprocess = new list<Opportunity>();
 		
 		//creates list of valid opportunities, and sets of contact/account IDs if rolling dates are active
 		for (Opportunity o:opplist) {
@@ -186,18 +191,18 @@ public class GW_AutoMemberDates {
 		
 		insert ors;
 				 
-		Contact con = new Contact (
-			LastName='test',
+		Account acc = new Account (
+			Name='test',
 			LastMembershipDate__c=system.today().addDays(-400),
 			MembershipEndDate__c=system.today().addDays(-50)
 		);
-		insert con;
+		insert acc;
 		
 		Opportunity opp = new Opportunity(
 			RecordTypeId=GW_RecTypes.GetRecordTypeId('Opportunity', ONEN_Constants.OPP_MEMBER_RECTYPE_FORTESTS),
 			Name='foo',
 			Amount=10,
-			ContactId__c=con.id,
+			AccountId=acc.id,
 			CloseDate=system.today()
 		);
 		insert opp;
@@ -243,6 +248,43 @@ public class GW_AutoMemberDates {
 		system.assertequals('Renewal', queryOpp.Membership_Origin__c);
 		system.assertequals(system.today(), queryOpp.Membership_Start_Date__c);
 		system.assertequals(system.today().addYears(2), queryOpp.Membership_End_Date__c);
+	}
+	
+	//Membership end date is in the future, start date is set to future.
+	static testMethod void testFutureExpiration(){
+		
+		delete [select Id from OppRollupSettings__c];				 
+		OppRollupSettings__c ors = OppRollupSettings__c.getInstance();
+		System.Assert(ors == null);
+		ors = new OppRollupSettings__c(
+			Membership_Period__c=100,
+			Membership_Renewal_Period__c=10,
+			Membership_Rolling_Start_Date__c=true,
+			Membership_Record_Types__c=ONEN_Constants.OPP_MEMBER_RECTYPE_FORTESTS
+		);
+		
+		insert ors;
+				 
+		Contact con = new Contact (
+			LastName='test',
+			LastMembershipDate__c=system.today().addDays(-50),
+			MembershipEndDate__c=system.today().addDays(10)
+		);
+		insert con;
+		
+		Opportunity opp = new Opportunity(
+			RecordTypeId=GW_RecTypes.GetRecordTypeId('Opportunity', ONEN_Constants.OPP_MEMBER_RECTYPE_FORTESTS),
+			Name='foo',
+			Amount=10,
+			ContactId__c=con.id,
+			CloseDate=system.today()
+		);
+		insert opp;
+		
+		Opportunity queryOpp = [SELECT Id, Membership_Origin__c, Membership_Start_Date__c, Membership_End_Date__c FROM Opportunity WHERE Id=:opp.id ];
+		system.assertequals('Renewal', queryOpp.Membership_Origin__c);
+		system.assertequals(system.today().addDays(10), queryOpp.Membership_Start_Date__c);
+		system.assertequals(system.today().addDays(110), queryOpp.Membership_End_Date__c);
 	}
 	
 	//Membership origin is Reaquire and start date is opp close date once the renewal period is passed

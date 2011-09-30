@@ -10,6 +10,7 @@ trigger GW_OpportunityTriggerBefore on Opportunity (before insert, before update
 	
 	// add membership origin, start, and end dates to membership opportunities
 	if (Trigger.IsInsert && GW_TriggerSettings.ts.Enable_Auto_Membership_Dates__c) {
-		GW_AutoMemberDates.memberDates(trigger.New);
+		GW_AutoMemberDates amd = new GW_AutoMemberDates();
+		amd.memberDates(trigger.New);
 	}
 }
