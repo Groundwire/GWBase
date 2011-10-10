@@ -733,7 +733,7 @@ NOTE: This does not take into account any past overrides or formerly-checked che
         <deprecated>false</deprecated>
         <description>Note: Grace Period is determined in Opportunity &amp; Rollup Settings.</description>
         <externalId>false</externalId>
-        <formula>if (  MembershipEndDate__c  &lt;today(), if ( MembershipEndDate__c  &gt; ( TODAY() -  $Setup.GWBase__OppRollupSettings__c.GWBase__Membership_Grace_Period__c  ) , &quot;Grace Period&quot; , &quot;Expired&quot;) , if(isnull(MembershipEndDate__c ),&quot;&quot;,&quot;Current&quot;))</formula>
+        <formula>if (  MembershipEndDate__c  &lt;today(), if ( MembershipEndDate__c  &gt; ( TODAY() -  $Setup.OppRollupSettings__c.Membership_Grace_Period__c  ) , &quot;Grace Period&quot; , &quot;Expired&quot;) , if(isnull(MembershipEndDate__c ),&quot;&quot;,&quot;Current&quot;))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>Current, Expired, or Grace Period.</inlineHelpText>
         <label>Membership Status</label>
@@ -819,6 +819,7 @@ NOTE: This does not take into account any past overrides or formerly-checked che
         <referenceTo>ONEN_Household__c</referenceTo>
         <relationshipLabel>Contacts</relationshipLabel>
         <relationshipName>Contacts</relationshipName>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Lookup</type>
     </fields>
