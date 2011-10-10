@@ -79,6 +79,7 @@
         <referenceTo>Contact_Relationship__c</referenceTo>
         <relationshipLabel>Mirror Relationships</relationshipLabel>
         <relationshipName>R00NR0000000UgQmMAK</relationshipName>
+        <required>false</required>
         <type>Lookup</type>
     </fields>
     <fields>
@@ -212,6 +213,7 @@ Apex code creates a corresponding relationship if this is filled in.</descriptio
         <referenceTo>Contact</referenceTo>
         <relationshipLabel>Reciprocal Relationships</relationshipLabel>
         <relationshipName>R00N700000020Qy7EAE</relationshipName>
+        <required>false</required>
         <type>Lookup</type>
     </fields>
     <fields>

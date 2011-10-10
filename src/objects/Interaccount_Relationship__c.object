@@ -79,6 +79,7 @@
         <label>Mirror Relationship</label>
         <referenceTo>Interaccount_Relationship__c</referenceTo>
         <relationshipName>R00NR0000000UhmFMAS</relationshipName>
+        <required>false</required>
         <type>Lookup</type>
     </fields>
     <fields>
@@ -170,6 +171,7 @@ Apex code creates a corresponding relationship if this is filled in.</descriptio
         <label>Related Organization</label>
         <referenceTo>Account</referenceTo>
         <relationshipName>Account_related_rel</relationshipName>
+        <required>false</required>
         <type>Lookup</type>
     </fields>
     <fields>

@@ -157,6 +157,7 @@
         <referenceTo>Contact</referenceTo>
         <relationshipLabel>Opportunities (Contact Name)</relationshipLabel>
         <relationshipName>Opportunities</relationshipName>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Lookup</type>
     </fields>
@@ -436,6 +437,7 @@
         <referenceTo>Recurring_Payment_Profile__c</referenceTo>
         <relationshipLabel>Opportunities</relationshipLabel>
         <relationshipName>Opportunities</relationshipName>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Lookup</type>
     </fields>

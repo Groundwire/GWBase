@@ -47,6 +47,7 @@
         <label>Organization</label>
         <referenceTo>Account</referenceTo>
         <relationshipName>Recurring_Payments</relationshipName>
+        <required>false</required>
         <type>Lookup</type>
     </fields>
     <fields>
@@ -67,6 +68,7 @@
         <label>Contact</label>
         <referenceTo>Contact</referenceTo>
         <relationshipName>Recurring_Payments</relationshipName>
+        <required>false</required>
         <type>Lookup</type>
     </fields>
     <fields>

@@ -105,6 +105,7 @@
         <referenceTo>Opportunity</referenceTo>
         <relationshipLabel>Payments</relationshipLabel>
         <relationshipName>Payments_Installments</relationshipName>
+        <required>false</required>
         <type>Lookup</type>
     </fields>
     <fields>
