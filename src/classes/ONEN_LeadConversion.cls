@@ -1,6 +1,6 @@
 // Written by Evan Callahan (evan@groundwire.org) and Dave Manelski (davem@groundwire.org)
 // Copyright (c) 2008, NPower Seattle, 403 23rd Ave S, Seattle, WA 98144
-// Portions copyright (c) 2010 Groundwire, 1402 3rd Ave., Suite 1000, Seattle, WA 98101
+// Portions copyright (c) 2011 Groundwire, 1402 3rd Ave., Suite 1000, Seattle, WA 98101
 // This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
 
 /*******************************************************************************************************
@@ -44,16 +44,20 @@ global with sharing virtual class ONEN_LeadConversion {
 		}
 	}
 
-	// class to store the list of leads to convert
-	public class ConvertSpec {
+	/*******************************************************************************************************
+	* @description inner class to store the list of leads to convert
+	*/ 		
+	global class ConvertSpec {
 		public string leadId;
 		public string contactId;
 		public string accountId;
 		public string oppId;
 	}
 	
-	// class to return the conversion results
-    public class Conversion {
+	/*******************************************************************************************************
+	* @description inner class to return the conversion results
+	*/ 		
+    global class Conversion {
     	public boolean success;
     	public string errors;
     	public string leadId;
@@ -73,6 +77,7 @@ global with sharing virtual class ONEN_LeadConversion {
 	public string multiselectFields = '';
 	
 	integer queryLimit;
+	
 	/*******************************************************************************************************
 	* @description Constructor - specify the maximum number of leads to load (defaults to 100).
 	* @param integer - the number of leads to process/convert, this is passed in from the VF controller or batch

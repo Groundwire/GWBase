@@ -1,9 +1,6 @@
-public with sharing class ONEN_CTRL_LeadConverter {
-
 // Page controller for ONEN_CTRL_LeadConverter page 
-// Written by Evan Callahan (evan@groundwire.org) and Dave Manelski (davem@groundwire.org)
 // Copyright (c) 2008, NPower Seattle, 403 23rd Ave S, Seattle, WA 98144
-// Portions copyright (c) 2010 Groundwire, 1402 3rd Ave., Suite 1000, Seattle, WA 98101
+// Portions copyright (c) 2011 Groundwire, 1402 3rd Ave., Suite 1000, Seattle, WA 98101
 // This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
 
 // To load a single lead, pass the lead ID in a URL parameter called 'id'
@@ -12,6 +9,13 @@ public with sharing class ONEN_CTRL_LeadConverter {
 // TODO: display convert errors in converts list? display status? 
 // TODO: more tests with varied lead values, error handling for fringe cases
 // TODO: display link to open existing contact or opp match in a new window 
+
+/*******************************************************************************************************
+* @author Evan Callahan and Dave Manelski
+* @date 01/01/2008
+* @description controller for visualforce bulk lead conversion interface
+*/
+global with sharing virtual class ONEN_CTRL_LeadConverter {
 
     // set to the maximum number of leads you want to load
     public final integer MAX_LEADS_PER_PAGE = 20; 
@@ -24,12 +28,16 @@ public with sharing class ONEN_CTRL_LeadConverter {
     public boolean batchRunning { get; set; }
 
     // private object lists for lead conversion object and results
-    protected ONEN_LeadConversion lc = new ONEN_LeadConversion(MAX_LEADS_PER_PAGE);
+    protected ONEN_LeadConversion lc;
     protected leadResult[] results;
     protected ConvertedLead[] convertedLeads;
      
-    //constructor
-    public ONEN_CTRL_LeadConverter() {
+	/*******************************************************************************************************
+	* @description constructor for page controller
+	*/ 	
+    global ONEN_CTRL_LeadConverter() {
+    	// instantiate the helper class
+    	lc = getLeadConversionHelperClass(MAX_LEADS_PER_PAGE);
         //individual account id
         IndividualAccountId = ONEN_DefaultAccount.getIndividualAccountId();
         //individual account name
@@ -41,6 +49,14 @@ public with sharing class ONEN_CTRL_LeadConverter {
         //make sure the batch status compenent is not visible on page load
         batchRunning = false;
     }
+
+	/*******************************************************************************************************
+	* @description virtual method to get a lead conversion helper class, for use when you need to override the helper class
+	* @param integer - the number of leads to process/convert, this is passed in from the VF controller or batch
+	*/ 	
+	global virtual ONEN_LeadConversion getLeadConversionHelperClass(integer maxLeads) {
+		return (new ONEN_LeadConversion(maxLeads));
+	}
   
     public string leadSource { get; set; }
     public boolean havePayments { get; private set; }
