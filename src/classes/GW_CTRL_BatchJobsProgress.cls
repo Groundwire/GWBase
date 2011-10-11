@@ -1,4 +1,4 @@
-public class GW_CTRL_BatchJobsProgress {
+global class GW_CTRL_BatchJobsProgress {
 /*-----------------------------------------------------------------------------------------------
 * Written by Jason Venable, http://www.tehnrd.com/batch-apex-status-bar/ 
 *
@@ -7,11 +7,11 @@ public class GW_CTRL_BatchJobsProgress {
 * Controller for component that displays progress for batch apex jobs 
 -----------------------------------------------------------------------------------------------*/
  
-    public List<BatchJob> batchJobs;
-    public Integer numberOfJobs {get; set;}
-    public String batchComponentLabel {get; set;}
+    private List<BatchJob> batchJobs;
+    global Integer numberOfJobs {get; set;}
+    global String batchComponentLabel {get; set;}
  
-    public List<BatchJob> getBatchJobs() {
+    global List<BatchJob> getBatchJobs() {
         //Create new list of BatchJobs, a wrapper class that includes the job and percent complete.
         batchJobs = new List<BatchJob>();
  
@@ -51,9 +51,9 @@ public class GW_CTRL_BatchJobsProgress {
     }
  
     //This is the wrapper class the includes the job itself and a value for the percent complete
-    public Class BatchJob{
-        public AsyncApexJob job {get; set;}
-        public Integer percentComplete {get; set;}
+    global Class BatchJob{
+        global AsyncApexJob job {get; set;}
+        global Integer percentComplete {get; set;}
     }
  
     //--------------------TEST METHOD------------------------

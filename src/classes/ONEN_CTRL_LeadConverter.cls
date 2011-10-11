@@ -24,8 +24,8 @@ global with sharing virtual class ONEN_CTRL_LeadConverter {
     public static string NotProvidedLabel;
     
     //properties that control the rendering of the batch auto-converter
-    public boolean batching { get; set; }
-    public boolean batchRunning { get; set; }
+    global boolean batching { get; set; }
+    global boolean batchRunning { get; set; }
 
     // private object lists for lead conversion object and results
     protected ONEN_LeadConversion lc;
@@ -58,20 +58,24 @@ global with sharing virtual class ONEN_CTRL_LeadConverter {
 		return (new ONEN_LeadConversion(maxLeads));
 	}
   
-    public string leadSource { get; set; }
-    public boolean havePayments { get; private set; }
+    global string leadSource { get; set; }
+    global boolean havePayments { get; private set; }
 
-    // flag that tells page there are no leads
-    public virtual boolean getNoOpenLeads() {
+	/*******************************************************************************************************
+	* @description flag that tells page there are no leads
+	*/ 	
+    global virtual boolean getNoOpenLeads() {
         integer i = [select count() from lead where isConverted = false limit 1];
         return (i==0);
     }
     
     // flag duplicate contacts in conversion set, to throw an error to VF page
-    public Boolean dupContact { get {return dupContact;} set {dupContact = value;} } 
+    global Boolean dupContact { get; set; } 
     
-    // getter for lead sources -- only shows sources for which there are open leads
-    public List<SelectOption> getSources() {
+	/*******************************************************************************************************
+	* @description getter for lead sources - only shows sources for which there are open leads
+	*/ 	
+    global virtual List<SelectOption> getSources() {
         List<SelectOption> options = new List<SelectOption>();
         options.add(new SelectOption('','- Select Lead Source -'));
         options.add(new SelectOption('All','All Open Leads'));
@@ -94,17 +98,19 @@ global with sharing virtual class ONEN_CTRL_LeadConverter {
     private static Schema.DescribeSObjectResult OppRT = Opportunity.sObjectType.getDescribe();
     private static List<Schema.RecordTypeInfo> RT = OppRT.getRecordTypeInfos();
     
-    // this class represents one row in the leads list
-    public virtual class leadResult {
+	/*******************************************************************************************************
+	* @description class that represents one row in the leads list
+	*/ 	
+    global virtual class leadResult {
         
         ONEN_LeadConversion.LeadMatchup lm;
         lead theLead;       
         
         // lead getter
-        public lead getLead() { return theLead; }
+        global lead getLead() { return theLead; }
         
         // options for contacts dropdown list
-        public List<SelectOption> cOptions { get; private set; }
+        global List<SelectOption> cOptions { get; private set; }
         
         // map of the account dropdown list options for each contact option
         map<string, List<SelectOption>> aOptionsMap;
@@ -114,38 +120,41 @@ global with sharing virtual class ONEN_CTRL_LeadConverter {
         List<SelectOption> RToptions;
         
         // properties that determine whether to enable the lists
-        public boolean noChoice { get {return (cOptions.size() < 2);} } 
-        public boolean noAChoice { get {return (aOptionsMap.get(match).size() < 2);} }  
-        public boolean noOChoice { get {return (oOptions.size() < 2);} }    
-        public boolean oneAOption { get { return (aOptions.size()<2); } }
+        global boolean noChoice { get {return (cOptions.size() < 2);} } 
+        global boolean noAChoice { get {return (aOptionsMap.get(match).size() < 2);} }  
+        global boolean noOChoice { get {return (oOptions.size() < 2);} }    
+        global boolean oneAOption { get { return (aOptions.size()<2); } }
 
         // link to display for the lead record
-        public string leadUrl { get {return '/' + theLead.id;} }  
+        global string leadUrl { get {return '/' + theLead.id;} }  
 
         // properties that return the selections the user has made
-        public boolean selected { get; set; }
+        global boolean selected { get; set; }
 
         // contact picklist selection
-        public string match { get; set; }
+        global string match { get; set; }
 
         // one item picklist containing account for selected contact
-        public List<SelectOption> cAccount { get; set; }
+        global List<SelectOption> cAccount { get; set; }
 
         // account picklist selection for unmatched contact
-        public List<SelectOption> aOptions { get; private set; }
-        public string amatch { get; set; }
+        global List<SelectOption> aOptions { get; private set; }
+        global string amatch { get; set; }
 
         // opp picklist
-        public string omatch { get; set; }
-        //public boolean createOpp { get; set; }
-        public string oRecType { get {oRecType = theLead.Opportunity_Record_Type__c; return oRecType;} set {oRecType = value; theLead.Opportunity_Record_Type__c = value;} }
+        global string omatch { get; set; }
+        //global boolean createOpp { get; set; }
+        global string oRecType { get {oRecType = theLead.Opportunity_Record_Type__c; return oRecType;} set {oRecType = value; theLead.Opportunity_Record_Type__c = value;} }
 
         // properties that indicate which account list to show
-        public string alistStyle { get { return (match=='') ? 'show' : 'hide'; } } 
-        public string dummyStyle { get { return (match=='') ? 'hide' : 'show'; } } 
+        global string alistStyle { get { return (match=='') ? 'show' : 'hide'; } } 
+        global string dummyStyle { get { return (match=='') ? 'hide' : 'show'; } } 
                 
-        // constructor
-        public leadResult(ONEN_LeadConversion.LeadMatchup matchup) { 
+		/*******************************************************************************************************
+		* @description constructor
+		* @param ONEN_LeadConversion.LeadMatchup - a matching lead object found by the helper class
+		*/ 	
+        global leadResult(ONEN_LeadConversion.LeadMatchup matchup) { 
             lm = matchup;
             lead ld = theLead = lm.theLead;
             selected = false;
@@ -250,6 +259,7 @@ global with sharing virtual class ONEN_CTRL_LeadConverter {
                 // set the opp match field to the first selection
                 omatch = oOptions[0].getvalue();
             }
+            /*
             system.debug('options and matches');
             system.debug(coptions);
             system.debug(aoptionsmap);
@@ -257,30 +267,33 @@ global with sharing virtual class ONEN_CTRL_LeadConverter {
             system.debug(match);
             system.debug(amatch);
             system.debug(omatch);
+            */
         }
         
-        public virtual List<SelectOption> getMatches() {            
+        global virtual List<SelectOption> getMatches() {            
             return cOptions;
         }    
 
-        public virtual List<SelectOption> getOMatches() {           
+        global virtual List<SelectOption> getOMatches() {           
             return oOptions;
         }    
 
-        public virtual List<SelectOption> getORecTypes() {
+        global virtual List<SelectOption> getORecTypes() {
             return RToptions;
         }
         
         // fill the accounts list for this lead
-        public virtual List<SelectOption> getAMatches() {
+        global virtual List<SelectOption> getAMatches() {
             List<SelectOption> aOptions = aOptionsMap.get(match);
             
             return aOptions;
         }
         
-        public virtual string[] getArrayData() {
-            // build an array of account matches for this lead
-            // this will get passed into Javascript so the account dropdown can update dynamically
+		/*******************************************************************************************************
+		* @description getter that builds an array of account matches for this lead - will get passed into Javascript so the account dropdown can update dynamically 
+		*/ 	
+        global virtual string[] getArrayData() {
+            // this 
             string[] alist = new string[0];
             for (string cid : aOptionsMap.keyset()) {
                 for (SelectOption opt : aOptionsMap.get(cid)) {
@@ -293,7 +306,10 @@ global with sharing virtual class ONEN_CTRL_LeadConverter {
         }
     }
     
-    public virtual List<LeadResult> getResults() {
+	/*******************************************************************************************************
+	* @description getter for list of result objects after conversion
+	*/ 	
+    global virtual List<LeadResult> getResults() {
         if (leadSource=='All') {                
             lc.loadAllLeads();
             
@@ -317,8 +333,10 @@ global with sharing virtual class ONEN_CTRL_LeadConverter {
         return results;
     }
     
-    // this gets called by the Convert button
-    public virtual pageReference convertLeads() {
+	/*******************************************************************************************************
+	* @description method that starts the bulk conversion - gets called by the Convert button 
+	*/ 	
+    global virtual pageReference convertLeads() {
         
         //Create a map for duplicate contact matches
         Map<String,Boolean> cmatches = new Map<String,Boolean>();
@@ -383,8 +401,10 @@ global with sharing virtual class ONEN_CTRL_LeadConverter {
         return null;    
     }
     
-    public void batchConvert() {
-        //instantite the batch conversion class and call the convert methods that initiate batch
+	/*******************************************************************************************************
+	* @description instantites the batch conversion class and call the convert methods that initiate batch 
+	*/ 	
+    global virtual void batchConvert() {
         GW_BATCH_LeadConversion batch = new GW_BATCH_LeadConversion();
         if (leadSource != null && leadSource != '' && leadSource != 'All') {
             system.debug('MY LEADSOURCE: ' + leadSource);
@@ -395,35 +415,48 @@ global with sharing virtual class ONEN_CTRL_LeadConverter {
         batchRunning = true;
     }
     
-    public void cancel() {
+	/*******************************************************************************************************
+	* @description sets batching property to false
+	*/ 	
+    global virtual void cancel() {
         batching = false;
     }
     
-    public pageReference openBatchDialog() {
+	/*******************************************************************************************************
+	* @description sets batching property to true
+	*/ 	
+    global virtual pageReference openBatchDialog() {
         batching = true;
         return null;
     }
 
-    // class to display converted leads
-    public virtual class ConvertedLead {
-        public boolean success { get { return (contactId!=null); } }
-        public string contactId { get {return contactId;} set {contactId = value;} }    
-        public string contactName { get {return contactName;} set {contactName = value;} }
-        public string contactUrl { get {return (contactId==null) ? null : '/' + contactId;} }   
-        public string accountId { get {return accountId;} set {accountId = value;} }    
-        public string accountName { get {return accountName;} set {accountName = value;} }  
-        public string accountUrl { get {return (accountId==null) ? null : '/' + accountId;} }           
-        public string oppId { get {return oppId;} set {oppId = value;} }    
-        public string oppName { get {return oppName;} set {oppName = value;} }  
-        public string oppUrl { get {return (oppId==null) ? null : '/' + oppId;} }
+	/*******************************************************************************************************
+	* @description class that represents converted leads
+	*/ 	
+    global virtual class ConvertedLead {
+        global boolean success { get { return (contactId!=null); } }
+        global string contactId { get {return contactId;} set {contactId = value;} }    
+        global string contactName { get {return contactName;} set {contactName = value;} }
+        global string contactUrl { get {return (contactId==null) ? null : '/' + contactId;} }   
+        global string accountId { get {return accountId;} set {accountId = value;} }    
+        global string accountName { get {return accountName;} set {accountName = value;} }  
+        global string accountUrl { get {return (accountId==null) ? null : '/' + accountId;} }           
+        global string oppId { get {return oppId;} set {oppId = value;} }    
+        global string oppName { get {return oppName;} set {oppName = value;} }  
+        global string oppUrl { get {return (oppId==null) ? null : '/' + oppId;} }
     }
 
-    // displays the coverted leads list
-    public ConvertedLead[] getConversions() { 
+	/*******************************************************************************************************
+	* @description returns the coverted leads list
+	*/ 	
+    global virtual ConvertedLead[] getConversions() { 
         return ((convertedLeads==null || convertedLeads.isEmpty()) ? null : convertedLeads);
     }
     
-    public pageReference deleteLeads() {
+	/*******************************************************************************************************
+	* @description deletes checked leads
+	*/ 	
+    global virtual pageReference deleteLeads() {
         if (results != null) {
             lead[] dels = new lead[0];
             for (leadResult lr : results) {
@@ -438,7 +471,7 @@ global with sharing virtual class ONEN_CTRL_LeadConverter {
     }
 
     //not calculating the total records converted or deleted, but we could
-    //public string statusText { get {return statusText;} set {statusText = value;} }
+    //global string statusText { get {return statusText;} set {statusText = value;} }
     
     // get rid of double quotes
     static string dq(string original) {
