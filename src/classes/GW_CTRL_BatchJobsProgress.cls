@@ -1,16 +1,32 @@
-global class GW_CTRL_BatchJobsProgress {
-/*-----------------------------------------------------------------------------------------------
-* Written by Jason Venable, http://www.tehnrd.com/batch-apex-status-bar/ 
+/*******************************************************************************************************
+* @author Jason Venable, http://www.tehnrd.com/batch-apex-status-bar/
+* @date 01/01/2010
+* @description Controller for component that displays progress for batch apex jobs
+*
+* It is called statically, and therefore will supply the same information to all calls made from
+* within one transaction, or set of trigger calls. This is beneficial because this info should
+* be the same for all calls in a transaction, and by calling it statically we reduce the calls
+* that are made, making the total transaction more efficient.
 *
 * This program is released under the GNU General Public License. http://www.gnu.org/licenses/
-*
-* Controller for component that displays progress for batch apex jobs 
------------------------------------------------------------------------------------------------*/
+*/
+global class GW_CTRL_BatchJobsProgress {
  
     private List<BatchJob> batchJobs;
+    
+	/*******************************************************************************************************
+    * @description number of batch jobs the control will monitor
+	*/ 	
     global Integer numberOfJobs {get; set;}
+
+	/*******************************************************************************************************
+    * @description label to display at the top of the progress meter
+	*/ 	
     global String batchComponentLabel {get; set;}
  
+	/*******************************************************************************************************
+    * @description query for the current batch job progress
+	*/ 	
     global List<BatchJob> getBatchJobs() {
         //Create new list of BatchJobs, a wrapper class that includes the job and percent complete.
         batchJobs = new List<BatchJob>();
@@ -50,7 +66,10 @@ global class GW_CTRL_BatchJobsProgress {
         return batchJobs;
     }
  
-    //This is the wrapper class the includes the job itself and a value for the percent complete
+    
+	/*******************************************************************************************************
+    * @description wrapper class includes the job itself and a value for the percent complete
+	*/ 	
     global Class BatchJob{
         global AsyncApexJob job {get; set;}
         global Integer percentComplete {get; set;}
