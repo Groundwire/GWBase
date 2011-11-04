@@ -6,7 +6,6 @@
     <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>Primary__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The primary contact role for this opportunity record type, which is specified in the name field</inlineHelpText>
         <label>Primary Contact Role</label>

@@ -48,6 +48,10 @@
         <name>active</name>
         <value>active</value>
     </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
     <reportType>User</reportType>
     <showDetails>true</showDetails>
     <sortColumn>LAST_LOGIN</sortColumn>

@@ -2,10 +2,10 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <customSettingsType>List</customSettingsType>
     <customSettingsVisibility>Public</customSettingsVisibility>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>Campaign_Subtype__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Campaign Subtype</label>
         <length>200</length>
@@ -15,7 +15,6 @@
     </fields>
     <fields>
         <fullName>Campaign_Type__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Campaign Type</label>
         <length>200</length>
@@ -26,7 +25,6 @@
     <fields>
         <fullName>Default_Status__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>check here if this should be the default status value for campaigns of this type.  You can only choose one value as the default</inlineHelpText>
         <label>Default Status?</label>
@@ -35,14 +33,12 @@
     <fields>
         <fullName>IsResponded__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Counts as Responded</label>
         <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Status_Label__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>the campaign member status label to be created</inlineHelpText>
         <label>Status Label</label>

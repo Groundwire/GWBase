@@ -7,7 +7,6 @@
     <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>Field_Value_1__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>if this and Fieldname 1 are populated, requires that all actions for this rule have the specified value in specified field.  For checkboxes, enter &quot;True&quot; for checked.</inlineHelpText>
         <label>Field Value 1</label>
@@ -18,7 +17,6 @@
     </fields>
     <fields>
         <fullName>Fieldname_1__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>enter the name (developer name) of a field in Campaign to check</inlineHelpText>
         <label>Campaign Fieldname 1</label>
@@ -29,7 +27,6 @@
     </fields>
     <fields>
         <fullName>Level_Required__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>if populated, requires that all qualifying actions be of this level (in addition to any field requirements, if any)</inlineHelpText>
         <label>Level Required</label>
@@ -41,7 +38,6 @@
     </fields>
     <fields>
         <fullName>Level_To_Assign__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Level To Assign</label>
         <precision>2</precision>
@@ -52,7 +48,6 @@
     </fields>
     <fields>
         <fullName>Number_of_Actions_Required__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>only assigns the level if this many actions of the required specification have been taken during the usual timeframe</inlineHelpText>
         <label>Number of Actions Required</label>

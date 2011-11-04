@@ -33,7 +33,6 @@
         <type>Default</type>
     </actionOverrides>
     <deploymentStatus>Deployed</deploymentStatus>
-    <deprecated>false</deprecated>
     <description>Physical mailing address for grouping contacts</description>
     <enableActivities>true</enableActivities>
     <enableEnhancedLookup>false</enableEnhancedLookup>
@@ -43,7 +42,6 @@
     <fields>
         <fullName>Anonymous__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <description>Donor wants to be anonymous</description>
         <externalId>false</externalId>
         <label>Anonymous</label>
@@ -52,7 +50,6 @@
     <fields>
         <fullName>Auto_HHGreeting__c</fullName>
         <defaultValue>true</defaultValue>
-        <deprecated>false</deprecated>
         <description>If checked, the household greeting is set automatically from the contact first name(s).</description>
         <externalId>false</externalId>
         <inlineHelpText>If checked, the household greeting is set automatically from the contact first name(s).</inlineHelpText>
@@ -62,7 +59,6 @@
     <fields>
         <fullName>Auto_HHName__c</fullName>
         <defaultValue>true</defaultValue>
-        <deprecated>false</deprecated>
         <description>If checked, the household gets its name set automatically from the contact names.</description>
         <externalId>false</externalId>
         <inlineHelpText>If checked, the household gets its name set automatically from the contact names.</inlineHelpText>
@@ -72,7 +68,6 @@
     <fields>
         <fullName>AverageAmount__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Average Gift</label>
         <precision>16</precision>
@@ -82,7 +77,6 @@
     </fields>
     <fields>
         <fullName>Best_Gift_Year_Total__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Best Gift Year Total</label>
         <precision>14</precision>
@@ -92,7 +86,6 @@
     </fields>
     <fields>
         <fullName>Best_Gift_Year__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Best Gift Year</label>
         <precision>4</precision>
@@ -103,7 +96,6 @@
     </fields>
     <fields>
         <fullName>FirstCloseDate__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>First Gift Date</label>
         <required>false</required>
@@ -111,7 +103,6 @@
     </fields>
     <fields>
         <fullName>Greeting__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>This is automatically calculated based on the names of the members of the Household. To change it, use the Override Greeting field.</inlineHelpText>
         <label>Greeting</label>
@@ -123,7 +114,6 @@
     <fields>
         <fullName>LargestAmount__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Largest Gift</label>
         <precision>16</precision>
@@ -133,7 +123,6 @@
     </fields>
     <fields>
         <fullName>LastCloseDate__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Last Gift Date</label>
         <required>false</required>
@@ -142,7 +131,6 @@
     <fields>
         <fullName>LastMembershipAmount__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Last Membership Amount</label>
         <precision>16</precision>
@@ -152,7 +140,6 @@
     </fields>
     <fields>
         <fullName>LastMembershipDate__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Last Membership Date</label>
         <required>false</required>
@@ -160,7 +147,6 @@
     </fields>
     <fields>
         <fullName>LastMembershipLevel__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Last Membership Level</label>
         <length>255</length>
@@ -170,7 +156,6 @@
     </fields>
     <fields>
         <fullName>LastMembershipOrigin__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Last Membership Origin</label>
         <length>255</length>
@@ -181,7 +166,6 @@
     <fields>
         <fullName>LastOppAmount__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Last Gift Amount</label>
         <precision>16</precision>
@@ -191,7 +175,6 @@
     </fields>
     <fields>
         <fullName>Member_Count__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Count of all the members in a household</inlineHelpText>
         <label>Member Count</label>
@@ -203,7 +186,6 @@
     </fields>
     <fields>
         <fullName>MembershipEndDate__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Membership End Date</label>
         <required>false</required>
@@ -211,7 +193,6 @@
     </fields>
     <fields>
         <fullName>MembershipJoinDate__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Membership Join Date</label>
         <required>false</required>
@@ -220,7 +201,6 @@
     <fields>
         <fullName>NumberOfClosedOpps__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Number of Gifts</label>
         <precision>18</precision>
@@ -232,7 +212,6 @@
     <fields>
         <fullName>NumberOfMembershipOpps__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Number of Membership Gifts</label>
         <precision>18</precision>
@@ -244,7 +223,6 @@
     <fields>
         <fullName>OppAmount2YearsAgo__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Gifts Two Years Ago</label>
         <precision>16</precision>
@@ -255,7 +233,6 @@
     <fields>
         <fullName>OppAmountLastNDays__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Gifts Last 365 Days</label>
         <precision>16</precision>
@@ -266,7 +243,6 @@
     <fields>
         <fullName>OppAmountLastYear__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Gifts Last Year</label>
         <precision>16</precision>
@@ -277,7 +253,6 @@
     <fields>
         <fullName>OppAmountThisYear__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Gifts This Year</label>
         <precision>16</precision>
@@ -288,7 +263,6 @@
     <fields>
         <fullName>OppsClosed2YearsAgo__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Number of Gifts Two Years Ago</label>
         <precision>18</precision>
@@ -300,7 +274,6 @@
     <fields>
         <fullName>OppsClosedLastNDays__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Number of Gifts Last 365 Days</label>
         <precision>18</precision>
@@ -312,7 +285,6 @@
     <fields>
         <fullName>OppsClosedLastYear__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Number of Gifts Last Year</label>
         <precision>18</precision>
@@ -324,7 +296,6 @@
     <fields>
         <fullName>OppsClosedThisYear__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Number of Gifts This Year</label>
         <precision>18</precision>
@@ -335,7 +306,6 @@
     </fields>
     <fields>
         <fullName>Override_Greeting__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Enter a new Greet here if you want to change the current greeting.</inlineHelpText>
         <label>Override Greeting</label>
@@ -346,7 +316,6 @@
     </fields>
     <fields>
         <fullName>Override_Household_Name__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Enter a new Household Name here if you want to change the current name.</inlineHelpText>
         <label>Override Household Name</label>
@@ -358,7 +327,6 @@
     <fields>
         <fullName>SmallestAmount__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Smallest Gift</label>
         <precision>16</precision>
@@ -369,7 +337,6 @@
     <fields>
         <fullName>TotalMembershipOppAmount__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Membership Amount</label>
         <precision>16</precision>
@@ -380,7 +347,6 @@
     <fields>
         <fullName>TotalOppAmount__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Gifts</label>
         <precision>16</precision>

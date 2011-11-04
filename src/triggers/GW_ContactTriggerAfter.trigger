@@ -10,9 +10,9 @@ trigger GW_ContactTriggerAfter on Contact (after delete, after insert, after upd
     }
 
     // update primary contact for all the accounts that were changed (currently doesn't handle undelete)
-    if (GW_TriggerSettings.ts.Enable_Primary_Contact_On_Accounts__c && !trigger.isUnDelete) {
+    if (GW_TriggerSettings.ts.Enable_Primary_Contact_On_Accounts__c) {
         ONEN_AccountMaintenance am = new ONEN_AccountMaintenance();     
-        am.SetPrimaryContacts(trigger.New, trigger.Old, trigger.isInsert, trigger.isDelete);
+        am.SetPrimaryContacts(trigger.New, trigger.Old, (trigger.isInsert || trigger.isUndelete), trigger.isDelete);
     }
 
     if (trigger.isDelete) {

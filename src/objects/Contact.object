@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
-    <enableFeeds>true</enableFeeds>
     <fields>
         <fullName>Action_Alerts__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Indicates that this person should receive email action alerts</inlineHelpText>
         <label>Action Alerts</label>
@@ -13,7 +11,6 @@
     </fields>
     <fields>
         <fullName>Activist_Preferences__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Activist Preferences</label>
         <picklist>
@@ -38,7 +35,6 @@
     <fields>
         <fullName>Anonymous__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>If set, mark all new opportunities for this Contact as anonymous.</inlineHelpText>
         <label>Anonymous</label>
@@ -48,7 +44,6 @@
     <fields>
         <fullName>AverageAmount__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Average Gift</label>
         <precision>16</precision>
@@ -60,7 +55,6 @@
     <fields>
         <fullName>Bad_Address__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Bad Address</label>
         <trackFeedHistory>false</trackFeedHistory>
@@ -69,7 +63,6 @@
     <fields>
         <fullName>Bad_Email_Address__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Bad Email Address</label>
         <trackFeedHistory>false</trackFeedHistory>
@@ -77,7 +70,6 @@
     </fields>
     <fields>
         <fullName>Best_Gift_Year_Total__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>total giving during the year shown in Best Gift Year</inlineHelpText>
         <label>Best Gift Year Total</label>
@@ -89,7 +81,6 @@
     </fields>
     <fields>
         <fullName>Best_Gift_Year__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Best Gift Year</label>
         <precision>4</precision>
@@ -101,7 +92,6 @@
     </fields>
     <fields>
         <fullName>BoardMember__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Board Member</label>
         <picklist>
@@ -124,7 +114,6 @@
     </fields>
     <fields>
         <fullName>Communication_Preference__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Communication Preference</label>
         <picklist>
@@ -151,7 +140,6 @@
     </fields>
     <fields>
         <fullName>Contact_Name_Last_First__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>LastName &amp; &quot;, &quot; &amp; FirstName</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -162,7 +150,6 @@
     </fields>
     <fields>
         <fullName>Days_Since_First_Action_at_Level__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>TODAY() -  First_Action_Date_Curr_Level__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -176,7 +163,6 @@
     <fields>
         <fullName>Deceased__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Check if this contact is deceased</inlineHelpText>
         <label>Deceased</label>
@@ -186,7 +172,6 @@
     <fields>
         <fullName>Do_Not_Mail__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Do Not Mail</label>
         <trackFeedHistory>false</trackFeedHistory>
@@ -195,7 +180,6 @@
     <fields>
         <fullName>Do_Not_Solicit__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Do Not Solicit</label>
         <trackFeedHistory>false</trackFeedHistory>
@@ -204,7 +188,6 @@
     <fields>
         <fullName>Do_Not_Trade__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Do not trade, rent or otherwise share this person&apos;s contact information with third parties.</inlineHelpText>
         <label>Do Not Trade</label>
@@ -213,7 +196,6 @@
     </fields>
     <fields>
         <fullName>Donor_This_Year__c</fullName>
-        <deprecated>false</deprecated>
         <description>yes/no formula</description>
         <externalId>false</externalId>
         <formula>IF (   OppAmountThisYear__c  &gt; 0 , &quot;Yes&quot; , &quot;No&quot; )</formula>
@@ -225,7 +207,6 @@
     </fields>
     <fields>
         <fullName>Donor__c</fullName>
-        <deprecated>false</deprecated>
         <description>yes/no formula for display to profiles without permissions to view Opps</description>
         <externalId>false</externalId>
         <formula>IF (   TotalOppAmount__c  &gt; 0 , &quot;Yes&quot;, &quot;No&quot; )</formula>
@@ -238,7 +219,6 @@
     </fields>
     <fields>
         <fullName>Engagement_Level_Numeric_After_Override__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>MAX (  Engagement_Level_Override_Numeric__c ,  Engagement_Level_Numeric__c )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -251,7 +231,6 @@
     </fields>
     <fields>
         <fullName>Engagement_Level_Numeric__c</fullName>
-        <deprecated>false</deprecated>
         <description>set automatically by batch process</description>
         <externalId>false</externalId>
         <label>Engagement Level Numeric</label>
@@ -264,7 +243,6 @@
     </fields>
     <fields>
         <fullName>Engagement_Level_Override_Numeric__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>VALUE(LEFT(TEXT(Engagement_Level_Override__c ),1))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -277,7 +255,6 @@
     </fields>
     <fields>
         <fullName>Engagement_Level_Override__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>This will increase the contact&apos;s engagement level, if this level is higher than what they would otherwise get based on their activity/donor history.  It cannot lower their level, only raise it.  It is effective until the override end date specified.</inlineHelpText>
         <label>Engagement Level Override</label>
@@ -313,7 +290,6 @@
     </fields>
     <fields>
         <fullName>Engagement_Level__c</fullName>
-        <deprecated>false</deprecated>
         <description>set by batch process</description>
         <externalId>false</externalId>
         <inlineHelpText>Current engagement level, automatically calculated.  If you want to manually change the level, do not attempt to change this field.  Instead, enter a value in Engagement Level Override.</inlineHelpText>
@@ -356,7 +332,6 @@
     </fields>
     <fields>
         <fullName>Engagement_Levels_Below_Peak__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>Engagement_Level_Numeric__c - Engagement_Peak_Numeric__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -370,7 +345,6 @@
     </fields>
     <fields>
         <fullName>Engagement_Override_End_Date__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>override specified is effective until this date</inlineHelpText>
         <label>Engagement Override End Date</label>
@@ -380,7 +354,6 @@
     </fields>
     <fields>
         <fullName>Engagement_Peak_Numeric__c</fullName>
-        <deprecated>false</deprecated>
         <description>set automatically by batch process</description>
         <externalId>false</externalId>
         <label>Engagement Peak Numeric</label>
@@ -393,7 +366,6 @@
     </fields>
     <fields>
         <fullName>Engagement_Peak__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The highest engagement level ever reached by this contact.
 
@@ -437,7 +409,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>External_Id__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>true</externalId>
         <label>External Id</label>
         <length>80</length>
@@ -448,7 +419,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>FirstCloseDate__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>First Gift Date</label>
         <required>false</required>
@@ -457,7 +427,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>First_Action_Date_Curr_Level__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The date of the first action for this contact at their current Engagement Level.   i.e. the date the contact first &quot;graduated&quot; to the this level of engagement.</inlineHelpText>
         <label>First Action Date at Engagement Level</label>
@@ -467,7 +436,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>Gender__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Gender</label>
         <length>3</length>
@@ -478,7 +446,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>Home_County__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Home County</label>
         <length>255</length>
@@ -489,7 +456,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>HouseholdGreeting__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>ONEN_Household__r.Greeting__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -500,7 +466,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>HouseholdMembershipEndDate__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>ONEN_Household__r.MembershipEndDate__c</formula>
         <inlineHelpText>End date of the last membership for this person&apos;s household.</inlineHelpText>
@@ -510,7 +475,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>HouseholdMembershipJoinDate__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>ONEN_Household__r.MembershipJoinDate__c</formula>
         <inlineHelpText>Start date of the first membership for this person&apos;s household.</inlineHelpText>
@@ -520,7 +484,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>HouseholdName__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>ONEN_Household__r.Name</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -532,7 +495,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>Inactive__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Indicates that this person is no longer involved in any way, hasn&apos;t been for some time, and we don&apos;t expect them to get more involved.</inlineHelpText>
         <label>Inactive</label>
@@ -541,7 +503,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>Is_Org_Primary_Contact__c</fullName>
-        <deprecated>false</deprecated>
         <description>for use in reports, equals &quot;True&quot; if this contact is the primary con for the related acct</description>
         <externalId>false</externalId>
         <formula>IF (  AND ( Account.Primary_Contact__c =  Id , NOT ( Account.Name = &quot;Individual&quot; ) ) , &quot;True&quot; , &quot;False&quot; )</formula>
@@ -553,7 +514,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>Issue_Interest__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Issue Interest</label>
         <picklist>
@@ -570,7 +530,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>LargestAmount__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Largest Gift</label>
         <precision>16</precision>
@@ -581,7 +540,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>LastCloseDateHH__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>ONEN_Household__r.LastCloseDate__c</formula>
         <label>Last Household Gift Date</label>
@@ -590,7 +548,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>LastCloseDate__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Last Gift Date</label>
         <required>false</required>
@@ -600,7 +557,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>LastMembershipAmount__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Last Membership Amount</label>
         <precision>16</precision>
@@ -611,7 +567,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>LastMembershipDate__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Last Membership Date</label>
         <required>false</required>
@@ -620,7 +575,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>LastMembershipLevel__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Last Membership Level</label>
         <length>255</length>
@@ -631,7 +585,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>LastMembershipOrigin__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Last Membership Origin</label>
         <length>255</length>
@@ -643,7 +596,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>LastOppAmount__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Last Gift Amount</label>
         <precision>16</precision>
@@ -654,7 +606,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>Last_Leadership_Action_Date__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Date of most recent action taken (may include donations if your org includes that in Engagement Level calculations)</inlineHelpText>
         <label>Last Engagement Action Date</label>
@@ -699,7 +650,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>MembershipEndDate__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Membership End Date</label>
         <required>false</required>
@@ -708,7 +658,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>MembershipJoinDate__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Membership Join Date</label>
         <required>false</required>
@@ -717,7 +666,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>Membership_Span__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>year(MembershipEndDate__c ) - year(MembershipJoinDate__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -730,7 +678,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>Membership_Status__c</fullName>
-        <deprecated>false</deprecated>
         <description>Note: Grace Period is determined in Opportunity &amp; Rollup Settings.</description>
         <externalId>false</externalId>
         <formula>if (  MembershipEndDate__c  &lt;today(), if ( MembershipEndDate__c  &gt; ( TODAY() -  $Setup.OppRollupSettings__c.Membership_Grace_Period__c  ) , &quot;Grace Period&quot; , &quot;Expired&quot;) , if(isnull(MembershipEndDate__c ),&quot;&quot;,&quot;Current&quot;))</formula>
@@ -743,7 +690,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>Middle_Name__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Middle Name</label>
         <length>255</length>
@@ -754,7 +700,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>New_Donor_This_Year__c</fullName>
-        <deprecated>false</deprecated>
         <description>yes/no formula</description>
         <externalId>false</externalId>
         <formula>IF (  AND (  OppAmountThisYear__c  =  TotalOppAmount__c   , OppAmountThisYear__c &gt; 0 ) , &quot;Yes&quot; , &quot;No &quot; )</formula>
@@ -767,7 +712,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>Newsletter_Opt_Out__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Check here to indicate that a person who would ordinarily get the newsletter should not get it.</inlineHelpText>
         <label>Newsletter Opt Out</label>
@@ -777,7 +721,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>Not_in_HH_Name__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>If you check this box, this contact will not be included in the household name. Use for children or other dependents.</inlineHelpText>
         <label>Not in Household Name</label>
@@ -787,7 +730,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>NumberOfClosedOpps__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Number of Gifts</label>
         <precision>18</precision>
@@ -800,7 +742,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>NumberOfMembershipOpps__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Number of Memberships</label>
         <precision>18</precision>
@@ -813,7 +754,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>ONEN_Household__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>This is a lookup to the Contact&apos;s Household. If you want to change it, override the Household Name on this Household and it will show up here.</inlineHelpText>
         <label>Household</label>
@@ -827,7 +767,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>OppAmount2YearsAgo__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Gifts Two Years Ago</label>
         <precision>16</precision>
@@ -838,7 +777,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>OppAmountLastNDaysHH__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>ONEN_Household__r.OppAmountLastNDays__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -851,7 +789,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>OppAmountLastNDays__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Gifts Last 365 Days</label>
         <precision>16</precision>
@@ -862,7 +799,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>OppAmountLastYearHH__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>ONEN_Household__r.OppAmountLastYear__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -875,7 +811,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>OppAmountLastYear__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Gifts Last Year</label>
         <precision>16</precision>
@@ -886,7 +821,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>OppAmountThisYearHH__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>ONEN_Household__r.OppAmountThisYear__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -899,7 +833,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>OppAmountThisYear__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Gifts This Year</label>
         <precision>16</precision>
@@ -911,7 +844,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>OppsClosed2YearsAgo__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Number of Gifts Two Years Ago</label>
         <precision>18</precision>
@@ -924,7 +856,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>OppsClosedLastNDays__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Number of Gifts Last 365 Days</label>
         <precision>18</precision>
@@ -937,7 +868,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>OppsClosedLastYear__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Number of Gifts Last Year</label>
         <precision>18</precision>
@@ -950,7 +880,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>OppsClosedThisYear__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Number of Gifts This Year</label>
         <precision>18</precision>
@@ -962,7 +891,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>Override_Prospect_Level__c</fullName>
-        <deprecated>false</deprecated>
         <description>If Don&apos;t Override is chosen, then Prospect level field is calc&apos;d automatically in a formula using the total gift fields. If any other value is chosen, that value is used instead.</description>
         <externalId>false</externalId>
         <inlineHelpText>Choose Do Not Override to allow Prospect Level to be calculated automatically. Choose any other value to set Prospect Level manually.</inlineHelpText>
@@ -987,7 +915,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>Primary_Address_Household_Greeting__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) , FirstName , IF ( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ) , HouseholdGreeting__c , IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) , HouseholdGreeting__c , FirstName ) ) )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -998,7 +925,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>Primary_Address_Household_Name__c</fullName>
-        <deprecated>false</deprecated>
         <description>Equals Household Name if effective primary address is Home</description>
         <externalId>false</externalId>
         <formula>IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) ,  FirstName &amp; &quot; &quot; &amp; LastName , IF ( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ) ,  HouseholdName__c  , IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) , HouseholdName__c , FirstName &amp; &quot; &quot; &amp; LastName ) ) )</formula>
@@ -1010,7 +936,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>Primary_Address_Name_Block_HH__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>IF ( OR( ISPICKVAL(Primary_Address__c ,&quot;Work&quot;), AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) ) , Primary_Address_Name_Block__c , HouseholdName__c )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -1021,7 +946,6 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>Primary_Address_Name_Block__c</fullName>
-        <deprecated>false</deprecated>
         <description>includes full contact name + Title &amp; org name where applicable</description>
         <externalId>false</externalId>
         <formula>FirstName &amp; IF (  Middle_Name__c  &lt;&gt; &quot;&quot; , &quot; &quot; &amp; Middle_Name__c  , &quot;&quot; ) &amp; &quot; &quot; &amp; LastName  &amp;
@@ -1035,7 +959,6 @@ IF (   Primary_Address_Org_Name__c  &lt;&gt; &quot;&quot; ,  BR() &amp; Primary_
     </fields>
     <fields>
         <fullName>Primary_Address_Org_Name__c</fullName>
-        <deprecated>false</deprecated>
         <description>Equal to the account name if and only if there is an account, and the effective primary address is Work.  (11/17/08 MMS)</description>
         <externalId>false</externalId>
         <formula>IF ( Account.Name = &quot;Individual&quot; , &quot;&quot; , 
@@ -1051,7 +974,6 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
     </fields>
     <fields>
         <fullName>Primary_Address_Title__c</fullName>
-        <deprecated>false</deprecated>
         <description>Equals title if and only if effective primary address is Work</description>
         <externalId>false</externalId>
         <formula>IF ( Account.Name = &quot;Individual&quot; , &quot;&quot; , 
@@ -1067,7 +989,6 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
     </fields>
     <fields>
         <fullName>Primary_Address__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Selecting Home makes the Home address the primary, selecting Work makes the Work Address the primary.</inlineHelpText>
         <label>Primary Address</label>
@@ -1091,7 +1012,6 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
     </fields>
     <fields>
         <fullName>Primary_City__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>IF ( ISPICKVAL ( Primary_Address__c, &quot;No Mail&quot; ) , &quot;&quot; ,
 IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) , MailingCity , IF ( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ) , OtherCity , IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) , OtherCity, MailingCity ) ) )
@@ -1105,7 +1025,6 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
     </fields>
     <fields>
         <fullName>Primary_Country__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>IF ( ISPICKVAL ( Primary_Address__c, &quot;No Mail&quot; ) , &quot;&quot; , 
 IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) , MailingCountry , IF ( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ) , OtherCountry , IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) , OtherCountry , MailingCountry ) ) )
@@ -1119,7 +1038,6 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
     </fields>
     <fields>
         <fullName>Primary_County__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>IF ( ISPICKVAL ( Primary_Address__c, &quot;No Mail&quot; ) , &quot;&quot; ,
 IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) , Work_County__c , IF ( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ) , Home_County__c , IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) , Home_County__c , Work_County__c ) ) )
@@ -1132,7 +1050,6 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
     </fields>
     <fields>
         <fullName>Primary_Postal_Code__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>IF ( ISPICKVAL ( Primary_Address__c, &quot;No Mail&quot; ) , &quot;&quot; ,
 IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) , MailingPostalCode , IF ( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ) , OtherPostalCode , IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) , OtherPostalCode , MailingPostalCode ) ) )
@@ -1146,7 +1063,6 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
     </fields>
     <fields>
         <fullName>Primary_State_Province__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>IF ( ISPICKVAL ( Primary_Address__c, &quot;No Mail&quot; ) , &quot;&quot; ,
 IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) , MailingState , IF ( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ) , OtherState , IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) , OtherState , MailingState ) ) )
@@ -1160,7 +1076,6 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
     </fields>
     <fields>
         <fullName>Primary_Street__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>IF ( ISPICKVAL ( Primary_Address__c, &quot;No Mail&quot; ) , &quot;&quot; ,
 IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) , MailingStreet , IF ( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ) , OtherStreet , IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) , OtherStreet, MailingStreet ) ) )
@@ -1174,7 +1089,6 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
     </fields>
     <fields>
         <fullName>Prospect_Level__c</fullName>
-        <deprecated>false</deprecated>
         <description>Level of Prospect. Calculated based on Total Gifts fields unless Overridden in Override Prospect field.  Change formula to embody client&apos;s donation level rules.</description>
         <externalId>false</externalId>
         <formula>IF(OR(ISBLANK(TEXT(Override_Prospect_Level__c)) ,  ISPICKVAL(Override_Prospect_Level__c, &apos;Do Not Override&apos;)), 
@@ -1193,7 +1107,6 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
     </fields>
     <fields>
         <fullName>SecondContactEmail__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Second Contact Email</label>
         <required>false</required>
@@ -1203,7 +1116,6 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
     </fields>
     <fields>
         <fullName>SecondContactFirstName__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Second Contact First Name</label>
         <length>255</length>
@@ -1214,7 +1126,6 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
     </fields>
     <fields>
         <fullName>SecondContactLastName__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Second Contact Last Name</label>
         <length>255</length>
@@ -1225,7 +1136,6 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
     </fields>
     <fields>
         <fullName>SecondContactSalutation__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Second Contact Salutation</label>
         <picklist>
@@ -1256,7 +1166,6 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
     </fields>
     <fields>
         <fullName>Secondary_Email__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Secondary Email</label>
         <required>false</required>
@@ -1267,7 +1176,6 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
     <fields>
         <fullName>SmallestAmount__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Smallest Gift</label>
         <precision>16</precision>
@@ -1278,7 +1186,6 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
     </fields>
     <fields>
         <fullName>Staff_Status__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Is this contact a staff member?</inlineHelpText>
         <label>Staff Status</label>
@@ -1303,7 +1210,6 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
     <fields>
         <fullName>TotalMembershipOppAmount__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Membership Amount</label>
         <precision>16</precision>
@@ -1315,7 +1221,6 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
     <fields>
         <fullName>TotalOppAmount__c</fullName>
         <defaultValue>0</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Gifts</label>
         <precision>16</precision>
@@ -1326,7 +1231,6 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
     </fields>
     <fields>
         <fullName>Total_Household_Gifts__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>ONEN_Household__r.TotalOppAmount__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -1338,7 +1242,6 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
     </fields>
     <fields>
         <fullName>Work_County__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Work County</label>
         <length>255</length>

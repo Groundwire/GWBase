@@ -3,10 +3,10 @@
     <customSettingsType>List</customSettingsType>
     <customSettingsVisibility>Public</customSettingsVisibility>
     <description>Fields that the Lead Converter (Importer) Visualforce page should automatically transfer from leads to contacts during conversion.</description>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>Contact_Field__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>API name of the contact field (including the &quot;__c&quot; for custom fields) to which the lead field should be mapped.</inlineHelpText>
         <label>Contact Field</label>
@@ -18,7 +18,6 @@
     <fields>
         <fullName>Field_Type__c</fullName>
         <defaultValue>&quot;Text&quot;</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Should be either Text, Checkbox, or Multiselect.</inlineHelpText>
         <label>Field Type</label>
