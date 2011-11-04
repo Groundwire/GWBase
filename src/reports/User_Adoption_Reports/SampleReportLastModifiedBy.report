@@ -16,9 +16,6 @@
         <field>CREATEDDATE</field>
     </columns>
     <columns>
-        <field>LASTMODIFIED</field>
-    </columns>
-    <columns>
         <field>LASTMODIFIEDDATE</field>
     </columns>
     <columns>

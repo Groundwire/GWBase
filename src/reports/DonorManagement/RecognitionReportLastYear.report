@@ -28,6 +28,7 @@
         <criteriaItems>
             <column>ACCOUNT.NAME</column>
             <operator>equals</operator>
+            <value></value>
         </criteriaItems>
         <criteriaItems>
             <column>ROLE</column>

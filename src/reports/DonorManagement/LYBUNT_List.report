@@ -32,16 +32,20 @@
         <criteriaItems>
             <column>Contact.OppAmountLastYear__c</column>
             <operator>greaterThan</operator>
-            <value>0.0</value>
+            <value>0</value>
         </criteriaItems>
         <criteriaItems>
             <column>Contact.OppAmountThisYear__c</column>
             <operator>equals</operator>
-            <value>0.0</value>
+            <value>0</value>
         </criteriaItems>
     </filter>
     <format>Matrix</format>
     <name>LYBUNT List - Individuals</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
     <reportType>ContactList</reportType>
     <scope>organization</scope>
     <showDetails>true</showDetails>

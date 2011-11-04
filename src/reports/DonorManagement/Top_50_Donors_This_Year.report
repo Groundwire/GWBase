@@ -28,7 +28,7 @@
         <criteriaItems>
             <column>Contact.OppAmountThisYear__c</column>
             <operator>greaterThan</operator>
-            <value>0.0</value>
+            <value>0</value>
         </criteriaItems>
     </filter>
     <format>Tabular</format>

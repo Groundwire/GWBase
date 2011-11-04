@@ -812,6 +812,7 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     </fields>
     <fields>
         <fullName>ONEN_Household__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>This is a lookup to the Contact&apos;s Household. If you want to change it, override the Household Name on this Household and it will show up here.</inlineHelpText>

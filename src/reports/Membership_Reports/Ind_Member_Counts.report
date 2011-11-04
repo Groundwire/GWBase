@@ -43,9 +43,6 @@
     <columns>
         <field>EMAIL</field>
     </columns>
-    <columns>
-        <field>Contact.MembershipEndDate__c</field>
-    </columns>
     <description>count of all current and grace period individual members</description>
     <filter>
         <criteriaItems>

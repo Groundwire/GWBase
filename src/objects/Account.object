@@ -601,6 +601,7 @@
     </fields>
     <fields>
         <fullName>Primary_Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Our primary contact person for this Organization</inlineHelpText>

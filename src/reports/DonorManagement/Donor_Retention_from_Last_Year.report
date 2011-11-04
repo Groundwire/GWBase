@@ -53,7 +53,7 @@
         <criteriaItems>
             <column>Contact.OppAmountLastYear__c</column>
             <operator>greaterThan</operator>
-            <value>0.0</value>
+            <value>0</value>
         </criteriaItems>
     </filter>
     <format>Matrix</format>
@@ -66,8 +66,6 @@
     <reportType>ContactList</reportType>
     <scope>organization</scope>
     <showDetails>false</showDetails>
-    <sortColumn>LAST_NAME</sortColumn>
-    <sortOrder>Asc</sortOrder>
     <timeFrameFilter>
         <dateColumn>CREATED_DATE</dateColumn>
         <interval>INTERVAL_CUSTOM</interval>

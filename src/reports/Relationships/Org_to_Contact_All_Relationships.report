@@ -39,9 +39,6 @@
     <columns>
         <field>Account_Relationship__c.Notes__c</field>
     </columns>
-    <columns>
-        <field>FK_NAME</field>
-    </columns>
     <description>All Relationship between Contacts and Orgs</description>
     <format>Summary</format>
     <groupingsDown>

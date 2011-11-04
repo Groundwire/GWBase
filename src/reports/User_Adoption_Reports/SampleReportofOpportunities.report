@@ -37,9 +37,6 @@
         <field>ROLLUP_DESCRIPTION</field>
     </columns>
     <columns>
-        <field>CREATED_DATE</field>
-    </columns>
-    <columns>
         <field>ACCOUNT_NAME</field>
     </columns>
     <description>How many opportunities are being added to Salesforce?</description>

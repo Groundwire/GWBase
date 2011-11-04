@@ -10,9 +10,6 @@
         <field>Account.Primary_Contact__c</field>
     </columns>
     <columns>
-        <field>CLOSE_DATE</field>
-    </columns>
-    <columns>
         <field>STAGE_NAME</field>
     </columns>
     <columns>

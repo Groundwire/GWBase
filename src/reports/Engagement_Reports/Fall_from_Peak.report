@@ -10,7 +10,7 @@
         </chartSummaries>
         <chartType>HorizontalBarStackedTo100</chartType>
         <enableHoverLabels>true</enableHoverLabels>
-        <expandOthers>false</expandOthers>
+        <expandOthers>true</expandOthers>
         <groupingColumn>Contact.Engagement_Peak__c</groupingColumn>
         <legendPosition>Right</legendPosition>
         <location>CHART_TOP</location>
@@ -88,6 +88,10 @@
         <sortOrder>Asc</sortOrder>
     </groupingsDown>
     <name>Fall from Peak by Peak Level</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
     <reportType>ContactList</reportType>
     <scope>organization</scope>
     <showDetails>false</showDetails>

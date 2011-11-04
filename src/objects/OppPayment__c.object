@@ -98,6 +98,7 @@
     </fields>
     <fields>
         <fullName>Opp_For_Installment__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The Opportunity this is an installment for.  If null, then this is a mirror payment for its master opportunity.</inlineHelpText>

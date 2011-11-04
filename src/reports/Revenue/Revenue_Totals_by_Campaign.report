@@ -11,9 +11,8 @@
         </chartSummaries>
         <chartType>VerticalColumn</chartType>
         <enableHoverLabels>false</enableHoverLabels>
-        <expandOthers>false</expandOthers>
+        <expandOthers>true</expandOthers>
         <groupingColumn>CAMPAIGN_NAME</groupingColumn>
-        <legendPosition>Right</legendPosition>
         <location>CHART_BOTTOM</location>
         <showAxisLabels>true</showAxisLabels>
         <showPercentage>false</showPercentage>
@@ -27,9 +26,6 @@
         <titleSize>18</titleSize>
     </chart>
     <columns>
-        <field>CAMPAIGN_NAME</field>
-    </columns>
-    <columns>
         <field>OPPORTUNITY_NAME</field>
     </columns>
     <columns>
@@ -39,7 +35,7 @@
     <description>closed-won totals for each campaign (default: campaigns dated this and last FY)</description>
     <format>Matrix</format>
     <groupingsAcross>
-        <dateGranularity>Quarter</dateGranularity>
+        <dateGranularity>Day</dateGranularity>
         <field>RECORDTYPE</field>
         <sortOrder>Asc</sortOrder>
     </groupingsAcross>

@@ -10,7 +10,7 @@
         </chartSummaries>
         <chartType>VerticalColumnStacked</chartType>
         <enableHoverLabels>true</enableHoverLabels>
-        <expandOthers>false</expandOthers>
+        <expandOthers>true</expandOthers>
         <groupingColumn>CREATED_DATE</groupingColumn>
         <legendPosition>Right</legendPosition>
         <location>CHART_BOTTOM</location>
@@ -84,6 +84,10 @@
         <sortOrder>Asc</sortOrder>
     </groupingsDown>
     <name>Engagement Level Totals by Created Date</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
     <reportType>ContactList</reportType>
     <scope>organization</scope>
     <showDetails>false</showDetails>
