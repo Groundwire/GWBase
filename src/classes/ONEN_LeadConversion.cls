@@ -484,13 +484,10 @@ global with sharing virtual class ONEN_LeadConversion {
 					} else {
 						newOpp.StageName = ld.Opportunity_Stage__c;
 					}
-					Map<String, Id> RecordTypeMap = new Map<String, Id>(GW_RecTypes.GetRecordTypeIdMap('Opportunity'));	
-					if (ld.Opportunity_Record_Type__c == null || RecordTypeMap.get(ld.Opportunity_Record_Type__c) == null) {
-						newOpp.RecordTypeID = RecordTypeMap.get(ONEN_Constants.OPP_DEFAULT_RECTYPE_CONTACT);
-						//newOpp.Name = con.firstName +  ' ' +  con.lastName + ' ' +  newOpp.CloseDate.year() + ' ' + ONEN_Constants.OPP_DEFAULT_RECTYPE_CONTACT;
+					if (ld.Opportunity_Record_Type__c == null || GW_RecTypes.GetRecordTypeId('Opportunity', ld.Opportunity_Record_Type__c) == null) {
+						newOpp.RecordTypeID = GW_RecTypes.GetRecordTypeId( 'Opportunity', ONEN_Constants.OPP_DEFAULT_RECTYPE_CONTACT );
 					} else { 
-						newOpp.RecordTypeID = RecordTypeMap.get(ld.Opportunity_Record_Type__c);
-						//newOpp.Name = con.firstName +  ' ' +  con.lastName + ' ' +  newOpp.CloseDate.year() + ' ' + ld.Opportunity_Record_Type__c;
+						newOpp.RecordTypeID = GW_RecTypes.GetRecordTypeId( 'Opportunity', ld.Opportunity_Record_Type__c );
 					}					
 					newOpp.Name = ONEN_OpportunityMaintenance.oppName(newOpp, con.firstName +  ' ' +  con.lastName, false);
 					
@@ -585,6 +582,11 @@ global with sharing virtual class ONEN_LeadConversion {
 									if (ld.opportunity_date__c <= system.today()) opp.closedate = ld.opportunity_date__c;
 									if (ld.opportunity_amount__c > 0) opp.amount = ld.opportunity_amount__c;
 									opp.description = ld.opportunity_description__c;									
+									if (ld.Opportunity_Record_Type__c == null || GW_RecTypes.GetRecordTypeId('Opportunity', ld.Opportunity_Record_Type__c) == null) {
+										opp.RecordTypeID = GW_RecTypes.GetRecordTypeId('Opportunity', ONEN_Constants.OPP_DEFAULT_RECTYPE_CONTACT);
+									} else {
+										opp.RecordTypeID = GW_RecTypes.GetRecordTypeId('Opportunity', ld.Opportunity_Record_Type__c);
+									}					
 									if (OppStageForUpdates != null && o.stagename != 'Closed Won') {
 										if (ld.Opportunity_Stage__c != null) {
 											opp.stagename = ld.Opportunity_Stage__c;
