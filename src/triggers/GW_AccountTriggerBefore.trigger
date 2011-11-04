@@ -9,6 +9,7 @@ trigger GW_AccountTriggerBefore on Account (before delete, before insert, before
         defAcct.ProtectIndividualAccount();
     }
     
+    /* deprecated
     if (trigger.isInsert || trigger.isUpdate) {
         
         // set all fields on the account we can derive from zip.
@@ -16,5 +17,5 @@ trigger GW_AccountTriggerBefore on Account (before delete, before insert, before
             ONEN_ZipLookup.AccountZipLookup(trigger.new);
         }
     }
-    
+    */
 }
