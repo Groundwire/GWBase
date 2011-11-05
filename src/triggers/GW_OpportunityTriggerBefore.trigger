@@ -13,4 +13,5 @@ trigger GW_OpportunityTriggerBefore on Opportunity (before insert, before update
 		GW_AutoMemberDates amd = new GW_AutoMemberDates();
 		amd.memberDates(trigger.New);
 	}
+	
 }
