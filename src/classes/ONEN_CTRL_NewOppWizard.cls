@@ -29,7 +29,7 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
     global Recurring_Payment_Profile__c rpProfile { get; set; }
     
     /**
-	* @description A temporary object to get the Contact lookup field. It is never saved to Saelsforce; just used for it's picker
+	* @description A temporary object to get the Contact lookup field. It is never saved to Salesforce; just used for it's picker
 	*/
     global OpportunityContactRole contactRole { get; set; }
     
@@ -352,7 +352,7 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
                 opportunity.CR_HHroles__c = true;
             } else {
                 // if org, set role etc accordingly
-                opportunity.CR_Contact_Role__c = ONEN_Constants.OPP_ORG_GIFT_DONOR_ROLE;
+                opportunity.CR_Contact_Role__c = ONEN_Constants.OPP_ORG_GIFT_DONOR_ROLE(GW_RecTypes.getRecordTypeName('Opportunity',oppRecordTypeId));
                 opportunity.CR_HHroles__c = false;
             }
 
@@ -715,7 +715,7 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
         //should be 1
         system.assertEquals(1,newCR.size());
         //org donor role
-        system.assertEquals(ONEN_Constants.OPP_ORG_GIFT_DONOR_ROLE,newCR[0].Role);
+        system.assertEquals(ONEN_Constants.OPP_ORG_GIFT_DONOR_ROLE(GW_RecTypes.getRecordTypeName('Opportunity',newOpp.RecordTypeId)),newCR[0].Role);
         
         
     }
@@ -780,7 +780,7 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
         //should be 1
         system.assertEquals(1,newCR.size());
         //org donor role
-        system.assertEquals(ONEN_Constants.OPP_ORG_GIFT_DONOR_ROLE,newCR[0].Role);
+        system.assertEquals(ONEN_Constants.OPP_ORG_GIFT_DONOR_ROLE(GW_RecTypes.getRecordTypeName('Opportunity', newOpp.RecordTypeId)),newCR[0].Role);
         
         
     }
