@@ -31,6 +31,7 @@ global class GW_TriggerSettings {
 		ts.Enable_Opportunity_Contact_Roles__c = true;
 		ts.Enable_Opportunity_Mirror_Payments__c = true;
 		ts.Enable_Opportunity_Rollups__c = true;
+		ts.Enable_Payment_Amount_Sync__c = true;
 		ts.Enable_Zip_Lookup__c = true;		
 		ts.Enable_Opportunity_Recurring_Creation__c = true;
 		ts.Enable_RPP_Opportunity_Closing__c = true;
