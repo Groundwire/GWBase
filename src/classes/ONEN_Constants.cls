@@ -169,12 +169,10 @@ global class ONEN_Constants {
 	* for an Organization donation.
 	* Defaults to 'Organizational Donor'.
 	*/
-	global static string OPP_ORG_GIFT_DONOR_ROLE {
-		get {
-	        OppRollupSettings__c oppSettings = OppRollupSettings__c.getInstance();
-			return (oppSettings == null) ? 'Organizational Donor' : oppSettings.Opp_Gift_Role_Org_Donor__c;
-		}
-	}		
+	global static string OPP_ORG_GIFT_DONOR_ROLE(string recordTypeName) {
+		OrgConRole_Settings__c crSettings = OrgConRole_Settings__c.getInstance(recordTypeName);
+		return (crSettings == null) ? 'Organizational Donor' : crSettings.Primary_Contact_Role__c;
+	}
 
 	/*******************************************************************************************************
 	* @description Returns the custom setting Opp_Gift_Role_Matching_Donor__c, a donor role for the contact
