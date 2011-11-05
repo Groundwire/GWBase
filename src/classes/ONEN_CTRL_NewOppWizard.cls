@@ -29,7 +29,7 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
     global Recurring_Payment_Profile__c rpProfile { get; set; }
     
     /**
-	* @description A temporary object to get the Contact lookup field. It is never saved to Saelsforce; just used for it's picker
+	* @description A temporary object to get the Contact lookup field. It is never saved to Salesforce; just used for it's picker
 	*/
     global OpportunityContactRole contactRole { get; set; }
     
@@ -38,6 +38,11 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
 	*/
     global Boolean paymentReceived { get; set; }
     
+    /**
+	* @description boolean to indicate whether or not to display the 3 radio buttons for Payment Type.
+	*/
+    global Boolean displayPaymentTypes { get; set; }
+
     /**
 	* @description string to hold type of payment we are creating: Single, Pledge, or Recurring.
 	*/
@@ -169,7 +174,14 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
         
         setOppDefaults();
 
-        setRecordTypes ();      
+        setRecordTypes (); 
+       	
+       	// in case user went thru pick your record type screen,
+       	// or they have a default record type set in their profile,
+       	// let's set the initial record type to it.
+       	oppRecordTypeId = this.Opportunity.RecordTypeId; 
+       	ChangeOppType();
+            
     }
     
     /*******************************************************************************************************
@@ -340,7 +352,7 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
                 opportunity.CR_HHroles__c = true;
             } else {
                 // if org, set role etc accordingly
-                opportunity.CR_Contact_Role__c = ONEN_Constants.OPP_ORG_GIFT_DONOR_ROLE;
+                opportunity.CR_Contact_Role__c = ONEN_Constants.OPP_ORG_GIFT_DONOR_ROLE(GW_RecTypes.getRecordTypeName('Opportunity',oppRecordTypeId));
                 opportunity.CR_HHroles__c = false;
             }
 
@@ -488,6 +500,27 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
         errorMessageText = null;
     }
 
+    /*******************************************************************************************************
+	* @description Called when the user changes the Opportunity Record Type.  Shows/hides payment panel.
+	*/
+    global void ChangeOppType() {
+
+		displayPaymentTypes = true;
+		
+        if (oppSettings != null) {
+	        set<string> opprtExcludePaymentTypes = new set<string>();
+	        string strOppNameCurrent;
+	                
+            if (oppSettings.Opp_Rectypes_Excluded_New_Opp_Payments__c != null) {
+                opprtExcludePaymentTypes = new set<string>(oppSettings.Opp_Rectypes_Excluded_New_Opp_Payments__c.split(';'));
+            
+            	if (opprtExcludePaymentTypes.contains(GW_RecTypes.getRecordTypeName('Opportunity',oppRecordTypeId))) {
+            		displayPaymentTypes = false;
+            	}                
+            }            
+        }        
+    }
+    
     /*******************************************************************************************************
 	* @description Virtual method called during the save operation.  The client can override this method
 	* to provide there own custom code.  This is called just before the Opportunity is inserted.
@@ -682,7 +715,7 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
         //should be 1
         system.assertEquals(1,newCR.size());
         //org donor role
-        system.assertEquals(ONEN_Constants.OPP_ORG_GIFT_DONOR_ROLE,newCR[0].Role);
+        system.assertEquals(ONEN_Constants.OPP_ORG_GIFT_DONOR_ROLE(GW_RecTypes.getRecordTypeName('Opportunity',newOpp.RecordTypeId)),newCR[0].Role);
         
         
     }
@@ -747,7 +780,7 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
         //should be 1
         system.assertEquals(1,newCR.size());
         //org donor role
-        system.assertEquals(ONEN_Constants.OPP_ORG_GIFT_DONOR_ROLE,newCR[0].Role);
+        system.assertEquals(ONEN_Constants.OPP_ORG_GIFT_DONOR_ROLE(GW_RecTypes.getRecordTypeName('Opportunity', newOpp.RecordTypeId)),newCR[0].Role);
         
         
     }
