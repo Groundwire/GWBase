@@ -39,10 +39,6 @@
         <sortOrder>Asc</sortOrder>
     </groupingsDown>
     <name>Org Members Expiring</name>
-    <params>
-        <name>co</name>
-        <value>1</value>
-    </params>
     <reportType>AccountList</reportType>
     <scope>organization</scope>
     <showDetails>true</showDetails>

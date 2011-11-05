@@ -93,10 +93,6 @@
         <sortOrder>Asc</sortOrder>
     </groupingsDown>
     <name>New vs. Repeat Donors this Year</name>
-    <params>
-        <name>co</name>
-        <value>1</value>
-    </params>
     <reportType>ContactList</reportType>
     <scope>organization</scope>
     <showDetails>false</showDetails>

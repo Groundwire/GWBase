@@ -84,10 +84,6 @@
         <sortOrder>Asc</sortOrder>
     </groupingsDown>
     <name>Time in Level</name>
-    <params>
-        <name>co</name>
-        <value>1</value>
-    </params>
     <reportType>ContactList</reportType>
     <scope>organization</scope>
     <showDetails>false</showDetails>

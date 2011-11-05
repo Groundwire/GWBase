@@ -2,6 +2,7 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <fields>
         <fullName>Acronym__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The organization&apos;s acronym, abbreviation or nickname</inlineHelpText>
         <label>Acronym</label>
@@ -14,6 +15,7 @@
     <fields>
         <fullName>AverageAmount__c</fullName>
         <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Average Gift</label>
         <precision>16</precision>
@@ -25,6 +27,7 @@
     <fields>
         <fullName>Donor_Advised_Funds__c</fullName>
         <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Indicates that a foundation or other funder provides this type of funding</inlineHelpText>
         <label>Donor Advised Funds</label>
@@ -33,6 +36,7 @@
     </fields>
     <fields>
         <fullName>Endowment__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>This account has/is an endowment</inlineHelpText>
         <label>Endowment</label>
@@ -44,6 +48,7 @@
     </fields>
     <fields>
         <fullName>FirstCloseDate__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>First Gift Date</label>
         <required>false</required>
@@ -52,6 +57,7 @@
     </fields>
     <fields>
         <fullName>Funding_Maximum__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Funding Maximum</label>
         <precision>12</precision>
@@ -62,6 +68,7 @@
     </fields>
     <fields>
         <fullName>Funding_Minimum__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Funding Minimum</label>
         <precision>12</precision>
@@ -73,6 +80,7 @@
     <fields>
         <fullName>Funding_Prospect__c</fullName>
         <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Funding Prospect</label>
         <trackFeedHistory>false</trackFeedHistory>
@@ -81,6 +89,7 @@
     <fields>
         <fullName>Grant_Maker__c</fullName>
         <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Used this to indicate that an Org (especially a non-foundation) gives grants</inlineHelpText>
         <label>Grant Maker</label>
@@ -224,6 +233,7 @@
     </fields>
     <fields>
         <fullName>Issue_Interest__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Select those issues that this org is working on or funds (choose as many as apply)</inlineHelpText>
         <label>Issue Interest</label>
@@ -241,6 +251,7 @@
     <fields>
         <fullName>LargestAmount__c</fullName>
         <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Largest Gift</label>
         <precision>16</precision>
@@ -251,6 +262,7 @@
     </fields>
     <fields>
         <fullName>LastCloseDate__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Last Gift Date</label>
         <required>false</required>
@@ -260,6 +272,7 @@
     <fields>
         <fullName>LastMembershipAmount__c</fullName>
         <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Last Membership Amount</label>
         <precision>16</precision>
@@ -270,6 +283,7 @@
     </fields>
     <fields>
         <fullName>LastMembershipDate__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Last Membership Date</label>
         <required>false</required>
@@ -278,6 +292,7 @@
     </fields>
     <fields>
         <fullName>LastMembershipLevel__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Last Membership Level</label>
         <length>255</length>
@@ -288,6 +303,7 @@
     </fields>
     <fields>
         <fullName>LastMembershipOrigin__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Last Membership Origin</label>
         <length>255</length>
@@ -299,6 +315,7 @@
     <fields>
         <fullName>LastOppAmount__c</fullName>
         <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Last Gift Amount</label>
         <precision>16</precision>
@@ -310,6 +327,7 @@
     <fields>
         <fullName>Matches_Gifts__c</fullName>
         <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Matches Gifts</label>
         <trackFeedHistory>false</trackFeedHistory>
@@ -317,6 +335,7 @@
     </fields>
     <fields>
         <fullName>Media_Type__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Media Type</label>
         <picklist>
@@ -340,6 +359,7 @@
     </fields>
     <fields>
         <fullName>MembershipEndDate__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Membership End Date</label>
         <required>false</required>
@@ -348,6 +368,7 @@
     </fields>
     <fields>
         <fullName>MembershipJoinDate__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Membership Join Date</label>
         <required>false</required>
@@ -356,6 +377,7 @@
     </fields>
     <fields>
         <fullName>Membership_Status__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>if (  MembershipEndDate__c  &lt;today(), if ( MembershipEndDate__c  &gt; ( TODAY() -  $Setup.OppRollupSettings__c.Membership_Grace_Period__c  )  , &quot;Grace Period&quot; , &quot;Expired&quot;) , if(isnull(MembershipEndDate__c ),&quot;&quot;,&quot;Current&quot;))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -367,6 +389,7 @@
     <fields>
         <fullName>NumberOfClosedOpps__c</fullName>
         <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Number of Gifts</label>
         <precision>18</precision>
@@ -379,6 +402,7 @@
     <fields>
         <fullName>NumberOfMembershipOpps__c</fullName>
         <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Number of Membership Gifts</label>
         <precision>18</precision>
@@ -391,6 +415,7 @@
     <fields>
         <fullName>OppAmount2YearsAgo__c</fullName>
         <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Gifts Two Years Ago</label>
         <precision>16</precision>
@@ -402,6 +427,7 @@
     <fields>
         <fullName>OppAmountLastNDays__c</fullName>
         <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Gifts Last 365 Days</label>
         <precision>16</precision>
@@ -413,6 +439,7 @@
     <fields>
         <fullName>OppAmountLastYear__c</fullName>
         <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Gifts Last Year</label>
         <precision>16</precision>
@@ -424,6 +451,7 @@
     <fields>
         <fullName>OppAmountThisYear__c</fullName>
         <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Gifts This Year</label>
         <precision>16</precision>
@@ -435,6 +463,7 @@
     <fields>
         <fullName>OppsClosed2YearsAgo__c</fullName>
         <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Number of Gifts Two Years Ago</label>
         <precision>18</precision>
@@ -447,6 +476,7 @@
     <fields>
         <fullName>OppsClosedLastNDays__c</fullName>
         <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Number of Gifts Last 365 Days</label>
         <precision>18</precision>
@@ -459,6 +489,7 @@
     <fields>
         <fullName>OppsClosedLastYear__c</fullName>
         <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Number of Gifts Last Year</label>
         <precision>18</precision>
@@ -471,6 +502,7 @@
     <fields>
         <fullName>OppsClosedThisYear__c</fullName>
         <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Number of Gifts This Year</label>
         <precision>18</precision>
@@ -482,6 +514,7 @@
     </fields>
     <fields>
         <fullName>Organization_Sub_Type__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Organization Sub-Type</label>
         <picklist>
@@ -568,6 +601,7 @@
     <fields>
         <fullName>Primary_Contact__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Our primary contact person for this Organization</inlineHelpText>
         <label>Primary Org Contact</label>
@@ -580,6 +614,7 @@
     </fields>
     <fields>
         <fullName>Primary_Org_Contact_Title__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>Primary_Contact__r.Title</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -610,6 +645,7 @@
     <fields>
         <fullName>SmallestAmount__c</fullName>
         <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Smallest Gift</label>
         <precision>16</precision>
@@ -620,6 +656,7 @@
     </fields>
     <fields>
         <fullName>Standing_Grant_Proposal_Date__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Note here if the org has a consistent yearly date or dates when grant proposals are due</inlineHelpText>
         <label>Standing Grant Proposal Date</label>
@@ -629,6 +666,7 @@
     </fields>
     <fields>
         <fullName>Standing_LOI_Date__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Note here if the org has a consistent yearly due date or dates for LOI&apos;s</inlineHelpText>
         <label>Standing LOI Date</label>
@@ -639,6 +677,7 @@
     <fields>
         <fullName>TotalMembershipOppAmount__c</fullName>
         <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Membership Amount</label>
         <precision>16</precision>
@@ -650,6 +689,7 @@
     <fields>
         <fullName>TotalOppAmount__c</fullName>
         <defaultValue>0</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Gifts</label>
         <precision>16</precision>
@@ -728,6 +768,7 @@
     <fields>
         <fullName>Vendor__c</fullName>
         <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Vendor</label>
         <trackFeedHistory>false</trackFeedHistory>

@@ -47,10 +47,6 @@
         <sortOrder>Asc</sortOrder>
     </groupingsDown>
     <name>Foundation-Contact Relationships</name>
-    <params>
-        <name>co</name>
-        <value>1</value>
-    </params>
     <reportType>ContactCustomEntity$Account_Relationship__c@Account_Relationship__c.Related_Account__c</reportType>
     <scope>organization</scope>
     <showDetails>true</showDetails>

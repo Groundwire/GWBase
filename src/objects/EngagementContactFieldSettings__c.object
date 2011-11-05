@@ -2,10 +2,10 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <customSettingsType>List</customSettingsType>
     <customSettingsVisibility>Public</customSettingsVisibility>
-    <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>Field_Type__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>for now, only &quot;checkbox&quot; is supported</inlineHelpText>
         <label>Field Type</label>
@@ -16,6 +16,7 @@
     </fields>
     <fields>
         <fullName>Field_Value__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>for non-checkbox, fields the value that the field must have to qualify.  Note, enter an asterisk (*) to require any non-empty value</inlineHelpText>
         <label>Field Value</label>
@@ -26,6 +27,7 @@
     </fields>
     <fields>
         <fullName>Fieldname__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Fieldname</label>
         <length>150</length>
@@ -35,6 +37,7 @@
     </fields>
     <fields>
         <fullName>Level_Value__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>the level earned by this field - for checkboxes, the level earned if it&apos;s checked</inlineHelpText>
         <label>Level Value</label>

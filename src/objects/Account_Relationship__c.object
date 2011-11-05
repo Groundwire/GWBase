@@ -33,6 +33,7 @@
         <type>Default</type>
     </actionOverrides>
     <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
     <enableActivities>false</enableActivities>
     <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
@@ -40,6 +41,7 @@
     <enableReports>true</enableReports>
     <fields>
         <fullName>Contact__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Contact</label>
         <referenceTo>Contact</referenceTo>
@@ -51,6 +53,7 @@
     </fields>
     <fields>
         <fullName>From_Date__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>From Date</label>
         <required>false</required>
@@ -58,6 +61,7 @@
     </fields>
     <fields>
         <fullName>Notes__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Notes</label>
         <length>32000</length>
@@ -66,6 +70,7 @@
     </fields>
     <fields>
         <fullName>Related_Account__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Related Organization</label>
         <referenceTo>Account</referenceTo>
@@ -77,6 +82,7 @@
     </fields>
     <fields>
         <fullName>Relationship_Status__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>IF( AND(NULLVALUE(From_Date__c, TODAY() )  &lt;=   TODAY() ,NULLVALUE(To_Date__c, TODAY() )  &gt;=   TODAY() )  , &quot;Active&quot;, &quot;Inactive&quot;)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -88,6 +94,7 @@
     </fields>
     <fields>
         <fullName>Relationship__c</fullName>
+        <deprecated>false</deprecated>
         <description>How the contact is related to the account.</description>
         <externalId>false</externalId>
         <inlineHelpText>How the contact is related to the account.</inlineHelpText>
@@ -155,6 +162,7 @@
     </fields>
     <fields>
         <fullName>To_Date__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>To Date</label>
         <required>false</required>

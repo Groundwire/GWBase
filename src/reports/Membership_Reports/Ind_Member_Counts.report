@@ -63,10 +63,6 @@
         <sortOrder>Asc</sortOrder>
     </groupingsDown>
     <name>Ind Member Counts</name>
-    <params>
-        <name>co</name>
-        <value>1</value>
-    </params>
     <reportType>ContactList</reportType>
     <scope>organization</scope>
     <showDetails>true</showDetails>

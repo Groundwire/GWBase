@@ -66,10 +66,6 @@
         <sortOrder>Asc</sortOrder>
     </groupingsDown>
     <name>New High-Level Activists</name>
-    <params>
-        <name>co</name>
-        <value>1</value>
-    </params>
     <reportType>ContactList</reportType>
     <scope>organization</scope>
     <showDetails>true</showDetails>

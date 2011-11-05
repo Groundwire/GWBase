@@ -23,7 +23,7 @@
         <textColor>#000000</textColor>
         <textSize>10</textSize>
         <title>Cumulative Best Case Revenue</title>
-        <titleColor>#000000</titleColor>
+        <titleColor>#330033</titleColor>
         <titleSize>14</titleSize>
     </chart>
     <columns>
@@ -101,10 +101,6 @@
     <params>
         <name>probability</name>
         <value>&gt;0</value>
-    </params>
-    <params>
-        <name>co</name>
-        <value>1</value>
     </params>
     <reportType>Opportunity</reportType>
     <scope>organization</scope>

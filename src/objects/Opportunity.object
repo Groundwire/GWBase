@@ -62,6 +62,7 @@
     </businessProcesses>
     <fields>
         <fullName>Amount_Requested__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Amount Requested</label>
         <precision>12</precision>
@@ -73,6 +74,7 @@
     <fields>
         <fullName>Anonymous__c</fullName>
         <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Anonymous</label>
         <trackFeedHistory>false</trackFeedHistory>
@@ -80,6 +82,7 @@
     </fields>
     <fields>
         <fullName>CR_Contact_Id__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Field used by code that creates new opportunities</inlineHelpText>
         <label>CR Contact Id</label>
@@ -91,6 +94,7 @@
     </fields>
     <fields>
         <fullName>CR_Contact_Role__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Field used by code that creates new opportunities</inlineHelpText>
         <label>CR Contact Role</label>
@@ -103,6 +107,7 @@
     <fields>
         <fullName>CR_HHroles__c</fullName>
         <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Field used by code that creates new opportunities</inlineHelpText>
         <label>CR HHRoles</label>
@@ -111,6 +116,7 @@
     </fields>
     <fields>
         <fullName>Check_Date__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Check Date</label>
         <required>false</required>
@@ -119,6 +125,7 @@
     </fields>
     <fields>
         <fullName>Check_Number__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Check Number</label>
         <length>255</length>
@@ -129,6 +136,7 @@
     </fields>
     <fields>
         <fullName>CombinedRollupFieldset__c</fullName>
+        <deprecated>false</deprecated>
         <description>Concatenated fields used during rollups to locate the most recent opportunity.</description>
         <externalId>false</externalId>
         <formula>TEXT(CloseDate) + &apos;;|;&apos;+ TEXT(Amount) + &apos;;|;&apos;+ TEXT(Member_Level__c) + &apos;;|;&apos;+ TEXT(Membership_Origin__c)</formula>
@@ -141,6 +149,7 @@
     <fields>
         <fullName>ContactId__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
         <description>The primary contact for this opportunity. Indicates a hard credit (i.e. the opportunity is attributable to this contact)</description>
         <externalId>false</externalId>
         <inlineHelpText>Indicates who this Opportunity is from.  If the Opp is from a person, enter a Contact Name.  If the Opp is from an org or business, enter an Organization Name.  You cannot enter both.</inlineHelpText>
@@ -154,6 +163,7 @@
     </fields>
     <fields>
         <fullName>Deductible_Amount__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>IF ( 
  OR ( NOT( $RecordType.Name = &quot;Purchase&quot; ), NOT ( $RecordType.Name = &quot;TBD&quot; ) ) ,
@@ -169,6 +179,7 @@
     </fields>
     <fields>
         <fullName>Donation_Id__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Donation Id</label>
         <length>255</length>
@@ -179,6 +190,7 @@
     </fields>
     <fields>
         <fullName>Donation_Type__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Donation Type</label>
         <length>255</length>
@@ -189,6 +201,7 @@
     </fields>
     <fields>
         <fullName>Fund__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Fund</label>
         <picklist>
@@ -203,6 +216,7 @@
     </fields>
     <fields>
         <fullName>Grant_Contract_Date__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Grant Contract Date</label>
         <required>false</required>
@@ -211,6 +225,7 @@
     </fields>
     <fields>
         <fullName>Grant_Number__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Grant Number</label>
         <length>255</length>
@@ -221,6 +236,7 @@
     </fields>
     <fields>
         <fullName>Grant_Period_End_Date__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Grant Period End Date</label>
         <required>false</required>
@@ -229,6 +245,7 @@
     </fields>
     <fields>
         <fullName>Grant_Period_Start_Date__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Grant Period Start Date</label>
         <required>false</required>
@@ -237,6 +254,7 @@
     </fields>
     <fields>
         <fullName>Grant_Request_Date__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Grant Request Date</label>
         <required>false</required>
@@ -245,6 +263,7 @@
     </fields>
     <fields>
         <fullName>LOI_Sent_Date__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>date Letter of Intent (or equiv.) was sent</inlineHelpText>
         <label>Grant LOI Sent Date</label>
@@ -290,6 +309,7 @@
     <fields>
         <fullName>Matching_Gift__c</fullName>
         <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Matching Gift</label>
         <trackFeedHistory>false</trackFeedHistory>
@@ -297,6 +317,7 @@
     </fields>
     <fields>
         <fullName>Member_Level__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Member Level</label>
         <picklist>
@@ -319,6 +340,7 @@
     </fields>
     <fields>
         <fullName>Membership_End_Date__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Date membership period ends.</inlineHelpText>
         <label>Membership End Date</label>
@@ -328,6 +350,7 @@
     </fields>
     <fields>
         <fullName>Membership_Origin__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Is this a renewal, a new membership, or a membership with someone who lapsed and has returned.</inlineHelpText>
         <label>Membership Origin</label>
@@ -351,6 +374,7 @@
     </fields>
     <fields>
         <fullName>Membership_Start_Date__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Date when membership period starts</inlineHelpText>
         <label>Membership Start Date</label>
@@ -360,6 +384,7 @@
     </fields>
     <fields>
         <fullName>Next_Payment_Due_Date__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The date the next installment payment is due.  This field will be blank if not paying in installments.</inlineHelpText>
         <label>Next Installment Due Date</label>
@@ -385,6 +410,7 @@
     </fields>
     <fields>
         <fullName>Non_Deductible_Amount__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The portion of the opportunity amount that is not tax-deductible (fee for service or product, etc.)  Leave blank, or set to $0, if the opp is fully deductible.</inlineHelpText>
         <label>Non-Deductible Amount</label>
@@ -397,6 +423,7 @@
     <fields>
         <fullName>Planned_Gift__c</fullName>
         <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Planned Gift</label>
         <trackFeedHistory>false</trackFeedHistory>
@@ -405,6 +432,7 @@
     <fields>
         <fullName>Recurring_Payment_Profile__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Recurring Payment Profile</label>
         <referenceTo>Recurring_Payment_Profile__c</referenceTo>
@@ -416,6 +444,7 @@
     </fields>
     <fields>
         <fullName>Restriction__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Restriction</label>
         <picklist>
@@ -558,6 +587,7 @@
     </fields>
     <fields>
         <fullName>Total_Paid__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Total Paid</label>
         <summarizedField>OppPayment__c.Amount__c</summarizedField>
@@ -572,6 +602,7 @@
     </fields>
     <fields>
         <fullName>Total_Unpaid__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>IF ( Amount - Total_Paid__c &lt; 0 , 0 , Amount - Total_Paid__c )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -618,22 +649,6 @@
             </picklistValues>
             <picklistValues>
                 <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Existing Customer - Upgrade</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Existing Customer - Replacement</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Existing Customer - Downgrade</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>New Customer</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>

@@ -58,10 +58,6 @@
         <sortOrder>Asc</sortOrder>
     </groupingsDown>
     <name>Org Member List</name>
-    <params>
-        <name>co</name>
-        <value>1</value>
-    </params>
     <reportType>AccountList</reportType>
     <scope>organization</scope>
     <showDetails>true</showDetails>

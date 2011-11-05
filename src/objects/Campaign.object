@@ -2,6 +2,7 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <fields>
         <fullName>Campaign_Sub_Type__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Specific campaign categories associated with general campaign types</inlineHelpText>
         <label>Campaign Sub-Type</label>
@@ -96,6 +97,7 @@
     </fields>
     <fields>
         <fullName>Donation_Page_URL__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>HYPERLINK(&apos;/apex/cmpgn?Id&apos; , &apos;Donation Page&apos; )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -106,6 +108,7 @@
     </fields>
     <fields>
         <fullName>Effective_Number_Sent__c</fullName>
+        <deprecated>false</deprecated>
         <description>If user enters a number sent, it&apos;ll use that - otherwise, defaults to total contacts + leads</description>
         <externalId>false</externalId>
         <formula>IF (  NumberSent &gt; 0 , NumberSent ,  NumberOfContacts +  NumberOfLeads )</formula>
@@ -119,6 +122,7 @@
     </fields>
     <fields>
         <fullName>Engagement_Level_Numeric__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>VALUE(LEFT(TEXT( Leadership_Level__c ),1))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -131,6 +135,7 @@
     </fields>
     <fields>
         <fullName>Leadership_Level__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Level of leadership: 1-organizing, 2-consistent leader, 3-inconsistent leader, 4-activist, 5-donor/member</inlineHelpText>
         <label>Campaign Engagement Level</label>
@@ -165,6 +170,7 @@
     </fields>
     <fields>
         <fullName>Net_Revenue__c</fullName>
+        <deprecated>false</deprecated>
         <description>Total $ won minus costs</description>
         <externalId>false</externalId>
         <formula>AmountWonOpportunities  -  ActualCost</formula>
@@ -177,6 +183,7 @@
     </fields>
     <fields>
         <fullName>Parent_Campaign_Group__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>IF (  ParentId=&quot;&quot; ,  Name ,  Parent.Name )</formula>
         <label>Parent Campaign Group</label>
@@ -186,6 +193,7 @@
     </fields>
     <fields>
         <fullName>Parent_Campaign_Start_Date__c</fullName>
+        <deprecated>false</deprecated>
         <description>if campaign has a parent, start date of it, otherwise start date of this</description>
         <externalId>false</externalId>
         <formula>IF ( ParentId=&quot;&quot; ,   StartDate , Parent.StartDate )</formula>
@@ -244,56 +252,13 @@
                 <fullName>Other</fullName>
                 <default>false</default>
             </picklistValues>
-            <picklistValues>
-                <fullName>Conference</fullName>
-                <default>true</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Webinar</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Trade Show</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Public Relations</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Partners</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Referral Program</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Advertisement</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Banner Ads</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Direct Mail</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Email</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Telemarketing</fullName>
-                <default>false</default>
-            </picklistValues>
             <sorted>false</sorted>
         </picklist>
         <type>Picklist</type>
     </fields>
     <fields>
         <fullName>Won_Percent__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>IF ( Effective_Number_Sent__c &gt; 0 , NumberOfWonOpportunities /   Effective_Number_Sent__c  , 0 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>

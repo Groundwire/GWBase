@@ -2,10 +2,10 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <customSettingsType>List</customSettingsType>
     <customSettingsVisibility>Public</customSettingsVisibility>
-    <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>Level__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Level</label>
         <precision>1</precision>
@@ -16,6 +16,7 @@
     </fields>
     <fields>
         <fullName>Lower_Limit__c</fullName>
+        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>the lower defines the minimum amount a donor must contribute (or pledge) in a year to be assigned the engagement level specified.  Make sure your tiers do not intersect or leave gaps.  You should not assign any setting with a lower limit of $0 or less.</inlineHelpText>
         <label>Lower Limit</label>

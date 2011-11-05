@@ -72,10 +72,6 @@
         <name>include</name>
         <value>won</value>
     </params>
-    <params>
-        <name>co</name>
-        <value>1</value>
-    </params>
     <reportType>OpportunityContact</reportType>
     <scope>organization</scope>
     <showDetails>true</showDetails>
