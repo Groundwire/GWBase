@@ -133,7 +133,6 @@ public class GW_OppRollups {
 
 		set<id> allAccts = amap.keyset();
 		map<id, Account> accountsToUpdate = new map<id, Account>();
-		// map<id,Account> accountsToUpdate = amap.deepClone();   // full copy of the accounts, we can change field values and compare at the end
 
 		string[] rollupFields = ACCOUNT_ROLLUP_FIELDS.split(',');
 		if ( acctFieldtypeMap==null) acctFieldtypeMap = doFieldDescribe('Account');
@@ -250,95 +249,53 @@ public class GW_OppRollups {
 
 	public void rollupContact( id cid ) {
 		// roll up opps for one contact
-		string soql = 'select Id,' + CON_ROLLUP_FIELDS + ',' + HH_ROLLUP_FIELDS_FROM_CON + ' FROM Contact WHERE Id = :cid';
+		string soql = 'select Id,' + CON_ROLLUP_FIELDS + ' FROM Contact WHERE Id = :cid';
 		contact[] cc = Database.query(soql);
 	
-		if (!cc.isEmpty()) { 
-			map<id, onen_household__c> hhmap = new map<id, onen_household__c>();
-			if (cc[0].onen_household__c != null) 
-				hhmap.put(cc[0].onen_household__c, cc[0].onen_household__r);
+		map<id, contact> cmap = new map<id, contact>(cc);	
 		
-			rollupContacts( new map<id, contact>( cc ), hhmap );
-		}
+		if (!cmap.isEmpty()) 
+			rollupContacts( cmap );
 	}
 
 	public void rollupHousehold( id hhid ) {
 		// roll up opps for one household
 		string soql = 'select Id,' + HH_ROLLUP_FIELDS + ' FROM ONEN_Household__c WHERE Id = :hhid';
 		ONEN_Household__c[] hhs = Database.query(soql);		
-		if (!hhs.isEmpty()) 
-			rollupHouseholds( hhs );
-	}	
-
-	public void rollupHouseholds( list<onen_household__c> hhs ) {
-	// roll up opps for households
-
-		if (hhs != null && !hhs.isEmpty()) {
-			
-			map<id, onen_household__c> hhmap = new map<id, onen_household__c>( hhs );
-			set<id> hhids = hhmap.keyset();
-			
-			// get household contacts
-			string soql = 'select Id,' + CON_ROLLUP_FIELDS + ' FROM Contact WHERE ONEN_Household__c IN :hhids';
-			contact[] cc = Database.query(soql);
-			map<id, contact> cmap = new map<id, contact> (cc);			
-			
-			// roll up totals
-			rollupContacts( cmap, hhmap );
-		}
+		map<id, ONEN_Household__c> hhmap = new map<id, ONEN_Household__c>(hhs);	
+		
+		if (!hhmap.isEmpty()) 
+			rollupHouseholds( hhmap );
 	}
 	
-	@future
-	public static void rollupHouseholdsFuture( set<id> hhIds ) {	
-		if (hhIds != null && !hhIds.isEmpty()) {
+	public void rollupHouseholds( list<onen_household__c> hhs ) {
+	// roll up opps for a set of accounts
 
-			// get household contacts
-			string soql = 'select Id,' + CON_ROLLUP_FIELDS + ',' + HH_ROLLUP_FIELDS_FROM_CON + ' FROM Contact WHERE ONEN_Household__c in :hhIds';
-			contact[] cc = Database.query(soql);
-			map<id, contact> cmap = new map<id, contact> (cc);	
-			
-			map<id, onen_household__c> hhmap = new map<id, onen_household__c>();
-			for (contact c : cmap.values())
-				hhmap.put(c.onen_household__c, c.onen_household__r);
-			
-			// roll up totals
-			GW_OppRollups rg = new GW_OppRollups();
-			rg.rollupContacts( cmap, hhmap );
+		if (hhs != null && !hhs.isEmpty()) {
+			rollupHouseholds( new map<id, onen_household__c>(hhs) );
 		}
-	}
+	}	
 
-	public void rollupContacts( map<id, contact> cmap, map<id, onen_household__c> hhmap ) {
-	// roll up opps for a list of contacts and their households
+	public void rollupHouseholds( map<id, onen_household__c> hhmap ) {
+	// roll up opps for households
+		
+		//system.debug (LoggingLevel.WARN,'hhmap: ' + hhmap);
 
-		set<id> conIds = cmap.keySet();
-		set<id> hhIds = hhmap.keySet();
+		set<id> hhids = hhmap.keyset();
+		map<id, ONEN_Household__c> householdsToUpdate = new map<id, ONEN_Household__c>();
 
-		// copy the contacts and households to a map of zeroed out versions
-		map<id, contact> contactsToUpdate = new map<id, contact>();
-		map<id, onen_household__c> householdsToUpdate = new map<id, onen_household__c>();
-
-		string[] conRollupFields = CON_ROLLUP_FIELDS.split(',');
-		if (conFieldtypeMap==null) conFieldtypeMap = doFieldDescribe('Contact');
-		string[] HHRollupFields = HH_ROLLUP_FIELDS.split(',');
-		if (HHFieldtypeMap ==null) HHFieldtypeMap = doFieldDescribe('ONEN_Household__c');
-
-		for (id cid : conIds) {
-			Contact newCon = new Contact(id=cid);
-			putNoOppDefaults(conRollupFields,newCon,conFieldtypeMap);
-			contactsToUpdate.put(cid,newCon);
-		}
-		for (id hhid : hhIds) {
-			ONEN_Household__c newHH = new ONEN_Household__c(id=hhid);
-			putNoOppDefaults(HHRollupFields,newHH,HHFieldtypeMap);
+		string[] rollupFields = HH_ROLLUP_FIELDS.split(',');
+		if ( HHFieldtypeMap==null) HHFieldtypeMap = doFieldDescribe('ONEN_Household__c');
+		for (id hhid : hhids) {
+			ONEN_Household__c newHH = new ONEN_Household__c (id=hhid);
+			putNoOppDefaults(rollupFields,newHH,HHFieldtypeMap);
 			householdsToUpdate.put(hhid,newHH);
 		}
-		
-//		system.debug (Logginglevel.WARN, 'cmap: ' + cmap);
-		
-		// copy all the rollups from each result row into the contact objects
+
+		// copy all the rollups from each result row into the household objects
 		integer startYear = thisYear - 2;
 		for (sobject r : 
-			[SELECT contact.ONEN_household__c hhid, contactId, 
+			[SELECT contact.ONEN_household__c hhid,  
 				Fiscal_Year(Opportunity.CloseDate) CalendarYr, SUM(Opportunity.Amount) TotalOppAmount, 
 		    	AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,
 		    	MAX(Opportunity.Amount) LargestAmount, MIN(Opportunity.CloseDate) FirstCloseDate, 
@@ -351,33 +308,185 @@ public class GW_OppRollups {
 		    	AND Opportunity.Type NOT IN : oppTypesToExcludeCons
 				AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null)  
 		    	AND contact.ONEN_household__c IN : hhIds
-				GROUP BY CUBE(contact.ONEN_household__c, contactId, Fiscal_Year(opportunity.closeDate))
+				GROUP BY ROLLUP(contact.ONEN_household__c, Fiscal_Year(opportunity.closeDate))
 				HAVING // (Fiscal_Year(opportunity.closeDate) = null 
     			// OR Fiscal_Year(opportunity.closeDate) >= : startYear ) AND  
-    			contact.ONEN_household__c != null AND (contactId IN : conIds OR contactId = null) ] ) {
+    			contact.ONEN_household__c != null ] ) {
+			//system.debug(Logginglevel.WARN, 'ROLLUP ROW: ' + r);
+
+			// get the household id for this result row
+			id hhid = (id)(r.get('hhid'));
+	
+			// copy all the rollups from this result row into the account object	
+			updateRollupFromResult((sobject)(householdsToUpdate.get(hhid)), r);
+		}
+
+		// also do rollups for last N days
+		for (sobject r : 
+			[SELECT contact.ONEN_household__c hhid,  
+		    	SUM(Opportunity.Amount) TotalOppAmount, COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps
+		    	FROM OpportunityContactRole 
+		    	WHERE isPrimary=true AND opportunity.isWon=true 
+		    	AND (Opportunity.Amount != 0 AND Opportunity.Amount != null)
+		    	AND Opportunity.RecordTypeId NOT IN : recordTypesToExcludeCons
+		    	AND Opportunity.Type NOT IN : oppTypesToExcludeCons
+				AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null)  
+		    	AND contact.ONEN_household__c IN : hhIds
+		    	AND opportunity.closeDate >= LAST_N_DAYS:365
+				GROUP BY contact.ONEN_household__c
+				HAVING contact.ONEN_household__c != null ] ) {
+			//system.debug(Logginglevel.WARN, 'ROLLUP ROW: ' + r);
+			
+			// get the household id for this result row
+			id hhid = (id)(r.get('hhid'));
+				
+			// process the result row, copying it into the contact record(s)
+			updateRollupFromResultLastNDays((sobject)(householdsToUpdate.get(hhid)), r);
+		}
+
+		if (!mbrRecordTypes.isEmpty()) {
+			// also roll up memberships
+			// uncomment if you are doing annual membership totals
+			for (sobject r : 
+				[SELECT contact.ONEN_household__c hhid, 
+			    	SUM(Opportunity.Amount) TotalOppAmount, 
+			    	MAX(Opportunity.CloseDate) LastCloseDate, 
+			    	//AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,
+			    	//MAX(Opportunity.Amount) LargestAmount, 
+			    	MIN(Opportunity.Membership_Start_Date__c) FirstStartDate, 
+			    	MAX(Opportunity.Membership_End_Date__c) LastEndDate, 
+			    	COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps,
+			    	MAX(Opportunity.CombinedRollupFieldset__c) RollupFieldset
+			    	FROM OpportunityContactRole 
+			    	WHERE isPrimary=true AND opportunity.isWon=true 
+			    	// AND (Opportunity.Amount > 0 OR Opportunity.Amount < 0) 
+			    	AND Opportunity.RecordTypeId IN : mbrRecordTypes
+			    	AND Opportunity.Type NOT IN : oppTypesToExcludeCons
+					AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null)  
+			    	AND contact.ONEN_household__c IN : hhIds
+					GROUP BY contact.ONEN_household__c
+					//, Fiscal_Year(opportunity.closeDate)
+					HAVING 
+					//(Fiscal_Year(opportunity.closeDate) = null 
+	    			//OR Fiscal_Year(opportunity.closeDate) >= : startYear ) AND 
+	    			contact.ONEN_household__c != null ] ) {
+				//system.debug('ROLLUP ROW: ' + r);
+	
+				// get the household id for this result row
+				id hhid = (id)(r.get('hhid'));
+		
+				// copy all the rollups from this result row into the account object	
+				updateRollupFromResultMembership((sobject)(householdsToUpdate.get(hhid)), r);
+			}
+		}
+
+		// remove any records that have not changed
+		for (id hhid : hhids) {
+			ONEN_Household__c hh1 = hhmap.get(hhid);
+			ONEN_Household__c hh2 = householdsToUpdate.get(hhid);
+			boolean nochange = true;
+			for (string field : rollupFields) {
+//				system.debug (LoggingLevel.WARN , 'checking acct field diff for : ' + field + ' :' + hh1.get(field) + 'vs. ' + hh2.get(field));
+				if (hh1.get(field)!=hh2.get(field)) {
+					nochange = false;
+//					system.debug (LoggingLevel.WARN , 'househokd field diff found: ' + hh1.get(field) + 'vs. ' + hh2.get(field));
+					break;
+				}
+				
+			}
+			if (nochange) householdsToUpdate.remove(hhid);
+		}
+		
+		// update all the accounts from this batch 
+		update householdsToUpdate.values();
+		
+	}
+	
+	@future
+	public static void rollupHouseholdsFuture( set<id> hhIds ) {	
+		if (hhIds != null && !hhIds.isEmpty()) {
+
+			// get household contacts
+			string soql = 'select Id,' + HH_ROLLUP_FIELDS_FROM_CON + ' FROM ONEN_Household__c WHERE id in :hhIds';
+			ONEN_Household__c[] hh = Database.query(soql);
+			map<id, ONEN_Household__c> hhmap = new map<id, ONEN_Household__c> (hh);	
+			
+			// roll up totals
+			GW_OppRollups rg = new GW_OppRollups();
+			rg.rollupHouseholds( hhmap );
+		}
+	}
+	
+	@future
+	public static void rollupContactsFuture( set<id> conIds ) {	
+		if (conIds != null && !conIds.isEmpty()) {
+
+			// get household contacts
+			string soql = 'select Id,' + CON_ROLLUP_FIELDS + ' FROM Contact WHERE id in :conIds';
+			Contact[] cc = Database.query(soql);
+			map<id, Contact> cmap = new map<id, Contact> (cc);	
+			
+			// roll up totals
+			GW_OppRollups rg = new GW_OppRollups();
+			rg.rollupContacts( cmap );
+		}
+	}
+
+	public void rollupContacts( list<contact> cons ) {
+	// roll up opps for a set of contacts
+
+		if (cons != null && !cons.isEmpty()) {
+			rollupContacts( new map<id, contact>(cons) );
+		}
+	}	
+	
+	public void rollupContacts( map<id, contact> cmap ) {
+	// roll up opps for a list of contacts
+
+		set<id> conIds = cmap.keySet();
+
+		// copy the contacts to a map of zeroed out versions
+		map<id, contact> contactsToUpdate = new map<id, contact>();
+
+		string[] conRollupFields = CON_ROLLUP_FIELDS.split(',');
+		if (conFieldtypeMap==null) conFieldtypeMap = doFieldDescribe('Contact');
+
+		for (id cid : conIds) {
+			Contact newCon = new Contact(id=cid);
+			putNoOppDefaults(conRollupFields,newCon,conFieldtypeMap);
+			contactsToUpdate.put(cid,newCon);
+		}
+		
+//		system.debug (Logginglevel.WARN, 'cmap: ' + cmap);
+		
+		// copy all the rollups from each result row into the contact objects
+		integer startYear = thisYear - 2;
+		for (sobject r : 
+			[SELECT contactId, 
+				Fiscal_Year(Opportunity.CloseDate) CalendarYr, SUM(Opportunity.Amount) TotalOppAmount, 
+		    	AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,
+		    	MAX(Opportunity.Amount) LargestAmount, MIN(Opportunity.CloseDate) FirstCloseDate, 
+		    	MAX(Opportunity.CloseDate) LastCloseDate, COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps,
+		    	MAX(Opportunity.CombinedRollupFieldset__c) RollupFieldset
+		    	FROM OpportunityContactRole 
+		    	WHERE isPrimary=true AND opportunity.isWon=true 
+		    	AND (Opportunity.Amount != 0 AND Opportunity.Amount != null) 
+		    	AND Opportunity.RecordTypeId NOT IN : recordTypesToExcludeCons
+		    	AND Opportunity.Type NOT IN : oppTypesToExcludeCons
+				AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null)  
+		    	AND contactId IN : conIds
+				GROUP BY ROLLUP(contactId, Fiscal_Year(opportunity.closeDate))
+				] ) {
 			
 //			system.debug(Logginglevel.WARN, 'ROLLUP ROW: ' + r);
 
 			// get the ids
 			id cid = (id)(r.get('contactId'));
-			id hhid = (id)(r.get('hhid'));
 				
 			// process the result row, copying it into the contact record(s)
 			// MS: we only want to fully calc the row if it is from the last few years - older years are only for calcing Best Year for contacts
 			integer yr = (integer)r.get('CalendarYr');
-			if (cid == null) { 
-				if (hhid != null && (yr >= startYear || yr==null) ) updateRollupFromResult((sobject)(householdsToUpdate.get(hhid)), r);
-				// after doing regular processing, calc Best Contact Year stuff
-				// the rows are in year order, so just look start w/ the first yr, and increase as needed as we go
-				decimal yrAmt = (decimal)r.get('TotalOppAmount');
-				ONEN_Household__c HH = householdsToUpdate.get(hhid);
-				if ( (yrAmt > HH.Best_Gift_Year_Total__c || HH.Best_Gift_Year_Total__c == null ) && yr!=null) {
-					HH.Best_Gift_Year_Total__c = yrAmt;
-					HH.Best_Gift_Year__c = yr;
-				}
-				// HHsWithoutOpps.remove(hhid);  // this HH DOES have opps
-
-			} else {
+			if (cid != null) { 
 				// contact row
 				if ( yr >= startYear || yr==null) {
 					updateRollupFromResult((sobject)(contactsToUpdate.get(cid)), r);
@@ -396,7 +505,7 @@ public class GW_OppRollups {
 			
 		// also do rollups for last N days
 		for (sobject r : 
-			[SELECT contact.ONEN_household__c hhid, contactId, 
+			[SELECT contactId, 
 		    	SUM(Opportunity.Amount) TotalOppAmount, COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps
 		    	FROM OpportunityContactRole 
 		    	WHERE isPrimary=true AND opportunity.isWon=true 
@@ -404,22 +513,17 @@ public class GW_OppRollups {
 		    	AND Opportunity.RecordTypeId NOT IN : recordTypesToExcludeCons
 		    	AND Opportunity.Type NOT IN : oppTypesToExcludeCons
 				AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null)  
-		    	AND contact.ONEN_household__c IN : hhIds
+		    	AND contactid IN : conIds
 		    	AND opportunity.closeDate >= LAST_N_DAYS:365
-				GROUP BY ROLLUP(contact.ONEN_household__c, contactId)
-				HAVING contact.ONEN_household__c != null AND (contactId IN : conIds OR contactId = null) ] ) {
+				GROUP BY contactId] ) {
 
 			//system.debug(Logginglevel.WARN, 'ROLLUP ROW: ' + r);
 			
 			// get the ids
 			id cid = (id)(r.get('contactId'));
-			id hhid = (id)(r.get('hhid'));
 				
 			// process the result row, copying it into the contact record(s)
-			if (cid == null) { 
-				if (hhid != null)
-					updateRollupFromResultLastNDays((sobject)(householdsToUpdate.get(hhid)), r);
-			} else {
+			if (cid != null) { 
 				// contact row	
 				updateRollupFromResultLastNDays((sobject)(contactsToUpdate.get(cid)), r);
 			}
@@ -429,7 +533,7 @@ public class GW_OppRollups {
 			// also do rollups for membership
 			// if you need annual rollups for membership, uncomment the commented bits
 			for (sobject r : 
-				[SELECT contact.ONEN_household__c hhid, contactId, 
+				[SELECT contactId, 
 					//Fiscal_Year(Opportunity.CloseDate) CalendarYr, 
 			    	SUM(Opportunity.Amount) TotalOppAmount, 
 			    	MAX(Opportunity.CloseDate) LastCloseDate, 
@@ -445,73 +549,22 @@ public class GW_OppRollups {
 			    	AND Opportunity.RecordTypeId IN : mbrRecordTypes
 			    	AND Opportunity.Type NOT IN : oppTypesToExcludeCons
 					AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null)  
-			    	AND contact.ONEN_household__c IN : hhIds
-					GROUP BY CUBE(contact.ONEN_household__c, contactId 
+			    	AND contactid IN : conIds
+					GROUP BY ROLLUP(contactId 
 					//, Fiscal_Year(opportunity.closeDate)
-					)
-					HAVING 
-					//(Fiscal_Year(opportunity.closeDate) = null 
-	    			//OR Fiscal_Year(opportunity.closeDate) >= : startYear ) AND 
-	    			contact.ONEN_household__c != null AND (contactId IN : conIds OR contactId = null) ] ) {
+					) ] ) {
 	    				
 				// get the ids
 				id cid = (id)(r.get('contactId'));
-				id hhid = (id)(r.get('hhid'));
 					
 				// process the result row, copying it into the contact record(s)
-				if (cid == null) { 
-					if (hhid != null) {
-						updateRollupFromResultMembership((sobject)(householdsToUpdate.get(hhid)), r);
-						// HHsWithoutMbrOpps.remove(hhid);
-					}
-				} else {
+				if (cid != null) { 
 					// contact row	
 					updateRollupFromResultMembership((sobject)(contactsToUpdate.get(cid)), r);
 					// consWithoutMbrOpps.remove(cid);  // this con DOES have opps (mbr opps might be diff rectypes from gift opps)
 				}
 	    	}
 		}
-
-/*
-		// parse lists of rollup fields for use in the following code
-		string[] conRollupFields = CON_ROLLUP_FIELDS.split(',');
-		string[] conGiftRollupFields = new string[0];
-		string[] conMbrRollupFields = new string[0];
-		for (string fieldname : conRollupFields) {
-			if 	(fieldname.contains('Member')) 
-				conMbrRollupFields.add(fieldname); 
-			else 
-				conGiftRollupFields.add(fieldname); 
-		}
-		string[] HHRollupFields = HH_ROLLUP_FIELDS.split(',');
-		string[] HHGiftRollupFields = new string[0];
-		string[] HHMbrRollupFields = new string[0];
-		for (string fieldname : HHRollupFields) {
-			if 	(fieldname.contains('Member')) 
-				HHMbrRollupFields.add(fieldname); 
-			else 
-				HHGiftRollupFields.add(fieldname); 
-		}
-		
-		// if we have any opps left in these maps, we need to zero them out (b/c it means their last opp was deleted)
-		if (consWithoutOpps.size() > 0) {
-			// first lookup fieldtypes for our con rollup fields
-			conFieldtypeMap = doFieldDescribe('Contact');
-			// next loop thru each field in each opp, and set to either 0 or null depending on field type
-			for (id cid : consWithoutOpps) {
-				contact con = contactsToUpdate.get(cid);
-				putNoOppDefaults (conRollupFields, con, conFieldtypeMap);
-			}
-		}
-		if (HHsWithoutOpps.size() > 0) {
-			// same thing for households
-			HHFieldtypeMap = doFieldDescribe('ONEN_Household__c');
-			for (id hhid : HHsWithoutOpps) {
-				ONEN_Household__c hh = householdsToUpdate.get(hhid);
-				putNoOppDefaults (HHRollupFields, hh, HHFieldtypeMap);
-			}
-		}
-*/
 
 		// remove (skip updating) any records that have not changed
 		for (id cid : conIds) {
@@ -522,7 +575,6 @@ public class GW_OppRollups {
 //			system.debug (Logginglevel.WARN, 'c2:' + c2);
 //			system.debug (Logginglevel.WARN, 'does c1 equal c2??:' + (c1==c2));
 			
-			// if (c1==c2) contactsToUpdate.remove(cid);	// this doesn't seem to be working
 			// so instead loop through the fields and see if we find one that's different. 
 			boolean nochange = true;
 			for (string field : conRollupFields) {
@@ -535,28 +587,9 @@ public class GW_OppRollups {
 			}
 			if (nochange) contactsToUpdate.remove(cid);
 		}
-		for (id hhid : hhIds) {
-			ONEN_household__c hh1 = hhmap.get(hhid);
-			ONEN_household__c hh2 = householdsToUpdate.get(hhid);
-			// if (hh1==hh2)	householdsToUpdate.remove(hhid);
-			boolean nochange = true;
-			// string[] rollupFields = HH_ROLLUP_FIELDS.split(',');
-			for (string field : HHRollupFields) {
-				// handle missing households
-				if (hh1 == null || hh2 == null) {
-					break;
-				}
-				if (hh1.get(field)!=hh2.get(field)) {
-					nochange = false;
-					break;
-				}
-			}
-			if (nochange) householdsToUpdate.remove(hhid);
-		}
 
 		// update all the contacts from this batch 
-		if (!contactsToUpdate.isEmpty()) update contactsToUpdate.values();				
-		if (!householdsToUpdate.isEmpty()) update householdsToUpdate.values();				
+		if (!contactsToUpdate.isEmpty()) update contactsToUpdate.values();							
 	}
 
 
@@ -703,15 +736,32 @@ public class GW_OppRollups {
 				for (OpportunityContactRole r : conroles) {
 //					system.debug (LoggingLevel.WARN , 'contact of conrole: ' + r.contact);
 					cmap.put(r.contactId, r.contact);
-					hhmap.put(r.contact.onen_household__c, r.contact.onen_household__r);
+					//only add to the h map if the contact has a HH
+					if (r.Contact.ONEN_Household__c != null) {
+						hhmap.put(r.contact.onen_household__c, r.contact.onen_household__r);
+					}
 				}
 					
 				if (!cmap.isEmpty()) {
 					// for a single contact with fewer than 200 opps, roll up immediately - otherwise future
-					decimal oppCount = cmap.values()[0].onen_household__r.NumberOfClosedOpps__c;
+					decimal oppCount = cmap.values()[0].NumberOfClosedOpps__c;
 					if (cmap.size() == 1 && (oppCount == null || oppCount < 200)) {
 //						system.debug(Logginglevel.WARN, 'Rolling up single contact now...');
-						rollupContacts( cmap, hhmap );
+						rollupContacts( cmap );
+					} else if ((Limits.getLimitFutureCalls() - Limits.getFutureCalls()) > 5) {
+//						system.debug(Logginglevel.WARN, 'Rolling up as @future..');
+						rollupContactsFuture(cmap.keySet());
+					} else {
+//						system.debug(Logginglevel.WARN, 'Did not roll up because there were too few future calls available.');
+					}
+				}
+				
+				if (!hhmap.isEmpty()) {
+					// for a single contact with fewer than 200 opps, roll up immediately - otherwise future
+					decimal oppCount = hhmap.values()[0].NumberOfClosedOpps__c;
+					if (hhmap.size() == 1 && (oppCount == null || oppCount < 200)) {
+//						system.debug(Logginglevel.WARN, 'Rolling up single contact now...');
+						rollupHouseholds( hhmap );
 					} else if ((Limits.getLimitFutureCalls() - Limits.getFutureCalls()) > 5) {
 //						system.debug(Logginglevel.WARN, 'Rolling up as @future..');
 						rollupHouseholdsFuture(hhmap.keySet());
@@ -748,6 +798,7 @@ public class GW_OppRollups {
 	public void rollupAll() {
 		rollupAllAccounts();
 		rollupAllContacts();
+		rollupAllHouseholds();
 	}	
 
 	public void rollupAllAccounts() {
@@ -770,6 +821,30 @@ public class GW_OppRollups {
 
 		// start the batch to roll up all accounts
 		GW_BATCH_OppRollup batch = new GW_BATCH_OppRollup( 'SELECT id, ' + GW_Utilities.StrAllNSPrefix(ACCOUNT_ROLLUP_FIELDS) + ' FROM account'
+			+ (isTest ? ' WHERE name like \'%test%\' LIMIT 200' : '') ); 
+		id batchProcessId = database.executeBatch(batch, batchSize);		
+	}
+	
+	public void rollupAllHouseholds() {
+
+		// we can handle up to 10000 query rows total, which is about 3000 acct opps in a batch
+		// this calculation very conservatively reduces batch size to avoid hitting the limit
+		// use a low batch size if there is no household max to calculate by (first time)
+		integer batchSize = 10;
+		list<onen_household__c> topHousehold = [select NumberOfClosedOpps__c from ONEN_Household__c 
+			where NumberOfClosedOpps__c != null 
+			order by NumberOfClosedOpps__c desc limit 1];
+		if (!topHousehold.isEmpty()) {
+			decimal highestCount = topHousehold[0].NumberOfClosedOpps__c;
+			batchSize = (highestCount <= 15) ? 200 :
+				((3000 / highestCount).intValue() + 1);
+		}
+		
+		// need to preprend the namespace prefix GWBase__ to all Account fields in the batch query to workaround a SF
+		// managed package bug	
+
+		// start the batch to roll up all accounts
+		GW_BATCH_OppRollup batch = new GW_BATCH_OppRollup( 'SELECT id, ' + GW_Utilities.StrAllNSPrefix(HH_ROLLUP_FIELDS) + ' FROM onen_household__c'
 			+ (isTest ? ' WHERE name like \'%test%\' LIMIT 200' : '') );
 		id batchProcessId = database.executeBatch(batch, batchSize);		
 	}	
@@ -780,11 +855,11 @@ public class GW_OppRollups {
 		// this calculation very conservatively reduces batch size to avoid hitting the limit
 		// use a low batch size if there is no household max to calculate by (first time)
 		integer batchSize = 10;
-		list<onen_household__c> topHousehold = [select NumberOfClosedOpps__c from onen_household__c 
+		list<contact> topContact = [select NumberOfClosedOpps__c from contact
 			where NumberOfClosedOpps__c != null 
 			order by NumberOfClosedOpps__c desc limit 1];
-		if (!topHousehold.isEmpty()) {
-			decimal highestCount = topHousehold[0].NumberOfClosedOpps__c;
+		if (!topContact.isEmpty()) {
+			decimal highestCount = topContact[0].NumberOfClosedOpps__c;
 			batchSize = (highestCount <= 10) ? 200 :
 				((2000 / highestCount).intValue() + 1);
 		}
@@ -792,7 +867,7 @@ public class GW_OppRollups {
 		// need to preprend the namespace prefix GWBase__ to all HH fields in the batch query to workaround a SF
 		// managed package bug
 
-		GW_BATCH_OppRollup batch = new GW_BATCH_OppRollup( 'SELECT id,' + GW_Utilities.StrAllNSPrefix(HH_ROLLUP_FIELDS) + ' FROM GWBase__onen_household__c'
+		GW_BATCH_OppRollup batch = new GW_BATCH_OppRollup( 'SELECT id,' + GW_Utilities.StrAllNSPrefix(CON_ROLLUP_FIELDS) + ' FROM Contact'
 			+ (isTest ? ' WHERE Name like \'%doppleganger%\' LIMIT 200' : '') );
 		id batchProcessId = database.executeBatch(batch, batchSize);		
 	}
