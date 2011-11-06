@@ -3,10 +3,6 @@
 
 src/package.xml
 
-src/.gitignore
-
-.gitignore
-
 src/profiles/StandardAul.profile
 
 src/profiles/Standard.profile
@@ -75,16 +71,6 @@ src/objectTranslations/Account_Relationship__c-en_US.objectTranslation
 
 src/labels/CustomLabels.labels
 
-src/reports/User_Adoption_Reports/SampleReportofTasksandActivities.report
-
-src/reports/User_Adoption_Reports/SampleReportofTasksandActivities.report
-
-src/reports/User_Adoption_Reports/SampleReportofTasksandActivities.report
-
-src/reports/User_Adoption_Reports/SampleReportofSolutions.report
-
-src/reports/User_Adoption_Reports/SampleReportofTasksandActivities.report
-
-src/reports/User_Adoption_Reports/SampleReportofTasksandActivities.report
-
-src/reports/User_Adoption_Reports/SampleReportofTasksandActivities.report
+.project
+.settings
+com.salesforce.ide.core.prefs
