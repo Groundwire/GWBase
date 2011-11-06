@@ -503,7 +503,7 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
     /*******************************************************************************************************
 	* @description Called when the user changes the Opportunity Record Type.  Shows/hides payment panel.
 	*/
-    global void ChangeOppType() {
+    global virtual void ChangeOppType() {
 
 		displayPaymentTypes = true;
 		
