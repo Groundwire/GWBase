@@ -2,14 +2,14 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <customSettingsType>List</customSettingsType>
     <customSettingsVisibility>Public</customSettingsVisibility>
-    <description>Rules for what levels should be awarded for repeated similar actions</description>
+    <description>Specify an Engagement Level to be set based on the frequency of a Contact&apos;s participation in Campaigns at a certain level, optionally only counting Campaigns with a certain field value.</description>
     <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>Field_Value_1__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>if this and Fieldname 1 are populated, requires that all actions for this rule have the specified value in specified field.  For checkboxes, enter &quot;True&quot; for checked.</inlineHelpText>
+        <inlineHelpText>Optional. The value of Fieldname 1 required for a Campaign to count toward this rule. For checkboxes, &quot;True&quot; corresponds to checked.</inlineHelpText>
         <label>Field Value 1</label>
         <length>255</length>
         <required>false</required>
@@ -20,7 +20,7 @@
         <fullName>Fieldname_1__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>enter the name (developer name) of a field in Campaign to check</inlineHelpText>
+        <inlineHelpText>Optional. The developer name of a field in Campaign to count toward this rule.</inlineHelpText>
         <label>Campaign Fieldname 1</label>
         <length>200</length>
         <required>false</required>
@@ -31,7 +31,7 @@
         <fullName>Level_Required__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>if populated, requires that all qualifying actions be of this level (in addition to any field requirements, if any)</inlineHelpText>
+        <inlineHelpText>Optional. The minimum engagement level of a Campaign required to count towards this rule.</inlineHelpText>
         <label>Level Required</label>
         <precision>2</precision>
         <required>false</required>
@@ -43,6 +43,7 @@
         <fullName>Level_To_Assign__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
+        <inlineHelpText>The engagement level assigned to Contacts fitting these requirements.</inlineHelpText>
         <label>Level To Assign</label>
         <precision>2</precision>
         <required>true</required>
@@ -54,7 +55,7 @@
         <fullName>Number_of_Actions_Required__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>only assigns the level if this many actions of the required specification have been taken during the usual timeframe</inlineHelpText>
+        <inlineHelpText>The number of Campaigns that fit this criteria a Contact should have participated in to be assigned a new level.</inlineHelpText>
         <label>Number of Actions Required</label>
         <precision>2</precision>
         <required>true</required>
