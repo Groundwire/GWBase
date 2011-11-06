@@ -2,11 +2,14 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <customSettingsType>List</customSettingsType>
     <customSettingsVisibility>Public</customSettingsVisibility>
+    <description>Default and available statuses for Campaign Members, by Campaign Type and Sub Type.</description>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>Campaign_Subtype__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
+        <inlineHelpText>The optional Campaign Subtype this Campaign Member Status applies to.</inlineHelpText>
         <label>Campaign Subtype</label>
         <length>200</length>
         <required>false</required>
@@ -17,6 +20,7 @@
         <fullName>Campaign_Type__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
+        <inlineHelpText>The Campaign Type that this Campaign Member Status applies to.</inlineHelpText>
         <label>Campaign Type</label>
         <length>200</length>
         <required>true</required>
@@ -28,7 +32,7 @@
         <defaultValue>false</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>check here if this should be the default status value for campaigns of this type.  You can only choose one value as the default</inlineHelpText>
+        <inlineHelpText>This Campaign Member status is the default for Campaigns of this type. Only one value should be default per Campaign Type and Sub Type.</inlineHelpText>
         <label>Default Status?</label>
         <type>Checkbox</type>
     </fields>
@@ -37,6 +41,7 @@
         <defaultValue>false</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
+        <inlineHelpText>This Campaign Member Status counts as Responded.</inlineHelpText>
         <label>Counts as Responded</label>
         <type>Checkbox</type>
     </fields>
@@ -44,7 +49,7 @@
         <fullName>Status_Label__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>the campaign member status label to be created</inlineHelpText>
+        <inlineHelpText>The label of this Campaign Member Status.</inlineHelpText>
         <label>Status Label</label>
         <length>200</length>
         <required>true</required>
