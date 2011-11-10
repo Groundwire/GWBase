@@ -60,6 +60,7 @@
             <default>false</default>
         </values>
     </businessProcesses>
+    <enableFeeds>true</enableFeeds>
     <fields>
         <fullName>Amount_Requested__c</fullName>
         <deprecated>false</deprecated>
@@ -850,6 +851,7 @@
         </filters>
         <label>Recurring Gifts</label>
     </listViews>
+    <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
     <recordTypes>
         <fullName>Gift</fullName>
         <active>true</active>
