@@ -7,21 +7,9 @@
     <leftSection>
         <columnSize>Wide</columnSize>
         <components>
-            <chartAxisRange>Auto</chartAxisRange>
-            <componentType>Column</componentType>
-            <displayUnits>Auto</displayUnits>
-            <drillEnabled>false</drillEnabled>
-            <drillToDetailEnabled>false</drillToDetailEnabled>
-            <enableHover>false</enableHover>
-            <expandOthers>false</expandOthers>
-            <footer>count of supporters by current level</footer>
-            <legendPosition>Bottom</legendPosition>
-            <report>Engagement_Reports/Engagement_Level_Counts</report>
-            <showPercentage>false</showPercentage>
-            <showValues>false</showValues>
-            <sortBy>RowLabelAscending</sortBy>
-            <title>Current Engagement Level</title>
-            <useReportChart>true</useReportChart>
+            <componentType>VisualforcePage</componentType>
+            <page>engPyramidDash</page>
+            <pageHeightInPixels>350</pageHeightInPixels>
         </components>
         <components>
             <chartAxisRange>Auto</chartAxisRange>

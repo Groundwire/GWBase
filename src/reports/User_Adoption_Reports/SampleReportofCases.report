@@ -7,9 +7,6 @@
         <field>SUBJECT</field>
     </columns>
     <columns>
-        <field>CREATED_DATE</field>
-    </columns>
-    <columns>
         <field>AGE</field>
     </columns>
     <columns>

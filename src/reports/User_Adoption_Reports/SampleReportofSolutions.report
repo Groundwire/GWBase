@@ -22,9 +22,6 @@
         <field>TIMES_USED</field>
     </columns>
     <columns>
-        <field>CREATED_DATE</field>
-    </columns>
-    <columns>
         <field>LAST_UPDATE</field>
     </columns>
     <description>How many solutions have been added to Salesforce?</description>

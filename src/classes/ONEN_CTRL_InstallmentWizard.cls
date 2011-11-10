@@ -162,11 +162,6 @@ public class ONEN_CTRL_InstallmentWizard {
     	}
         insert newPayments;
         
-        List<OppPayment__c> mirrorOppPaymentsToDelete = new List<OppPayment__c>();  
-        mirrorOppPaymentsToDelete = [Select Id from OppPayment__c where IsInstallment__c=false and Opportunity__c=:currentOpp.id];
-        if(mirrorOppPaymentsToDelete.size()>0){
-        	delete mirrorOppPaymentsToDelete;
-        }
         // Send the user to the detail page for the Opp.
         PageReference oldOppPage = new PageReference('/' + currentOpp.id);
         oldOppPage .setRedirect(true);

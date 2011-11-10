@@ -73,6 +73,7 @@
     </fields>
     <fields>
         <fullName>Mirror_Relationship__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Mirror Relationship</label>
@@ -207,6 +208,7 @@ Apex code creates a corresponding relationship if this is filled in.</descriptio
     </fields>
     <fields>
         <fullName>Related_Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Related Contact</label>

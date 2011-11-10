@@ -328,6 +328,40 @@ global virtual class ONEN_AccountMaintenance {
 
 	}
 	
+	static testMethod void testAcctPrimaryContactUndelete() {
+		
+		Account testAcct;
+	
+		// try the function with no accts 
+		ONEN_AccountMaintenance am = new ONEN_AccountMaintenance();
+		am.SetPrimaryContact(new Set<ID>());
+	
+		// first create two test accounts
+		Id secondAcctId;
+		Account firstAcct = new Account(Name='Blammo Corp');
+		insert firstAcct;
+		
+		// add a contact with a title in that account -- primary fields should get set
+		Contact firstContact = new Contact (
+			FirstName='Joe',
+			LastName='Johanssen',
+			Title='Head Honcho',
+			AccountId=firstAcct.Id
+		);
+		insert firstContact;
+		testAcct = [select id, name, primary_contact__c from account where id=:firstAcct.Id];
+		
+		delete firstContact;
+		
+		test.startTest();
+		undelete firstContact;
+		
+		testAcct = [select id, name, primary_contact__c from account where id=:firstAcct.Id];
+		//SWA: that contact should now be the primary contact on the Account
+		system.assertEquals(testAcct.primary_contact__c, firstContact.id);
+
+	}
+	
 	static testMethod void testAcctPrimaryContactBULK() {
 		
 		// let's try it in bulk -- testing the governors

@@ -79,7 +79,9 @@
 					<apex:pageBlockSectionItem >
 						<apex:outputLabel value="Record Type" for="oppRecordType" />
 						<apex:selectList size="1" id="oppRecordType" value="{!oppRecordTypeId}">
-							<apex:selectOptions value="{!recordTypeNameList}" />								
+							<apex:selectOptions value="{!recordTypeNameList}" />	
+							<apex:actionSupport event="onchange" action="{!ChangeOppType}"
+								rerender="panelPaymentType" />															
 						</apex:selectList>
 					</apex:pageBlockSectionItem>
 					<apex:pageBlockSectionItem >
@@ -89,7 +91,7 @@
 				</apex:pageBlockSection>
 
 				<apex:outputPanel id="panelPaymentType">
-					<apex:pageBlockSection showHeader="false" columns="1" rendered="true">
+					<apex:pageBlockSection showHeader="false" columns="1" rendered="{!displayPaymentTypes}">
 
 						<apex:pageBlockSectionItem >
 							<apex:outputLabel value="" />

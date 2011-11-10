@@ -93,7 +93,7 @@ Global virtual class ONEN_OpportunityMaintenance {
 				conroleIDs.add(conrole.OpportunityId);
 			}
 			// openOpportunitiesForDonor = [select Id, Name, CloseDate, Amount,CampaignId,RecordTypeId,StageName,Total_Unpaid__c,Next_Payment_Due_Date__c FROM Opportunity WHERE Total_Unpaid__c>0 AND Id IN (Select OpportunityId from OpportunityContactRole WHERE ContactId=:primaryContactId ) Order by CloseDate];
-			openOpportunitiesForDonor = [select Id, Name, CloseDate, Amount,CampaignId,RecordTypeId,StageName,Total_Unpaid__c,Next_Payment_Due_Date__c FROM Opportunity WHERE Total_Unpaid__c>0 AND Id IN :conroleIDs Order by CloseDate];
+			openOpportunitiesForDonor = [select Id, Name, CloseDate, Amount,CampaignId,RecordTypeId,StageName,Total_Unpaid__c,Next_Payment_Due_Date__c FROM Opportunity WHERE Total_Unpaid__c>0 AND (IsWon=TRUE OR IsClosed=FALSE) AND Id IN :conroleIDs Order by CloseDate];
 		} else {
 			openOpportunitiesForDonor.clear();
 		}
@@ -103,7 +103,7 @@ Global virtual class ONEN_OpportunityMaintenance {
 	//if the client of the NewOppWizard wants to change the list, they need to override this soql.
 	global virtual List<Opportunity> getAccountOpenOpps() {
 		if(primaryAccountId!=null&&!isIndividualAccount) {
-			openOpportunitiesForDonor = [select Id, Name, CloseDate, Amount,CampaignId,RecordTypeId,StageName,Total_Unpaid__c,Next_Payment_Due_Date__c FROM Opportunity WHERE Total_Unpaid__c>0 AND AccountId=:primaryAccountId Order by CloseDate];
+			openOpportunitiesForDonor = [select Id, Name, CloseDate, Amount,CampaignId,RecordTypeId,StageName,Total_Unpaid__c,Next_Payment_Due_Date__c FROM Opportunity WHERE Total_Unpaid__c>0 AND (IsWon=TRUE OR IsClosed=FALSE) AND AccountId=:primaryAccountId Order by CloseDate];
 		} else {
 			openOpportunitiesForDonor.clear();
 		}

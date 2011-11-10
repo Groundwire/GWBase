@@ -11,7 +11,7 @@
         </chartSummaries>
         <chartType>VerticalColumnStacked</chartType>
         <enableHoverLabels>false</enableHoverLabels>
-        <expandOthers>false</expandOthers>
+        <expandOthers>true</expandOthers>
         <groupingColumn>STAGE_NAME</groupingColumn>
         <legendPosition>Bottom</legendPosition>
         <location>CHART_BOTTOM</location>
@@ -25,7 +25,7 @@
         <textColor>#000000</textColor>
         <textSize>14</textSize>
         <titleColor>#000000</titleColor>
-        <titleSize>24</titleSize>
+        <titleSize>18</titleSize>
     </chart>
     <columns>
         <field>FULL_NAME</field>
@@ -51,9 +51,6 @@
     </columns>
     <columns>
         <field>NEXT_STEP</field>
-    </columns>
-    <columns>
-        <field>STAGE_NAME</field>
     </columns>
     <columns>
         <field>PROBABILITY</field>

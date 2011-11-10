@@ -10,9 +10,6 @@
         <field>ADDRESS1_STATE</field>
     </columns>
     <columns>
-        <field>Account.Membership_Status__c</field>
-    </columns>
-    <columns>
         <field>Account.MembershipEndDate__c</field>
     </columns>
     <columns>

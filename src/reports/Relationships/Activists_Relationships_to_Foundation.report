@@ -39,9 +39,6 @@
     <columns>
         <field>Account_Relationship__c.Notes__c</field>
     </columns>
-    <columns>
-        <field>FK_NAME</field>
-    </columns>
     <description>Foundations that our Activist Contacts are related to</description>
     <format>Summary</format>
     <groupingsDown>

@@ -7,9 +7,6 @@
         <field>LONG_NAME</field>
     </columns>
     <columns>
-        <field>CREATED</field>
-    </columns>
-    <columns>
         <field>FOLDER</field>
     </columns>
     <columns>

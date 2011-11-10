@@ -149,6 +149,7 @@
     </fields>
     <fields>
         <fullName>ContactId__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
         <deprecated>false</deprecated>
         <description>The primary contact for this opportunity. Indicates a hard credit (i.e. the opportunity is attributable to this contact)</description>
         <externalId>false</externalId>
@@ -431,6 +432,7 @@
     </fields>
     <fields>
         <fullName>Recurring_Payment_Profile__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Recurring Payment Profile</label>

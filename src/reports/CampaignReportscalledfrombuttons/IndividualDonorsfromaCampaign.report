@@ -56,6 +56,7 @@
         <criteriaItems>
             <column>CAMPAIGN_SOURCE</column>
             <operator>equals</operator>
+            <value></value>
         </criteriaItems>
         <criteriaItems>
             <column>ROLE</column>

@@ -10,10 +10,12 @@ trigger GW_ContactTriggerBefore on Contact (before insert, before update) {
         defAcct.SetIndividualAccount();
     }
     
+    /* deprecated    
     // set empty fields we can derive from zip.
     if (GW_TriggerSettings.ts.Enable_Zip_Lookup__c) {
         ONEN_ZipLookup.ContactZipLookup();
     }
+    */
     
     // set various field values (that used to be handled by workflow rules)
     if (GW_TriggerSettings.ts.Enable_Contact_Smart_Fields__c) {

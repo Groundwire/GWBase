@@ -36,6 +36,7 @@
         <criteriaItems>
             <column>ACCOUNT_ID</column>
             <operator>equals</operator>
+            <value></value>
         </criteriaItems>
         <criteriaItems>
             <column>STAGE_NAME</column>

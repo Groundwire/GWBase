@@ -16,10 +16,6 @@
         <field>ALIAS</field>
     </columns>
     <columns>
-        <aggregateTypes>Sum</aggregateTypes>
-        <field>ACTIVE</field>
-    </columns>
-    <columns>
         <field>LAST_LOGIN</field>
     </columns>
     <columns>

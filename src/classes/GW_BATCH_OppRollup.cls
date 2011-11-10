@@ -25,7 +25,7 @@ global class GW_BATCH_OppRollup implements Database.Batchable<SObject>, Schedula
 	* @param SC - SchedulableContext - standard scheduleable execute method parameter
 	*/ 	
 	global void execute(SchedulableContext SC) { 
-		GW_OppRollups rg = new GW_OppRollups();
+		GW_OppRollups rg = new GW_OppRollups(); 
 		rg.rollupAll();    
 	}
 

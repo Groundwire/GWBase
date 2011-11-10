@@ -2,14 +2,14 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <customSettingsType>Hierarchy</customSettingsType>
     <customSettingsVisibility>Public</customSettingsVisibility>
-    <description>flags used to turn on/off all GWBase trigger logic.</description>
+    <description>Enable or disable all trigger based functionality for GWBase.</description>
     <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>Enable_Active_Campaign__c</fullName>
         <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>if true, new Campaigns are marked Active.</inlineHelpText>
+        <inlineHelpText>Automatically mark campaigns as Active.</inlineHelpText>
         <label>Enable Active Campaign</label>
         <type>Checkbox</type>
     </fields>
@@ -18,6 +18,7 @@
         <defaultValue>false</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
+        <inlineHelpText>Calculate Membership Start Date, Membership End Date, and Membership Origin for Membership Opportunities. Advanced settings for this feature are in Opportunity &amp; Rollup Settings.</inlineHelpText>
         <label>Enable Auto Membership Dates</label>
         <type>Checkbox</type>
     </fields>
@@ -26,7 +27,7 @@
         <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>if true, triggers will support Contact Relationships.</inlineHelpText>
+        <inlineHelpText>Manages reciprocal and orphaned Contact relationships.</inlineHelpText>
         <label>Enable Contact Relationships</label>
         <type>Checkbox</type>
     </fields>
@@ -35,7 +36,7 @@
         <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>if true, handle DoNotMail, Inactive, Deceased, UncheckBoardMember, UncheckBadEmail &quot;rules&quot; to set related fields appropriately.</inlineHelpText>
+        <inlineHelpText>Smart handling of Do Not Mail, Inactive, Deceased, and Bad Email Address fields.</inlineHelpText>
         <label>Enable Contact Smart Fields</label>
         <type>Checkbox</type>
     </fields>
@@ -44,7 +45,7 @@
         <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>if true, on campaign creation, default campaign member status values for the campaign type will be created.  the status values are specified in Campaign Mbr Status Settings.</inlineHelpText>
+        <inlineHelpText>Sets default campaign member status values on campaign creation. The status values are specified by Campaign Type in Campaign Mbr Status Settings.</inlineHelpText>
         <label>Enable Default Campaign Member Statuses</label>
         <type>Checkbox</type>
     </fields>
@@ -53,7 +54,7 @@
         <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>if true, triggers support the Engagement Tracker.</inlineHelpText>
+        <inlineHelpText>Calculates and assigns Engagement levels for Contacts based on Engagement custom settings.</inlineHelpText>
         <label>Enable Engagement Tracker</label>
         <type>Checkbox</type>
     </fields>
@@ -62,7 +63,7 @@
         <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>if true, triggers will manage Households for Contacts.</inlineHelpText>
+        <inlineHelpText>Automatically create and manage Households.</inlineHelpText>
         <label>Enable Households</label>
         <type>Checkbox</type>
     </fields>
@@ -71,7 +72,7 @@
         <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>If true, triggers will automatically set the Individual account on new contacts, and will prevent the Individual account from being modified by the user.</inlineHelpText>
+        <inlineHelpText>Associates new Contacts without an Organization to the Individual account, and prevent the Individual account from being modified by the user.</inlineHelpText>
         <label>Enable Individual Account</label>
         <type>Checkbox</type>
     </fields>
@@ -80,7 +81,7 @@
         <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>if true, triggers will provide support for InterAccount Relationships.</inlineHelpText>
+        <inlineHelpText>Manages reciprocal and orphaned InterAccount Relationships.</inlineHelpText>
         <label>Enable InterAccount Relationships</label>
         <type>Checkbox</type>
     </fields>
@@ -89,7 +90,7 @@
         <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>if true, support adding leads to campaigns if campaignId field is set.</inlineHelpText>
+        <inlineHelpText>Adds leads with Campaign ID field to the appropriate campaign.</inlineHelpText>
         <label>Enable Lead Add To Campaign</label>
         <type>Checkbox</type>
     </fields>
@@ -98,7 +99,7 @@
         <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>if true, auto set lead company if not provided, and handle address fields to work or home.</inlineHelpText>
+        <inlineHelpText>Sets lead company if not provided, and smart handling of address fields.</inlineHelpText>
         <label>Enable Lead Smart Fields</label>
         <type>Checkbox</type>
     </fields>
@@ -107,7 +108,7 @@
         <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>if true, trigger adds the primary contact role on the opportunity to the opportunity&apos;s campaign.</inlineHelpText>
+        <inlineHelpText>If an Opportunity is associated with a campaign, adds the primary contact role as a campaign member.</inlineHelpText>
         <label>Enable Opportunity Add To Campaign</label>
         <type>Checkbox</type>
     </fields>
@@ -116,7 +117,7 @@
         <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>if true, new opportunities without names are given a name based off the Opp Name Format setting.</inlineHelpText>
+        <inlineHelpText>Automatically name Opportunities, based on Opp Name Format in Opportunity &amp; Rollup Settings.</inlineHelpText>
         <label>Enable Opportunity AutoName</label>
         <type>Checkbox</type>
     </fields>
@@ -125,7 +126,7 @@
         <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>if true, new opportunities auto create contact roles for provided contact and optionally household members.</inlineHelpText>
+        <inlineHelpText>Creates Primary and Household Contact Roles for new Opportunities.</inlineHelpText>
         <label>Enable Opportunity Contact Roles</label>
         <type>Checkbox</type>
     </fields>
@@ -134,7 +135,7 @@
         <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>if true, triggers will support Mirror Payments on Opportunities.</inlineHelpText>
+        <inlineHelpText>Creates hidden mirror payments on Opportunities, which allows for revenue reporting on the Payment object.</inlineHelpText>
         <label>Enable Opportunity Mirror Payments</label>
         <type>Checkbox</type>
     </fields>
@@ -143,7 +144,7 @@
         <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>if true, trigger will see if this is the last Recurring opportunity on a RecurringPaymentProfile, and will create more Recurring opportunities if the RPP is still active.</inlineHelpText>
+        <inlineHelpText>Automatically creates a new installment for recurring Opportunities when the latest installment is Closed/Won, based on the Recurring Payment Profile of that Opportunity.</inlineHelpText>
         <label>Enable Opportunity Recurring Creation</label>
         <type>Checkbox</type>
     </fields>
@@ -152,8 +153,16 @@
         <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>if true, triggers perform Opportunity Rollup calculations.</inlineHelpText>
+        <inlineHelpText>Recalculates Oppotunity Rollup information each time an Opportunity is created or modified.</inlineHelpText>
         <label>Enable Opportunity Rollups</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Enable_Payment_Amount_Sync__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Keeps the Amount of an Opportunity in sync with the total amount of the payments, and closes that Opportunity when all payments are paid.</inlineHelpText>
+        <label>Enable Payment Amount Sync</label>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -161,7 +170,7 @@
         <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>if true, triggers will maintain the Primary Contact field on Accounts.</inlineHelpText>
+        <inlineHelpText>Automatically maintain the Primary Contact field on Accounts.</inlineHelpText>
         <label>Enable Primary Contact On Accounts</label>
         <type>Checkbox</type>
     </fields>
@@ -170,7 +179,7 @@
         <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>if true, trigger will see if the Recurring Payment Profile&apos;s EndDate is being set, and will then find any Recurring opportunities for this RPP, and mark them Closed, Lost if they are after the new EndDate.</inlineHelpText>
+        <inlineHelpText>When a Recurring Payment Profile&apos;s EndDate is set, closes opportunities for this RPP in the Recurring stage, and marks them Lost if they are after the new EndDate.</inlineHelpText>
         <label>Enable RPP Opportunity Closing</label>
         <type>Checkbox</type>
     </fields>
@@ -179,7 +188,7 @@
         <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>If true, new Accounts and Contacts will have City, State, and County set if Zip is provided.</inlineHelpText>
+        <inlineHelpText>If Zip lookup code is present, City, State, and County are filled for new Accounts and Contacts with Zip code provided.</inlineHelpText>
         <label>Enable Zip Lookup</label>
         <type>Checkbox</type>
     </fields>

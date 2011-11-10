@@ -1,5 +1,5 @@
 public class ONEN_OpportunityInstallments {
-// Written by Matthew Scholtz, copyright (c) 2008 ONE/Northwest
+// Written by Matthew Scholtz, copyright (c) 2008-2011 Groundwire
 // This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
   
 	public static void CreateMirrorPayments(list<Opportunity> listOpps) {
@@ -70,6 +70,71 @@ public class ONEN_OpportunityInstallments {
         }
     }	
 
+    public static void SyncTotalPaymentAmount (list<OppPayment__c> listOppPayments, map<id, OppPayment__c> mapOldOppPayments, boolean isInsert, boolean isDelete) {
+    
+    	// update the amount on opps when a payment changes	    	
+    	set<id> changedAmtOpps = new set<id>();
+    	set<id> changedPmtStateOpps = new set<id>();
+	
+    	// get list of payments for which the amount has changed (including new or deleted payments)
+    	// also get the list of opps for which payments have been marked paid or written off
+    	for ( OppPayment__c op : ((listOppPayments != null) ? listOppPayments : mapOldOppPayments.values())) {
+    		if ( op.IsInstallment__c ) {
+    			changedPmtStateOpps.add(op.opportunity__c);
+	    		if ( isInsert || isDelete || op.amount__c != mapOldOppPayments.get(op.id).amount__c )
+	    			changedAmtOpps.add(op.opportunity__c);
+    		}
+    	}    		
+    		
+    	map<id, opportunity> oppsToUpdate = new map<id, opportunity>();
+    	
+    	// aggregate the total payment amount for each affected opportunity
+		for ( aggregateResult result : 
+			[SELECT opportunity__c, sum(amount__c) amt FROM OppPayment__c WHERE IsInstallment__c = true
+				AND Opportunity__c IN :changedAmtOpps GROUP BY opportunity__c]) {
+					oppsToUpdate.put((id)(result.get('opportunity__c')),
+						new Opportunity(
+							id = (id)(result.get('opportunity__c')), 
+							amount = (decimal)(result.get('amt'))
+						));
+		}
+		
+			
+		string closedStage = ONEN_Constants.OPP_DEFAULT_CLOSED_WON_STAGE;
+		for (opportunity o : [select id, stageName from opportunity where id in :changedPmtStateOpps and 
+			id not in (select opportunity__c from oppPayment__c where paid__c = false and written_off__c = false)
+			and stageName != : closedStage]) {
+			
+			if (oppsToUpdate.containsKey(o.id)) {
+				oppsToUpdate.get(o.id).stagename = closedStage;
+			} else {
+				oppsToUpdate.put(o.id, 
+					new Opportunity(
+						id = o.id, stagename = closedStage
+					));
+			}                                  
+		}    
+		
+		// save the new amounts
+		if (!oppsToUpdate.isEmpty())
+			update oppsToUpdate.values(); 			
+    }
+
+    public static void DeleteMirrors (list<OppPayment__c> listOppPayments) {
+    
+    	// update the amount on opps when a payment changes	    	
+    	set<id> oppsWithInsertedPayments = new set<id>();
+	
+    	// get list of payments for which the amount has changed (including new or deleted payments)
+    	for ( OppPayment__c op : listOppPayments) { 
+    		if (op.isInstallment__c) 
+    			oppsWithInsertedPayments.add(op.opportunity__c);
+    	}    		
+
+    	delete ([select id from oppPayment__c where 
+    		opportunity__c in : oppsWithInsertedPayments and isInstallment__c = false]);     		
+    }	
+
 /*	Opps w/ installments are no longer used for recurring payments, so there is no scenario of the user marking the opp as discontinued.
 
 	public static void WriteOffUpcomingPayments(Opportunity oppNew, Opportunity oppOld) {
@@ -106,6 +171,7 @@ public class ONEN_OpportunityInstallments {
             
             OppPayment__c newInst = new OppPayment__c ( 
                 Opportunity__c = thisOpp.Id,
+                IsInstallment__c = false,
                 Amount__c = thisOpp.Amount,
                 Date__c = thisOpp.CloseDate,
                 Paid__c = IsPaid,
@@ -354,5 +420,41 @@ public class ONEN_OpportunityInstallments {
     
     }
 */
+    static testMethod void testInstallmentManagement () {
+	// test that adding an installment payment updates the opp amount AND deletes the mirror payment,
+	// and that marking the last installment paid closes the opp
 
+        // create & insert Account
+        Account[] TestAccts = ONEN_UnitTestData.CreateMultipleTestAccounts(1) ;
+        insert TestAccts;
+        Account Acct1 = TestAccts[0];
+          
+        // create & insert opp
+        Opportunity[] TestOpps = ONEN_UnitTestData.OppsForAccountList (TestAccts, null, ONEN_Constants.OPP_DEFAULT_STAGE, System.Today(), 1000, ONEN_Constants.OPP_DEFAULT_RECTYPE_FORTESTS);
+        insert TestOpps;          
+        Opportunity Opp1 = TestOpps[0];
+
+        // insert an installment
+		OppPayment__c installment = new oppPayment__c(opportunity__c = opp1.id, amount__c = 123);
+		insert installment;
+		
+		// did the opp amount get updated?
+		Opportunity[] opp2 = [SELECT id, stagename, Amount FROM Opportunity WHERE id = :Opp1.id];
+		system.assertEquals(123, opp2[0].amount);
+		system.assertNotEquals(ONEN_Constants.OPP_DEFAULT_CLOSED_WON_STAGE, opp2[0].stagename);
+        
+		// did the mirror payment get deleted?
+        OppPayment__c[] mirrorOPs = [SELECT id, Opportunity__c, IsInstallment__c, Amount__c, Date__c, Paid__c FROM OppPayment__c 
+        	WHERE isInstallment__c = false and Opportunity__c = :Opp1.id];
+        system.assertEquals(0, mirrorOPs.size());
+          
+        // mark the installment paid
+		installment.paid__c = true;
+		update installment;
+		
+        // did the opp get the stage change 
+		Opportunity[] opp3 = [SELECT id, stagename, amount FROM Opportunity WHERE id = :Opp1.id];
+		system.assertEquals(123, opp3[0].amount);
+		system.assertEquals(ONEN_Constants.OPP_DEFAULT_CLOSED_WON_STAGE, opp3[0].stagename);
+    }	
 }

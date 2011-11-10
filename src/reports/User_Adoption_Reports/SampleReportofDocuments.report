@@ -19,9 +19,6 @@
         <field>DOC_INTERNAL</field>
     </columns>
     <columns>
-        <field>DOC_CREATED</field>
-    </columns>
-    <columns>
         <field>DOC_CREATEDBY</field>
     </columns>
     <columns>

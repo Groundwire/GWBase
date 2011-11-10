@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Report xmlns="http://soap.sforce.com/2006/04/metadata">
     <columns>
-        <field>ASSIGNED</field>
-    </columns>
-    <columns>
         <field>SUBJECT</field>
     </columns>
     <columns>
@@ -11,9 +8,6 @@
     </columns>
     <columns>
         <field>PRIORITY</field>
-    </columns>
-    <columns>
-        <field>STATUS</field>
     </columns>
     <columns>
         <field>TASK</field>
@@ -51,11 +45,13 @@
         <name>type</name>
         <value>te</value>
     </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
     <reportType>Activity</reportType>
     <scope>organization</scope>
     <showDetails>true</showDetails>
-    <sortColumn>DUE_DATE</sortColumn>
-    <sortOrder>Asc</sortOrder>
     <timeFrameFilter>
         <dateColumn>DUE_DATE</dateColumn>
         <interval>INTERVAL_CUSTOM</interval>

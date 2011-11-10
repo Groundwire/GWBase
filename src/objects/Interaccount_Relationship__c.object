@@ -73,6 +73,7 @@
     </fields>
     <fields>
         <fullName>Mirror_Relationship__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>connecting one relationship to it&apos;s mirror</inlineHelpText>
@@ -166,6 +167,7 @@ Apex code creates a corresponding relationship if this is filled in.</descriptio
     </fields>
     <fields>
         <fullName>Related_Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Related Organization</label>

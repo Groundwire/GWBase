@@ -13,9 +13,6 @@
         <field>FOLDER</field>
     </columns>
     <columns>
-        <field>CREATEDDATE</field>
-    </columns>
-    <columns>
         <field>LASTMODIFIED</field>
     </columns>
     <columns>

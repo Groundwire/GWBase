@@ -41,6 +41,7 @@
     <enableReports>true</enableReports>
     <fields>
         <fullName>Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The organization that makes this payment.</inlineHelpText>
@@ -62,6 +63,7 @@
     </fields>
     <fields>
         <fullName>Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Contact who makes this recurring payment.</inlineHelpText>

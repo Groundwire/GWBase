@@ -10,7 +10,7 @@
         </chartSummaries>
         <chartType>VerticalColumnStackedTo100</chartType>
         <enableHoverLabels>true</enableHoverLabels>
-        <expandOthers>false</expandOthers>
+        <expandOthers>true</expandOthers>
         <groupingColumn>Contact.Engagement_Level__c</groupingColumn>
         <legendPosition>Right</legendPosition>
         <location>CHART_TOP</location>
@@ -41,6 +41,7 @@
         <criteriaItems>
             <column>Campaign.Leadership_Level__c</column>
             <operator>notEqual</operator>
+            <value></value>
         </criteriaItems>
     </filter>
     <format>Matrix</format>
@@ -58,6 +59,10 @@
     <params>
         <name>scopeid</name>
         <value></value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
     </params>
     <reportType>CampaignContact</reportType>
     <scope>orgAll</scope>

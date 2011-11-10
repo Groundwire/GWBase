@@ -56,7 +56,7 @@
         <criteriaItems>
             <column>Contact.Engagement_Level_Numeric__c</column>
             <operator>greaterOrEqual</operator>
-            <value>4.0</value>
+            <value>4</value>
         </criteriaItems>
     </filter>
     <format>Matrix</format>

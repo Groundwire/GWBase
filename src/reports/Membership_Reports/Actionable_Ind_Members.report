@@ -10,10 +10,11 @@
         </chartSummaries>
         <chartType>VerticalColumnStacked</chartType>
         <enableHoverLabels>false</enableHoverLabels>
-        <expandOthers>false</expandOthers>
+        <expandOthers>true</expandOthers>
         <groupingColumn>Contact.Membership_Status__c</groupingColumn>
         <legendPosition>Right</legendPosition>
         <location>CHART_BOTTOM</location>
+        <secondaryGroupingColumn>Contact.MembershipEndDate__c</secondaryGroupingColumn>
         <showAxisLabels>true</showAxisLabels>
         <showPercentage>false</showPercentage>
         <showTotal>false</showTotal>
@@ -42,9 +43,6 @@
     </columns>
     <columns>
         <field>EMAIL</field>
-    </columns>
-    <columns>
-        <field>Contact.MembershipEndDate__c</field>
     </columns>
     <description>lists and counts all ind members that are either: in grace period now, expiring soon (next 30 days), or recently expired (within 1 year)</description>
     <filter>

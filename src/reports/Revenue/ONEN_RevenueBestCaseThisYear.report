@@ -11,9 +11,8 @@
         </chartSummaries>
         <chartType>LineCumulative</chartType>
         <enableHoverLabels>false</enableHoverLabels>
-        <expandOthers>false</expandOthers>
+        <expandOthers>true</expandOthers>
         <groupingColumn>CLOSE_DATE</groupingColumn>
-        <legendPosition>Bottom</legendPosition>
         <location>CHART_TOP</location>
         <showAxisLabels>false</showAxisLabels>
         <showPercentage>false</showPercentage>
@@ -45,9 +44,6 @@
     </columns>
     <columns>
         <field>EXP_AMOUNT</field>
-    </columns>
-    <columns>
-        <field>CLOSE_DATE</field>
     </columns>
     <columns>
         <field>NEXT_STEP</field>

@@ -8,7 +8,7 @@
         <fullName>Contact_Field__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>API name of the contact field (including the &quot;__c&quot; for custom fields) to which the lead field should be mapped.</inlineHelpText>
+        <inlineHelpText>API name of the contact field (including the &quot;__c&quot; for custom fields) to which the lead field should be mapped. The API name of the Lead field to map from must be in the Name field.</inlineHelpText>
         <label>Contact Field</label>
         <length>50</length>
         <required>true</required>
@@ -20,7 +20,7 @@
         <defaultValue>&quot;Text&quot;</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>Should be either Text, Checkbox, or Multiselect.</inlineHelpText>
+        <inlineHelpText>Should be either Text, Checkbox, or Multiselect. Text can correspond to a number of Salesforce field types that are text based, e.g. Text, Text Area, Picklist, Email, et al.</inlineHelpText>
         <label>Field Type</label>
         <length>20</length>
         <required>false</required>

@@ -46,12 +46,12 @@
         <criteriaItems>
             <column>FK_$Contact.OppAmountThisYear__c</column>
             <operator>equals</operator>
-            <value>0.0</value>
+            <value>0</value>
         </criteriaItems>
         <criteriaItems>
             <column>Contact.OppAmountThisYear__c</column>
             <operator>greaterThan</operator>
-            <value>0.0</value>
+            <value>0</value>
         </criteriaItems>
     </filter>
     <format>Summary</format>

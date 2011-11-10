@@ -29,6 +29,7 @@
         <criteriaItems>
             <column>TYPE</column>
             <operator>equals</operator>
+            <value></value>
         </criteriaItems>
     </filter>
     <format>Summary</format>

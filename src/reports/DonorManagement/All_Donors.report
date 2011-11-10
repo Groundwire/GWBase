@@ -35,6 +35,7 @@
         <criteriaItems>
             <column>Contact.LastCloseDate__c</column>
             <operator>notEqual</operator>
+            <value></value>
         </criteriaItems>
     </filter>
     <format>Tabular</format>
