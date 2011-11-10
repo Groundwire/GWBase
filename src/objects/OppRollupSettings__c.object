@@ -9,9 +9,8 @@
         <fullName>Assume_Fiscal_Year_Starts_January__c</fullName>
         <defaultValue>false</defaultValue>
         <deprecated>false</deprecated>
-        <description>If checked, opportunity rollup code will avoid an additional query by assuming that the fiscal year starts in January.</description>
         <externalId>false</externalId>
-        <inlineHelpText>If checked, opportunity rollup code will avoid an additional query by assuming that the fiscal year starts in January.</inlineHelpText>
+        <inlineHelpText>Avoids an additional query in Opportunity Rollup code by assuming that the fiscal year starts in January.</inlineHelpText>
         <label>Assume Fiscal Year Starts in January</label>
         <type>Checkbox</type>
     </fields>
@@ -20,7 +19,7 @@
         <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>Check this box to update opportunity totals whenever opportunities are inserted or updated (as long as capacity allows).</inlineHelpText>
+        <inlineHelpText>Updates Opportunity totals whenever an Opportunity is inserted or updated, as long as capacity allows.</inlineHelpText>
         <label>Roll Up Opps in Triggers</label>
         <type>Checkbox</type>
     </fields>
@@ -28,7 +27,7 @@
         <fullName>Excluded_Account_Opp_Rectypes__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>Names of opportunity record types to exclude when rolling up account opportunities. Separate record type names with semicolons.</inlineHelpText>
+        <inlineHelpText>Opportunity Record Types to exclude from Organization rollups. Record Type names should be in a semicolon separated list.</inlineHelpText>
         <label>Opp Rectypes Excluded for Account Rollup</label>
         <length>255</length>
         <required>false</required>
@@ -39,7 +38,7 @@
         <fullName>Excluded_Account_Opp_Types__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>Values for the opportunity Type field to exclude when rolling up account opportunities. Separate types with semicolons.</inlineHelpText>
+        <inlineHelpText>Opportunity Types to exclude from Organization rollups. Opportunity Types should be in a semicolon separated list.</inlineHelpText>
         <label>Opp Types Excluded for Account Rollup</label>
         <length>255</length>
         <required>false</required>
@@ -50,7 +49,7 @@
         <fullName>Excluded_Contact_Opp_Rectypes__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>Names of opportunity record types to exclude when rolling up contact opportunities. Separate record type names with semicolons.</inlineHelpText>
+        <inlineHelpText>Opportunity Record Types to exclude from Contact rollups. Record Type names should be in a semicolon separated list.</inlineHelpText>
         <label>Opp Rectypes Excluded for Contact Rollup</label>
         <length>255</length>
         <required>false</required>
@@ -61,7 +60,7 @@
         <fullName>Excluded_Contact_Opp_Types__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>Values for the opportunity Type field to exclude when rolling up contact opportunities. Separate types with semicolons.</inlineHelpText>
+        <inlineHelpText>Opportunity Types to exclude from Contact rollups. Opportunity Types should be in a semicolon separated list.</inlineHelpText>
         <label>Opp Types Excluded for Contact Rollup</label>
         <length>255</length>
         <required>false</required>
@@ -72,8 +71,8 @@
         <fullName>Membership_Grace_Period__c</fullName>
         <defaultValue>30</defaultValue>
         <deprecated>false</deprecated>
-        <description>Membership grace period in days. Determines how many days after membership expiration a contact&apos;s Membership Status is &quot;Grace Period&quot;.</description>
         <externalId>false</externalId>
+        <inlineHelpText>Membership grace period in days. Determines how many days after membership expiration a contact&apos;s Membership Status is &quot;Grace Period&quot;.</inlineHelpText>
         <label>Membership Grace Period</label>
         <precision>18</precision>
         <required>false</required>
@@ -85,8 +84,8 @@
         <fullName>Membership_Period__c</fullName>
         <defaultValue>365</defaultValue>
         <deprecated>false</deprecated>
-        <description>Length of membership in days. This setting determines the number of days after start date a membership lasts.</description>
         <externalId>false</externalId>
+        <inlineHelpText>Length of membership in days. This setting determines the number of days after start date a membership lasts.</inlineHelpText>
         <label>Membership Period</label>
         <precision>18</precision>
         <required>false</required>
@@ -110,8 +109,8 @@
         <fullName>Membership_Renewal_Period__c</fullName>
         <defaultValue>30</defaultValue>
         <deprecated>false</deprecated>
-        <description>Membership renewal period in days. Determines how many days after membership expiration a member&apos;s origin is &quot;Renewal&quot; instead of &quot;Reacquire&quot;, and whether the start date should be set to the previous membership&apos;s expiration date.</description>
         <externalId>false</externalId>
+        <inlineHelpText>Membership renewal period in days. Determines how many days after membership expiration a member&apos;s origin is &quot;Renewal&quot; instead of &quot;Reacquire&quot;, and whether the start date should be set to the previous membership&apos;s expiration date.</inlineHelpText>
         <label>Membership Renewal Period</label>
         <precision>18</precision>
         <required>false</required>
@@ -123,8 +122,8 @@
         <fullName>Membership_Rolling_Start_Date__c</fullName>
         <defaultValue>false</defaultValue>
         <deprecated>false</deprecated>
-        <description>This setting determines whether auto membership dates should start when the previous membership expires. Expired members will have membership retroactively applied if they are within the Membership Renewal Period. If this setting is disabled, the Membership Start Date always defaults to the Close Date.</description>
         <externalId>false</externalId>
+        <inlineHelpText>Determines whether auto membership dates should start when the previous membership expires. Expired members will have membership retroactively applied if they are within the Membership Renewal Period. If disabled, Start Date defaults to the Close Date.</inlineHelpText>
         <label>Membership Rolling Start Date</label>
         <type>Checkbox</type>
     </fields>
@@ -133,6 +132,7 @@
         <defaultValue>&quot;Donor&quot;</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
+        <inlineHelpText>Default primary Contact Role.</inlineHelpText>
         <label>Opp Gift Role Contact Donor</label>
         <length>255</length>
         <required>false</required>
@@ -144,6 +144,7 @@
         <defaultValue>&quot;Household Soft Credit&quot;</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
+        <inlineHelpText>Default Contact Role soft credit for Household Members of donors.</inlineHelpText>
         <label>Opp Gift Role Contact HH Donor</label>
         <length>255</length>
         <required>false</required>
@@ -155,6 +156,7 @@
         <defaultValue>&quot;Donor - Corporate Match&quot;</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
+        <inlineHelpText>Default primary Contact Role for Matching gifts.</inlineHelpText>
         <label>Opp Gift Role Matching Donor</label>
         <length>255</length>
         <required>false</required>
@@ -166,6 +168,7 @@
         <defaultValue>&quot;Organizational Donor&quot;</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
+        <inlineHelpText>Default primary Contact Role for Organization Opportunities.</inlineHelpText>
         <label>Opp Gift Role Org Donor</label>
         <length>255</length>
         <required>false</required>
@@ -177,7 +180,7 @@
         <defaultValue>&quot;[payer] [mm]/[yyyy] [rectype]&quot;</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>Format for automatic opportunity name; the following fields will be replaced: [payer], [rectype], [mm], [dd], [yyyy], [amount], [type], [stage]</inlineHelpText>
+        <inlineHelpText>Format for automatic name for monthly opportunities. The following fields will be replaced: [payer], [rectype], [mm], [dd], [yyyy], [amount], [type], [stage]</inlineHelpText>
         <label>Opp Name Format - Monthly</label>
         <length>255</length>
         <required>false</required>
@@ -189,7 +192,7 @@
         <defaultValue>&quot;[payer] [yyyy] [recurring] [rectype]&quot;</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>Format for automatic opportunity name; the following fields will be replaced: [payer], [rectype], [mm], [dd], [yyyy], [amount], [type], [stage], [recurring]</inlineHelpText>
+        <inlineHelpText>Format for automatic opportunity name. The following fields will be replaced: [payer], [rectype], [mm], [dd], [yyyy], [amount], [type], [stage], [recurring]</inlineHelpText>
         <label>Opp Name Format</label>
         <length>255</length>
         <required>false</required>
@@ -201,6 +204,7 @@
         <defaultValue>&quot;Gift&quot;</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
+        <inlineHelpText>The default Opportunity Record Type for new Opportunities for a Contact.</inlineHelpText>
         <label>Opp Rectype Contact Gift</label>
         <length>255</length>
         <required>false</required>
@@ -212,6 +216,7 @@
         <defaultValue>&quot;Gift&quot;</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
+        <inlineHelpText>The default Opportunity Record Type for Apex tests.</inlineHelpText>
         <label>Opp Rectype For Tests Default</label>
         <length>255</length>
         <required>true</required>
@@ -223,6 +228,7 @@
         <defaultValue>&quot;Membership&quot;</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
+        <inlineHelpText>Opportunity Record Type for tests that involve membership.</inlineHelpText>
         <label>Opp Rectype For Tests Member</label>
         <length>255</length>
         <required>true</required>
@@ -234,6 +240,7 @@
         <defaultValue>&quot;Gift&quot;</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
+        <inlineHelpText>The default Opportunity Record Type for tests do not involve Membership.</inlineHelpText>
         <label>Opp Rectype For Tests NonMember</label>
         <length>255</length>
         <required>true</required>
@@ -245,7 +252,7 @@
         <defaultValue>&quot;Grant&quot;</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>Names of opportunity record types to exclude in the New Opp Wizard for contacts.</inlineHelpText>
+        <inlineHelpText>Names of Opportunity Record Types to exclude in the New Opp Wizard for Contacts.</inlineHelpText>
         <label>Opp Rectypes Excluded New Opp Contact</label>
         <length>255</length>
         <required>false</required>
@@ -256,7 +263,7 @@
         <fullName>Opp_Rectypes_Excluded_New_Opp_Org__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>Names of opportunity record types to exclude from the New Opp Wizard for Orgs. Separate record type names with semicolons</inlineHelpText>
+        <inlineHelpText>Names of Opportunity Record Types to exclude from the New Opp Wizard for Organizations. Enter a semicolon delimited list of Record Types.</inlineHelpText>
         <label>Opp Rectypes Excluded New Opp Org</label>
         <length>255</length>
         <required>false</required>
@@ -266,7 +273,7 @@
     <fields>
         <fullName>Opp_Rectypes_Excluded_New_Opp_Payments__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>Names of opportunity record types in the New Opp Wizard that do not want to have the 3 radio buttons displayed for single payment, pledge, or recurring donation.</inlineHelpText>
+        <inlineHelpText>Names of Opportunity Record Types in the New Opp Wizard that do not want to have radio buttons displayed for single payment, pledge, or recurring donation.</inlineHelpText>
         <label>Opp Rectypes Excluded New Opp Payments</label>
         <length>255</length>
         <required>false</required>
@@ -278,6 +285,7 @@
         <defaultValue>&quot;Closed Lost&quot;</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
+        <inlineHelpText>Name of the Opportunity Stage corresponding to Close/Lost.</inlineHelpText>
         <label>Opp Stage Closed Lost</label>
         <length>255</length>
         <required>false</required>
@@ -289,6 +297,7 @@
         <defaultValue>&quot;Closed Won&quot;</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
+        <inlineHelpText>Name of the Opportunity Stage corresponding to Close/Won.</inlineHelpText>
         <label>Opp Stage Closed Won</label>
         <length>255</length>
         <required>false</required>
@@ -300,6 +309,7 @@
         <defaultValue>&quot;Prospecting&quot;</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
+        <inlineHelpText>Name of the default Opportunity Stage</inlineHelpText>
         <label>Opp Stage Default</label>
         <length>255</length>
         <required>false</required>
@@ -311,7 +321,7 @@
         <defaultValue>&quot;Pledged&quot;</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>The Opportunity Stage to use for Opportunities with Installments created from the New Opportunity Wizard.</inlineHelpText>
+        <inlineHelpText>The Opportunity Stage to use for Opportunities split into Payments created from the New Opp Wizard.</inlineHelpText>
         <label>Opp Stage Pledged Default</label>
         <length>255</length>
         <required>false</required>
@@ -323,7 +333,7 @@
         <defaultValue>&quot;Recurring&quot;</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>The default Stage to set on an Opportunity that is part of a RecurringPaymentProfile, but has not yet been actually paid.</inlineHelpText>
+        <inlineHelpText>The default Stage to set on an Opportunity that is part of a Recurring Payment Profile, but has not yet been paid.</inlineHelpText>
         <label>Opp Stage Recurring Default</label>
         <length>255</length>
         <required>false</required>
@@ -335,6 +345,7 @@
         <defaultValue>&quot;Won, Not Thanked&quot;</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
+        <inlineHelpText>Name of the Opportunity State corresponding to Closed Won, but not yet Thanked.</inlineHelpText>
         <label>Opp Stage Won Not Thanked</label>
         <length>255</length>
         <required>false</required>
@@ -346,7 +357,7 @@
         <defaultValue>false</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>Check this if you want to roll up opportunities assigned to the default (Individual) account.  Do not select this option if you have more than 5000 total opportunities for that account.</inlineHelpText>
+        <inlineHelpText>Enables Opportunity rollups for the default (Individual) account. Disable this option if the Individual account has too many Opportunities for rollups to function - or over 5000 Opportunities..</inlineHelpText>
         <label>Roll Up Opps for Default Account</label>
         <type>Checkbox</type>
     </fields>
