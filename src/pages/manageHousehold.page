@@ -1,0 +1,1 @@
+<apex:page controller="GW_EXT_ManageHousehold" action="{!manageHousehold}"/>

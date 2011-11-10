@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <customSettingsVisibility>Public</customSettingsVisibility>
+    <description>Specify the default Primary Contact Role for each Opportunity Record Type for Opportunities applied to Organizations.</description>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Primary_Contact_Role__c</fullName>
+        <description>The primary contact role for the Organization opportunity record type specified in the name field.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The primary contact role for the Organization opportunity record type specified in the name field.</inlineHelpText>
+        <label>Primary Contact Role</label>
+        <length>80</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Org Contact Roles Settings</label>
+</CustomObject>
