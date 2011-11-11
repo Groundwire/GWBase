@@ -76,21 +76,16 @@ public class GW_Householding {
 
         // query for all contacts in the household map
         Contact[] cons = [select id, onen_household__c, OtherStreet, OtherCity, OtherState, OtherPostalCode, OtherCountry, primary_address__c from Contact 
-        					where onen_household__c in :households.keyset() ORDER BY OtherStreet desc, OtherCity desc, OtherState desc, OtherPostalCode desc];
+        					where onen_household__c in :households.keyset()];
 
         Contact[] consToUpdate = new Contact[]{};
-        //need a map to keep track of valid addresses so we don't overwrite null address with valid addresses already on household contacts
-		map<id,contact> validAddressMap = new map<id,contact>();
-		
+
         for (contact c : cons) {
             // grab the changed contact record for this household
             contact master = households.get(c.onen_household__c);
             
-            if (validAddressMap.get(c.ONEN_Household__c) == null && (master.otherStreet != null || master.otherCity != null || master.otherState != null || master.otherPostalCode != null)) {
- 	           validAddressMap.put(c.ONEN_Household__c,c);
-            }
             // update the address if this is another contact
-            if (c.id != master.id && (master.otherStreet != null || master.otherCity != null || master.otherState != null || master.otherPostalCode != null)) {
+            if (c.id != master.id) {
                 c.otherStreet = master.otherStreet;
                 c.otherCity = master.otherCity;
                 c.otherState = master.otherState;
@@ -98,18 +93,6 @@ public class GW_Householding {
                 c.otherCountry = master.otherCountry;
                 if (c.primary_address__c == null) c.primary_address__c = 'Home'; 
 	            consToUpdate.add(c);
-            } else if (c.id == master.id && (master.otherStreet == null && master.otherCity == null && master.otherState == null && master.otherPostalCode == null)){
-            	Contact conWithAddy = validAddressMap.get(c.ONEN_Household__c);
-            	if (conWithAddy != null) {
-	                c.otherStreet = conWithAddy.otherStreet;
-	                c.otherCity = conWithAddy.otherCity;
-	                c.otherState = conWithAddy.otherState;
-	                c.otherPostalCode = conWithAddy.otherPostalCode;
-	                c.otherCountry = conWithAddy.otherCountry;
-	                if (c.primary_address__c == null) c.primary_address__c = 'Home'; 
-		            consToUpdate.add(c);
-            	}
-            	
             }
         }   
         if (consToUpdate.size() > 0) {
@@ -288,25 +271,22 @@ public class GW_Householding {
 		
 		        // loop through the records
 		        for (SObject obj : Trigger.New) {
-			        	Contact c = (Contact)obj;
-			        
-			        if (c.SecondContactLastName__c != null) {
-			            // add this contact to the update list if no home address
-			            if (c.otherstreet == null && c.onen_household__c != null) {
-			                needAddress.add(c.onen_household__c);
-			            }
-	
-						// check if this contact is newly deceased
-						if ( c.Deceased__c == true && trigger.oldmap != null && 
-							trigger.oldmap.containsKey(c.id) && !(((Contact)(trigger.oldmap.get(c.id))).deceased__c ))
-								c.ONEN_Household__c = null;
-			
-			            // create a blank household for each contact that doesn't have one
-			            if (c.onen_household__c==null) {
-			                newHouseholds.add(new onen_household__c(Name='New Household'));
-			                // NOTE: household names get corrected in the "after" trigger
-			            }
-		        	}
+		        	Contact c = (Contact)obj;
+		            // add this contact to the update list if no home address
+		            if (c.otherstreet == null && c.onen_household__c != null) {
+		                needAddress.add(c.onen_household__c);
+		            }
+
+					// check if this contact is newly deceased
+					if ( c.Deceased__c == true && trigger.oldmap != null && 
+						trigger.oldmap.containsKey(c.id) && !(((Contact)(trigger.oldmap.get(c.id))).deceased__c ))
+							c.ONEN_Household__c = null;
+		
+		            // create a blank household for each contact that doesn't have one
+		            if (c.onen_household__c==null) {
+		                newHouseholds.add(new onen_household__c(Name='New Household'));
+		                // NOTE: household names get corrected in the "after" trigger
+		            }
 		        }
 		        if (newHouseholds.size() > 0) insert newHouseholds;
 		        
@@ -322,45 +302,45 @@ public class GW_Householding {
 		        integer i = 0;
 		        for (SObject obj: Trigger.new) {
 		        	Contact c = (Contact)obj;
-		            
-		            if (c.SecondContactLastName__c != null) {
-			            // set the household to one of the 'New' ones
-			            if (c.onen_household__c==null) {
-			                c.onen_household__c = newHouseholds[i].id;
-			                i++;
-			            }
-			            // fill in preferred address, if blank
-			            if (c.primary_address__c == null) 
-			                c.primary_address__c = (c.mailingStreet != null) ? 'Work' : (c.OtherStreet != null) ? 'Home' : null;        
-			            // set the address from other household member, if this is a new person without one
-			            if (c.otherStreet == null && trigger.isInsert) {
-			                if (addresses.containsKey(c.onen_household__c)) {
-			                    contact addr = addresses.get(c.onen_household__c);
-			                    c.otherStreet = addr.otherStreet;
-			                    c.otherCity = addr.otherCity;
-			                    c.otherState = addr.otherState;
-			                    c.otherPostalCode = addr.otherPostalCode;
-			                    c.otherCountry = addr.otherCountry;
-			                }
-			            }
-			
-			            // create a 'second' contact in the same household
-			            if (c.SecondContactFirstName__c != null) {
-			                
-			                GW_Householding.secondContacts.add(new Contact(
-			                    Salutation = c.SecondContactSalutation__c,
-			                    FirstName = c.SecondContactFirstName__c,
-			                    LastName = c.SecondContactLastName__c,
-			                    Email = c.SecondContactEmail__c,
-			                    onen_household__c = c.onen_household__c,
-			                    AccountId = ONEN_DefaultAccount.GetIndividualAccountId(),
-			                    SecondContactLastName__c='Second Contact')
-			                );
-			                c.SecondContactFirstName__c = null;
-			            }
-			            c.SecondContactLastName__c = null;
-			            c.SecondContactEmail__c = null;
-			        }
+		            // set the household to one of the 'New' ones
+		            if (c.onen_household__c==null) {
+		                c.onen_household__c = newHouseholds[i].id;
+		                i++;
+		            }
+		            // fill in preferred address, if blank
+		            if (c.primary_address__c == null) 
+		                c.primary_address__c = (c.mailingStreet != null) ? 'Work' : (c.OtherStreet != null) ? 'Home' : null;        
+		            // set the address from other household member, if this is a new person without one
+		            if (c.otherStreet == null && trigger.isInsert) {
+		                if (addresses.containsKey(c.onen_household__c)) {
+		                    contact addr = addresses.get(c.onen_household__c);
+		                    c.otherStreet = addr.otherStreet;
+		                    c.otherCity = addr.otherCity;
+		                    c.otherState = addr.otherState;
+		                    c.otherPostalCode = addr.otherPostalCode;
+		                    c.otherCountry = addr.otherCountry;
+		                }
+		            }
+		
+		            // create a 'second' contact in the same household
+		            if (c.SecondContactFirstName__c != null) {
+		
+		                // use same last name if last is blank
+		                if (c.SecondContactLastName__c==null) c.SecondContactLastName__c = c.LastName;
+		                
+		                GW_Householding.secondContacts.add(new Contact(
+		                    Salutation = c.SecondContactSalutation__c,
+		                    FirstName = c.SecondContactFirstName__c,
+		                    LastName = c.SecondContactLastName__c,
+		                    Email = c.SecondContactEmail__c,
+		                    onen_household__c = c.onen_household__c,
+		                    AccountId = ONEN_DefaultAccount.GetIndividualAccountId(),
+		                    SecondContactLastName__c='Second Contact')
+		                );
+		                c.SecondContactFirstName__c = null;
+		            }
+		            c.SecondContactLastName__c = null;
+		            c.SecondContactEmail__c = null;
 		        }
 		    }
 	    }
@@ -468,34 +448,6 @@ public class GW_Householding {
 
     }
 
-	/*********************************************************************************
-    * Test creation of one contact. Household should be created and naming should
-    * meet expectations
-    *********************************************************************************/
-    public static testMethod void TestAutoCreationDeactivated() {    
-
-        Id HHId;
-        Id FirstContactId;
-        //create first contact
-        Contact firstContact = new Contact (
-            FirstName='Joe',
-            LastName='Johanssen',
-            otherStreet='123 Elm St',
-            otherCity='Wauwatosa',
-            otherState='WI',
-            otherPostalCode='53213',
-            otherCountry='USA'          
-        );
-        //system.debug('Insert First Contact');
-        insert firstContact;
-        
-        Contact[] firstHouseholdMember = [select id,onen_household__c,otherStreet,Account.Name, onen_household__r.Name, householdGreeting__c from Contact where Id =:firstContact.id];
-        //FirstContactId = firstHouseholdMember[0].id;
-        //households should no longer exist without the Manage HH interface creating them OR through data migration into
-        //the secondcontact first and last name fields
-        system.assertEquals(null, firstHouseholdMember[0].onen_household__c);
-    }
-
     /*********************************************************************************
     * Test creation of one contact. Household should be created and naming should
     * meet expectations
@@ -504,16 +456,10 @@ public class GW_Householding {
 
         Id HHId;
         Id FirstContactId;
-        
-        //now must create the HH first since automated HH'ing is no more as of 11/2011
-		ONEN_Household__c hh = new ONEN_Household__c(Name='Foo_Household');
-		insert hh;
-        
         //create first contact
         Contact firstContact = new Contact (
             FirstName='Joe',
             LastName='Johanssen',
-            ONEN_Household__c = hh.id,
             otherStreet='123 Elm St',
             otherCity='Wauwatosa',
             otherState='WI',
@@ -539,14 +485,13 @@ public class GW_Householding {
         System.assertEquals(firstHouseholdMember[0].householdGreeting__c,CurrentHousehold[0].Greeting__c);
         //contact address is as expected
         System.assertEquals('123 Elm St',firstHouseholdMember[0].otherStreet);          
-		
+
 		// try to delete a HH -- trigger does not allow it
 		try {
 			delete currentHousehold;
 			system.assert(false);    // should not get here
 		} catch (exception e) {
-		}	
-				
+		}			
     }
 
 	/*********************************************************************************
@@ -555,17 +500,12 @@ public class GW_Householding {
 	*********************************************************************************/
 	public static testMethod void TestHHForOneContactWithNullValues() {	 
 		
+
 		Id HHId;
 		Id FirstContactId;
-		
-		//now must create the HH first since automated HH'ing is no more as of 11/2011
-		ONEN_Household__c hh = new ONEN_Household__c(Name='Foo_Household');
-		insert hh;
-		
 		//create first contact
 		Contact firstContact = new Contact (
-			LastName='Johanssen',
-			ONEN_Household__c = hh.id			
+			LastName='Johanssen'			
 		);
 		//system.debug('Insert First Contact');
 		insert firstContact;
@@ -591,16 +531,10 @@ public class GW_Householding {
 
         Id HHId;
         Id FirstContactId;
-        
-        //now must create the HH first since automated HH'ing is no more as of 11/2011
-		ONEN_Household__c hh = new ONEN_Household__c(Name='Foo_Household');
-		insert hh;
-		
         //create first contact
         Contact firstContact = new Contact (
             FirstName='Joe',
             LastName='Johanssen',
-            ONEN_Household__c = hh.id,
             otherStreet='123 Elm St',
             otherCity='Wauwatosa',
             otherState='WI',
@@ -643,6 +577,7 @@ public class GW_Householding {
 	********************************************************************************************/
 	public static testMethod void TestInsertHouseholdThenContact() {	 
 		
+
 		//create new household
 		ONEN_Household__c newHousehold = new ONEN_Household__c (Name='Household_for_tests');
 		insert newHousehold;
@@ -656,6 +591,54 @@ public class GW_Householding {
 		
 		Contact[] firstHouseholdMember = [select id,ONEN_Household__c,OtherStreet,Account.Name, HouseholdGreeting__c,HouseholdName__c from Contact where Id =:firstContact.id];
 		System.assertEquals(1,firstHouseholdMember.size());	
+	}
+	
+	/*********************************************************************************
+	* Test creation of two contacts with same last name. They should not be placed
+	* in the same Household
+	*********************************************************************************/
+	public static testMethod void TestTwoSameNameContactsDiffHH() {	 
+		
+
+		Id HHId;
+		Id FirstContactId;
+		//create first contact
+		Contact firstContact = new Contact (
+			FirstName='Joe',
+			LastName='Johanssen',
+			OtherStreet='123 Elm St',
+			OtherCity='Wauwatosa',
+			OtherState='WI',
+			OtherPostalCode='53213',
+			Home_County__c='Milwaukee',
+			OtherCountry='USA'			
+		);
+		//system.debug('Insert First Contact');
+		insert firstContact;
+		
+		Id HHId2;
+		Id SecondContactId;
+		//create first contact
+		Contact secondContact = new Contact (
+			FirstName='Joe',
+			LastName='Johanssen',
+			OtherStreet='123 Elm St',
+			OtherCity='Wauwatosa',
+			OtherState='WI',
+			OtherPostalCode='53213',
+			Home_County__c='Milwaukee',
+			OtherCountry='USA'			
+		);
+		//system.debug('Insert First Contact');
+		insert secondContact;
+		Contact[] firstHouseholdMember = [select id,ONEN_Household__c,OtherStreet,Account.Name, HouseholdGreeting__c,HouseholdName__c from Contact where Id =:firstContact.id];
+		FirstContactId = firstHouseholdMember[0].id;
+
+		Contact[] secondHouseholdMember = [select id,ONEN_Household__c,OtherStreet,Account.Name, HouseholdGreeting__c,HouseholdName__c from Contact where Id =:secondContact.id];
+		SecondContactId = secondHouseholdMember[0].id;
+		//first and second contact should each have their own HH even though they have the same name
+		System.assertNotEquals(firstHouseholdMember[0].ONEN_Household__c, secondHouseholdMember[0].ONEN_Household__c);		
+			
 	}
 	    
     /*********************************************************************************
@@ -673,16 +656,10 @@ public class GW_Householding {
         String firstContactotherState = 'WI';
         String firstContactotherPostalCode = '53213';
         String firstContactotherCountry = 'USA';
-        
-        //now must create the HH first since automated HH'ing is no more as of 11/2011
-		ONEN_Household__c hh = new ONEN_Household__c(Name='Foo_Household');
-		insert hh;
-		
         //create first contact
         Contact firstContact = new Contact (
             FirstName='Joe',
             LastName='Johanssen',
-            ONEN_Household__c = hh.id,
             otherStreet=firstContactotherStreet,
             otherCity=firstContactotherCity,
             otherState=firstContactotherState,
@@ -751,16 +728,10 @@ public class GW_Householding {
         Id FirstContactId;
         Id SecondContactId;
         String firstContactotherStreet = '123 Elm St';
-        
-        //now must create the HH first since automated HH'ing is no more as of 11/2011
-		ONEN_Household__c hh = new ONEN_Household__c(Name='Foo_Household');
-		insert hh;
-		
         //create first contact
         Contact firstContact = new Contact (
             FirstName='Joe',
             LastName='Johanssen',
-            ONEN_Household__c = hh.id,
             otherStreet=firstContactotherStreet,
             otherCity='Wauwatosa',
             otherState='WI',
@@ -848,6 +819,66 @@ public class GW_Householding {
         //what about case where second contact doesn't have address, they should get address
     }
     
+    /*********************************************************************************
+    * Test contacts with null households
+    *********************************************************************************/
+    public static testMethod void TestContactWithNullHouseholds() {  
+
+		//create household
+		ONEN_Household__c hh = new ONEN_Household__c (
+			Name = 'Blah'
+			);
+		insert hh;
+        
+        //create contact without household
+        Contact con1 = new Contact (
+            FirstName='Joe',
+            LastName='Johanssen',
+            otherStreet='123 Test Street',
+            otherCity='Wauwatosa',
+            otherState='WI',
+            otherPostalCode='53213',
+            otherCountry='USA'          
+        );
+        insert con1;
+        
+        //create another contact without household
+        Contact con2 = new Contact (
+            FirstName='David',
+            LastName='Lynch',
+            otherStreet='ZZaaYYbb',
+            otherCity='Wauwatosa',
+            otherState='WI',
+            otherPostalCode='53213',
+            otherCountry='USA'          
+        );
+        insert con2;
+        
+        Contact firstContact = [SELECT Id, OtherStreet FROM Contact WHERE id = :con1.id];
+        system.assertNotEquals('ZZaaYYbb', firstContact.otherStreet);
+        
+        //Add the contacts to the household
+        con1.ONEN_Household__c = hh.id;
+        con2.ONEN_Household__c = hh.id;
+        update con1;
+        update con2;
+        
+        list<Contact> hhMembers = [SELECT Id, OtherStreet, ONEN_Household__c FROM Contact WHERE ONEN_Household__c = :hh.id];
+        
+        // Verify that their addresses are the same
+        system.assertEquals(2, hhMembers.size());
+        system.assertEquals(hhMembers[0].OtherStreet,hhMembers[1].OtherStreet);
+        
+        // Remove a contact from a household and change the address
+        con2.OtherStreet = 'ZZZ222EEER';
+        con2.ONEN_Household__c = null;
+        update con2;
+        
+        // Make sure that the other contact wasn't affected
+        list<Contact> crazyAddressContact = [SELECT Id, OtherStreet FROM Contact WHERE OtherStreet = 'ZZZ222EEER'];
+        system.assertEquals(1, crazyAddressContact.size());
+    }
+    
     
     /*********************************************************************************
     * Test creation of one contact and change address. Household address should change
@@ -864,15 +895,10 @@ public class GW_Householding {
         String firstContactotherPostalCode = '53213';
         String firstContactotherCountry = 'USA';
         
-        //now must create the HH first since automated HH'ing is no more as of 11/2011
-		ONEN_Household__c hh = new ONEN_Household__c(Name='Foo_Household');
-		insert hh;
-        
         //create first contact
         Contact firstContact = new Contact (
             FirstName='Joe',
             LastName='Johanssen',
-            ONEN_Household__c = hh.id,
             otherStreet=firstContactotherStreet,
             otherCity=firstContactotherCity,
             otherState=firstContactotherState,
@@ -937,16 +963,10 @@ public class GW_Householding {
         Id HHId;
         Id FirstContactId;
         Id SecondContactId;
-        
-        //now must create the HH first since automated HH'ing is no more as of 11/2011
-		ONEN_Household__c hh = new ONEN_Household__c(Name='Foo_Household');
-		insert hh;
-        
         //create first contact
         Contact firstContact = new Contact (
             FirstName='Joe',
             LastName='Johanssen',
-            ONEN_Household__c = hh.id,
             otherStreet='123 Elm St',
             otherCity='Wauwatosa',
             otherState='WI',
@@ -976,8 +996,6 @@ public class GW_Householding {
         System.assertEquals(2,[select count() from Contact where onen_household__c = :HHId]);
         delete secondContact;       
         
-        /*********  Long term, we should be deleting households with only one member */
-        
         //that household should now have only one Contact in it
         System.assertEquals(1,[select count() from Contact where onen_household__c = :HHId]);
         onen_household__c[] CurrentHousehold = [select id,Name, Greeting__c from onen_household__c where Id =:HHId];
@@ -993,16 +1011,11 @@ public class GW_Householding {
 
         Id HHId;
         Id FirstContactId;
-        
-        //now must create the HH first since automated HH'ing is no more as of 11/2011
-		ONEN_Household__c hh = new ONEN_Household__c(Name='Foo_Household');
-		insert hh;
 
         //create first contact
         Contact firstContact = new Contact (
             FirstName='Joe',
             LastName='Johanssen',
-            ONEN_Household__c = hh.id,
             otherStreet='123 Elm St',
             otherCity='Wauwatosa',
             otherState='WI',
@@ -1036,16 +1049,10 @@ public class GW_Householding {
         Id FirstContactId;
         Id SecondContactId;
         Id ThirdContactId;
-        
-        //now must create the HH first since automated HH'ing is no more as of 11/2011
-		ONEN_Household__c hh = new ONEN_Household__c(Name='Foo_Household');
-		insert hh;
-		
         //create first contact
         Contact firstContact = new Contact (
             FirstName='Joe',
             LastName='Johanssen',
-            ONEN_Household__c = hh.id,
             otherStreet='123 Elm St',
             otherCity='Wauwatosa',
             otherState='WI',
@@ -1075,15 +1082,10 @@ public class GW_Householding {
         
         SecondContactId = secondContact.Id;
         
-        //now must create the HH first since automated HH'ing is no more as of 11/2011
-		ONEN_Household__c hh2 = new ONEN_Household__c(Name='Foo_Household');
-		insert hh2;
-        
         //create a Contact with a new household
         Contact thirdContact = new Contact (
             FirstName='Samuel',
-            LastName='Jackson',
-            ONEN_Household__c = hh2.id          
+            LastName='Jackson'          
         );      
         //system.debug('Insert Third Contact');
         insert thirdContact;
@@ -1121,16 +1123,10 @@ public class GW_Householding {
 		Id FirstContactId;
 		Id SecondContactId;
 		Id ThirdContactId;
-		
-		//now must create the HH first since automated HH'ing is no more as of 11/2011
-		ONEN_Household__c hh = new ONEN_Household__c(Name='Foo_Household');
-		insert hh;
-		
 		//create first contact
 		Contact firstContact = new Contact (
 			FirstName='Joe',
-			LastName='Johanssen',
-			ONEN_Household__c = hh.id		
+			LastName='Johanssen'		
 		);
 		//system.debug('Insert First Contact');
 		insert firstContact;
@@ -1216,16 +1212,10 @@ public class GW_Householding {
 		Id FirstContactId;
 		Id SecondContactId;
 		Id ThirdContactId;
-		
-		//now must create the HH first since automated HH'ing is no more as of 11/2011
-		ONEN_Household__c hh = new ONEN_Household__c(Name='Foo_Household');
-		insert hh;
-		
 		//create first contact
 		Contact firstContact = new Contact (
 			FirstName='Joe',
-			LastName='Johanssen',
-			ONEN_Household__c = hh.id
+			LastName='Johanssen'
 		);
 		insert firstContact;
 		Contact[] firstHouseholdMember = [select id,ONEN_Household__c,OtherStreet,Account.Name, HouseholdGreeting__c,HouseholdName__c from Contact where Id =:firstContact.id];
@@ -1272,50 +1262,37 @@ public class GW_Householding {
 		system.assertEquals(secondContactMailingCountry,HouseholdMembers[1].OtherCountry);
 	}
 
-	/* Need to fix up this test for bulk */
 	public static testMethod void testBulkContactAdd () {
+		// for a single contact w/ no previous mbrships, add a new membership
+		// and test mbr stats are created 
 	
-		integer howMany = 50;
+		integer howMany = 200;
 		Date datClose = System.Today();
 			
 		// create & insert contact(s)
 		Contact[] TestCons = ONEN_UnitTestData.CreateMultipleTestContacts ( howMany );
-		//only time households should be auto-created is when SecondContact fields are filled out
-		for (Contact c : TestCons) {
-			c.SecondContactFirstName__c = 'George';
-			c.SecondContactLastName__c = 'Costanza';
-		}
-		
 		Test.StartTest();
 		insert TestCons; 
 		Test.StopTest();
-		
 		//now test that a contact has received the proper member stats from the trigger
-		Contact[] newCons = [SELECT Id,FirstName, LastName, ONEN_Household__c, HouseholdName__c FROM Contact WHERE id IN :TestCons AND ONEN_Household__c != null];
-		//should have 200 auto-created households because we had secondContact fields filled out
-		System.AssertEquals ( howMany, newCons.size());
+		Contact newCon = [SELECT Id,FirstName, LastName, ONEN_Household__c, HouseholdName__c FROM Contact WHERE FirstName = 'Number1'];
+		Id FirstConId = newCon.Id;
+		String FirstConFirstName = newCon.FirstName;
+		String FirstConLastName = newCon.LastName;
+		Id FirstConHHId = newCon.ONEN_Household__c;
+		System.AssertEquals ( FirstConFirstName + ' ' + FirstConLastName, newCon.HouseholdName__c);
 		
 	}
 	
 	public static testMethod void testBulkContactChange () {
+		// for a single contact w/ no previous mbrships, add a new membership
+		// and test mbr stats are created
 	
-		integer howMany = 50;
+		integer howMany = 200;
 		Date datClose = System.Today();
-		
-		list<ONEN_Household__c> newHHs = new list<ONEN_Household__c>();
-		for (integer i=0;i < howMany ; i++) {
-			ONEN_Household__c hh = new ONEN_Household__c(Name='Foo_Household');
-			newHHs.add(hh);
-		}
-		insert newHHs;	
 			
 		// create & insert contact(s)
 		Contact[] TestCons = ONEN_UnitTestData.CreateMultipleTestContacts ( howMany );
-		//only time households should be auto-created is when SecondContact fields are filled out
-		for (integer i=0;i < TestCons.size() ; i++) {
-			TestCons[i].ONEN_Household__c = newHHs[i].id;
-		}
-		
 		test.startTest();
 		insert TestCons;
 		
