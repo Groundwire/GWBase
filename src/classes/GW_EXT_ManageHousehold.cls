@@ -19,12 +19,12 @@ public with sharing class GW_EXT_ManageHousehold {
 	public map<Id, Contact> activeContacts;
 	
 	public map<String, Id> viableAddresses;
+	public Id activeAddressConId;
 	public string activeStreet;
 	public string activeCity;
 	public string activePostalCode;
 	public string activeState;
 	public string activeCountry;
-	
 	
 	private string conSelect = 'SELECT Id, Name, ONEN_Household__c, OtherStreet, OtherCity, OtherState, OtherPostalCode, OtherCountry FROM Contact ';
 	
@@ -88,6 +88,39 @@ public with sharing class GW_EXT_ManageHousehold {
 		if (con != null) {
 			activeConIds.add(con.Id);
         	activeContacts.put(con.id, con);
+        	
+        	return true;
+		}
+		return false;
+		
+	}
+	
+	/*******************************************************************************************************
+	* @description add a contact to the household by id along with all of the contacts in the same
+	* household.
+	* @param Id cid the id to add. 
+    * @return Boolean
+    ********************************************************************************************************/
+	public boolean addContactWithHousehold(Id cid) {
+		
+		String whereClause = 'WHERE Id = \''+cid+'\'';
+		Contact con = Database.query(conSelect + whereClause);
+		if (con != null) {
+			activeConIds.add(con.Id);
+        	activeContacts.put(con.id, con);
+        	
+        	// check for household then find and add contacts
+        	if (con.ONEN_Household__c != null) {
+        		whereClause = 'WHERE ONEN_Household__c = \''+con.ONEN_Household__c+'\'';
+        		list<Contact> hhcons = Database.query(conSelect + whereClause);
+        		if (!hhcons.isEmpty()) {
+        			for (Contact hhcon : hhcons) {
+        				activeConIds.add(hhcon.Id);
+        				activeContacts.put(hhcon.id, con);
+        			}
+        		}
+        	}
+        	
         	return true;
 		}
 		return false;
@@ -102,6 +135,7 @@ public with sharing class GW_EXT_ManageHousehold {
 	public boolean setActiveAddress(Id cid) {
 		Contact con = (activeContacts.containsKey(cid)) ? activeContacts.get(cid) : null;
 		if (con == null) return false;
+		activeAddressConId = con.id;
 		activeStreet = con.OtherStreet;
 		activeCity = con.OtherCity;
 		activeState = con.OtherState;
@@ -134,8 +168,9 @@ public with sharing class GW_EXT_ManageHousehold {
 				//replace whitespace
 				addressString = matchWhtSpc.replaceAll('');
 				
+				if (!viableAddresses.containsKey(addressString)) retCons.add(con);
 				viableAddresses.put(addressString, con.id);
-				retCons.add(con);
+				
 			}
 		}
 		return retCons;
@@ -144,6 +179,39 @@ public with sharing class GW_EXT_ManageHousehold {
 	public void getHHMembers() {
 		string wc = (conId != Null) ? ' or Id=\''+conId+'\'' : '';
 		hhMembers = Database.query('SELECT Id, ONEN_Household__c, OtherStreet, OtherCity, OtherState, OtherPostalCode, OtherCountry FROM Contact WHERE ONEN_HouseHold__c =\''+hh.id+'\''+wc);
+	}
+	
+	
+	public void save() {
+		
+		// Insert Household
+		upsert hh;
+		
+		if (!activeContacts.isEmpty()) {
+			
+			// If we haven't yet set the active address attempt to do so now
+			if (activeAddressConId == null) {
+				list<Contact> conads = getViableAddresses();
+				if (!conads.isEmpty()) setActiveAddress(conads[0].id);
+			}
+			
+			for (Contact con : activeContacts.values()) {
+				
+				// Set Addresses on Contacts
+				if (activeAddressConId != null) {
+					con.OtherStreet = activeStreet;
+					con.OtherCity = activeCity;
+					con.OtherState = activeState;
+					con.OtherPostalCode = activePostalCode;
+					con.OtherCountry = activeCountry;
+				}
+				
+				// Set household on contacts
+				con.ONEN_Household__c = hh.id;
+				
+				update con;
+			}
+		}
 	}
 	
 	// TEST METHOD
@@ -202,6 +270,17 @@ public with sharing class GW_EXT_ManageHousehold {
     		);
     	insert con;
     	
+    	Contact con2 = new Contact(
+    		LastName = 'TestContact2 ',
+    		email = 'testemail2@groundwiretest.org',
+    		OtherStreet = 'Drastically Different',
+    		OtherCity = 's',
+    		OtherState = 'd',
+    		OtherPostalCode = '1',
+    		OtherCountry = 'b'
+    		);
+    	insert con2;
+    	
     	Test.startTest();
         ApexPages.StandardController sc = new ApexPages.standardController(hh);
         
@@ -219,6 +298,26 @@ public with sharing class GW_EXT_ManageHousehold {
         //test that active address IS NOT set
         system.assertNotEquals(con.OtherStreet, ext.activeStreet);
         
+        // select one and add it
+        ext.addContact(con2.id);
+        
+        //save
+        ext.save();
+        
+        // verify that we have a household id
+        system.assertNotEquals(null, ext.hh.id);
+        
+        // Get contacts in household
+        list<Contact> householdMembers = [SELECT Id, Name, OtherStreet, OtherCity, OtherState, OtherPostalCode, OtherCountry, ONEN_Household__c FROM Contact WHERE ONEN_Household__c = :ext.hh.id];
+        
+        system.assertEquals(2, householdMembers.size());
+        
+        // Check that the addresses match
+        system.assertEquals(householdMembers[0].OtherStreet, householdMembers[1].OtherStreet);
+        system.assertEquals(householdMembers[0].OtherCity, householdMembers[1].OtherCity);
+        system.assertEquals(householdMembers[0].OtherState, householdMembers[1].OtherState);
+        system.assertEquals(householdMembers[0].OtherPostalCode, householdMembers[1].OtherPostalCode);
+        system.assertEquals(householdMembers[0].OtherCountry, householdMembers[1].OtherCountry);
         
         Test.stopTest();
     }
@@ -307,10 +406,11 @@ public with sharing class GW_EXT_ManageHousehold {
         system.assertEquals(3, ext.activeConIds.size());
         
         // find viable addresses
-        ext.getViableAddresses();
+        list<Contact> adds = ext.getViableAddresses();
         
         //verify that we found two valid addresses even though the matches aren't exactly the same
         system.AssertEquals(2, ext.viableAddresses.size());
+        system.AssertEquals(2, adds.size());
         
         
         Test.stopTest();
