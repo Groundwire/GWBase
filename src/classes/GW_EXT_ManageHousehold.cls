@@ -1,143 +1,321 @@
-// Written by David Habib, copyright (c) 2011 Groundwire
+// Written by Ryan Foster, copyright (c) 2011 Groundwire
 // This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
 
 /*******************************************************************************************************
-* @author David Habib
-* @date 11/05/2011
-* @description This class is the controller extension for the Household Members visual force pagelet
-* that is displayed on the Household layout.
+* @author Ryan Foster
+* @date 11/10/2011
+* @description This class is the VF page extension for the Manage Household interface. This allows users to
+* setup their household members, name, and greeting before creating the household. It will also allow the user
+* to set the address on the household.
 *
 */
 public with sharing class GW_EXT_ManageHousehold {
 
-	public ONEN_Household__c hh { get; set; }
-
-	public CampaignMember cm { get; set; } // used for contact lookup on page
+	public ONEN_Household__c hh;
+	public List<Contact> hhMembers;
+	public Id conId;
+	public Contact con;
+	public set<Id> activeConIds;
+	public map<Id, Contact> activeContacts;
 	
-	public list<Contact> listContact { 
-		get {
-			if (listContact == null) {
-		        listContact = [select contact.Id, contact.Name, Account.Name, Email,
-		        	OtherStreet, OtherCity, OtherState, OtherPostalCode, OtherCountry,
-		        	Home_County__c, HomePhone, Title, Phone
-		        	from Contact where ONEN_Household__c = :hh.Id];		
-	        }
-	        return listContact;
-		}
-		
-		set; 
-	}
+	public map<String, Id> viableAddresses;
+	public string activeStreet;
+	public string activeCity;
+	public string activePostalCode;
+	public string activeState;
+	public string activeCountry;
+	
+	
+	private string conSelect = 'SELECT Id, Name, ONEN_Household__c, OtherStreet, OtherCity, OtherState, OtherPostalCode, OtherCountry FROM Contact ';
 	
     public GW_EXT_ManageHousehold(ApexPages.StandardController controller) {
+    	
+    	activeConIds = new set<id>();
+    	activeContacts = new map<Id, Contact>();
+    	viableAddresses = new map<String, Id>();
+    	
         hh = (ONEN_Household__c)controller.getRecord();
+        
+        //Get the contact id from the query if present
+        conId = ApexPages.currentPage().getParameters().get('cid');
+        //if we have a contact id, get the contact
+        if (conId != null) {
+        	con = [SELECT Id, ONEN_Household__c, OtherStreet, OtherCity, OtherState, OtherPostalCode, OtherCountry
+        		   FROM Contact
+        	   	   WHERE Id = :conId ];
+        	activeConIds.add(conId);
+        	activeContacts.put(con.id, con);
+        }
+        
+        //if we are an existing household, get the members
+        if (hh.Id != Null) {
+        	getHHMembers();
+        	if (!hhMembers.isEmpty()) {
+        		for (Contact con : hhMembers) {
+        			activeConIds.add(con.id);
+        		}
+        		activeContacts.putAll(hhMembers);
+        		for (Id cid : activeContacts.keySet()) {
+        			//set the active address fields
+        			setActiveAddress(cid);
+        		}
+        	}
+        }
+        
+        
     }
-
-	public GW_EXT_ManageHousehold() {
-        //conid = (Contact)controller.getRecord();
-        //hh = (ONEN_Household__c)controller.getRecord();
+	
+	/*******************************************************************************************************
+	* @description Method to return up to 20 contacts with names similar to a passed in string. Filters out
+	* contacts that have already been added to the household.
+	* @param subString the substring to filter by 
+    * @return list<Contact>
+    ********************************************************************************************************/
+	public list<Contact> findContacts(string subString) {
+		String whereClause = 'WHERE Name LIKE \'%'+subString+'%\' AND Id NOT IN :activeConIds LIMIT 20';
+		return database.query(conSelect + whereClause);
+	}
+	
+	/*******************************************************************************************************
+	* @description add a contact to the household by id.
+	* @param Id cid the id to add. 
+    * @return Boolean
+    ********************************************************************************************************/
+	public boolean addContact(Id cid) {
+		
+		String whereClause = 'WHERE Id = \''+cid+'\'';
+		Contact con = Database.query(conSelect + whereClause);
+		if (con != null) {
+			activeConIds.add(con.Id);
+        	activeContacts.put(con.id, con);
+        	return true;
+		}
+		return false;
+		
+	}
+	
+	/*******************************************************************************************************
+	* @description set the active address from the address fields on a contact.
+	* @param Id cid the id of the contact to select the address from. 
+    * @return Boolean
+    ********************************************************************************************************/
+	public boolean setActiveAddress(Id cid) {
+		Contact con = (activeContacts.containsKey(cid)) ? activeContacts.get(cid) : null;
+		if (con == null) return false;
+		activeStreet = con.OtherStreet;
+		activeCity = con.OtherCity;
+		activeState = con.OtherState;
+		activePostalCode = con.OtherPostalCode;
+		activeCountry = con.OtherCountry;
+		return true;
+	}
+	
+	/*******************************************************************************************************
+	* @description iterate over the active contacts and find all good addresses
+	* @return list<Contact> list of contacts with viable addresses
+    ********************************************************************************************************/
+	public list<Contact> getViableAddresses() {
+		list<Contact> retCons = new list<contact>();
+		if (activeContacts.isEmpty()) return retCons;
+		
+		list<Contact> cons = Database.query(conSelect + 'WHERE id IN :activeConIds');
+		
+		for (Contact con : cons) {
+			if (con.OtherStreet != null && con.OtherCity != null && con.OtherState != null) {
+				string country = (con.OtherCountry != null) ? con.OtherCountry : '';
+				string addressString = con.OtherStreet + con.OtherCity + con.OtherState + string.valueOf(con.OtherPostalCode);
+				
+				// regex pattern for getting all white space 
+				pattern whtspc = pattern.compile('[\\s]');
+				
+				//find whitespace
+				matcher matchWhtSpc = whtspc.matcher(addressString);
+				
+				//replace whitespace
+				addressString = matchWhtSpc.replaceAll('');
+				
+				viableAddresses.put(addressString, con.id);
+				retCons.add(con);
+			}
+		}
+		return retCons;
+	}
+	
+	public void getHHMembers() {
+		string wc = (conId != Null) ? ' or Id=\''+conId+'\'' : '';
+		hhMembers = Database.query('SELECT Id, ONEN_Household__c, OtherStreet, OtherCity, OtherState, OtherPostalCode, OtherCountry FROM Contact WHERE ONEN_HouseHold__c =\''+hh.id+'\''+wc);
+	}
+	
+	// TEST METHOD
+    public static testMethod void testExistingHH() {
+    	
+    	ONEN_Household__c hh = new ONEN_Household__c(
+    		Name = 'test_hh'
+    		);
+    	insert hh;
+    	
+    	Contact con = new Contact(
+    		LastName = 'TestContactASDF',
+    		email = 'testemail@groundwiretest.org',
+    		ONEN_Household__c = hh.id,
+    		OtherStreet = '1234 Testing Drive Suite 1000',
+    		OtherCity = 'Seattle',
+    		OtherState = 'WA',
+    		OtherPostalCode = '98101',
+    		OtherCountry = 'USA'
+    		);
+    	insert con;
+    	
+    	Test.startTest();
+        ApexPages.StandardController sc = new ApexPages.standardController(hh);
+        
+        GW_EXT_ManageHousehold ext = new GW_EXT_ManageHousehold(sc);
+        
+        system.assertEquals(false, ext.hhMembers.isEmpty());
+        
+        //test active address variables are set
+        system.assertEquals(con.OtherStreet, ext.activeStreet);
+        system.assertEquals(con.OtherState, ext.activeState);
+        system.assertEquals(con.OtherCity, ext.activeCity);
+        system.assertEquals(con.OtherPostalCode, ext.activePostalCode);
+        system.assertEquals(con.OtherCountry, ext.activeCountry);
+        
+        
+        Test.stopTest();
     }
     
-    public PageReference ManageHousehold() {
-    	string conid = ApexPages.CurrentPage().getParameters().get('id');
+    public static testMethod void testNewHH() {
     	
-    	Contact[] conhh = [SELECT Id, Name, ONEN_Household__c FROM Contact WHERE Id=:conid];
-    	if (conhh.size() > 0) {
-    		if (conhh[0].ONEN_Household__c != NULL) {
-    			PageReference redirect = new PageReference('/'+conhh[0].ONEN_Household__c);
-				redirect.setRedirect(true);
-				return redirect;
-    		} else {
-    			hh = new ONEN_Household__c();
-    			insert hh;
-    			
-    			conhh[0].ONEN_Household__c = hh.id;
-    			update conhh[0];
-    			
-    			PageReference newhh = new PageReference('/'+hh.id);
-    			newhh.setRedirect(true);
-    			return newhh;
-    		}
-    	}
-    	return null;
+    	ONEN_Household__c hh = new ONEN_Household__c(
+    		Name = 'test_hh'
+    		);
+    	
+    	
+    	Contact con = new Contact(
+    		LastName = 'TestContactASDF',
+    		email = 'testemail@groundwiretest.org',
+    		OtherStreet = '1234 Testing Drive Suite 1000',
+    		OtherCity = 'Seattle',
+    		OtherState = 'WA',
+    		OtherPostalCode = '98101',
+    		OtherCountry = 'USA'
+    		);
+    	insert con;
+    	
+    	Test.startTest();
+        ApexPages.StandardController sc = new ApexPages.standardController(hh);
+        
+        ApexPages.currentPage().getParameters().put('cid', con.id);
+        
+        GW_EXT_ManageHousehold ext = new GW_EXT_ManageHousehold(sc);
+        
+        //make sure we got the contact
+        system.assertEquals(con.id, ext.conId);
+        system.assertNotEquals(null, ext.con);
+        
+        system.assertEquals(null, ext.hhMembers);
+        system.assertEquals(null, ext.hh.id);
+        
+        //test that active address IS NOT set
+        system.assertNotEquals(con.OtherStreet, ext.activeStreet);
+        
+        
+        Test.stopTest();
     }
-
-	public PageReference AddExistingContact() {
-		listContact.add(new Contact());
-		cm = new CampaignMember();
-		return null;
-	}
+    
+    public static testMethod void testFindAndAddContact() {
+    	
+    	ONEN_Household__c hh = new ONEN_Household__c(
+    		Name = 'test_hh'
+    		);
+    	
+    	
+    	Contact con = new Contact(
+    		LastName = 'TEST abc Monkey',
+    		email = 'testemail@groundwiretest.org',
+    		OtherStreet = '1234 Testing Drive Suite 1000',
+    		OtherCity = 'Seattle',
+    		OtherState = 'WA',
+    		OtherPostalCode = '98101',
+    		OtherCountry = 'USA'
+    		);
+    	insert con;
+    	
+    	Contact con2 = new Contact(
+    		LastName = 'TEST Monkey abc',
+    		email = 'testemail@groundwiretest.org',
+    		OtherStreet = '1234 Testing Drive Suite  1000',
+    		OtherCity = 'Seattle ',
+    		OtherState = ' WA',
+    		OtherPostalCode = '98101',
+    		OtherCountry = 'USA '
+    		);
+    	insert con2;
+    	
+    	Contact con3 = new Contact(
+    		LastName = 'ABC TEST Monkey',
+    		email = 'testemail@groundwiretest.org',
+    		OtherStreet = '54321 Anderson',
+    		OtherCity = 'Kirkland',
+    		OtherState = 'WA',
+    		OtherPostalCode = '98034'
+    		);
+    	insert con3;
+    	
+    	Contact con4 = new Contact(
+    		LastName = 'abc TEST Monkey',
+    		email = 'testemail@groundwiretest.org'
+    		);
+    	insert con4;
+    	
+    	Contact con5 = new Contact(
+    		LastName = 'adc TEST Monkey',
+    		email = 'testemail@groundwiretest.org'
+    		);
+    	insert con5;
+    	
+    	Test.startTest();
+        ApexPages.StandardController sc = new ApexPages.standardController(hh);
+        
+        ApexPages.currentPage().getParameters().put('cid', con2.id);
+        
+        GW_EXT_ManageHousehold ext = new GW_EXT_ManageHousehold(sc);
+        
+        list<Contact> cQ = ext.findContacts('abc');
+        
+        Contact ca = [SELECT Id, OtherStreet FROM Contact WHERE id = :con2.id];
+        
+        // make sure we only got three
+        system.assertEquals(3, cQ.size());
+        
+        // select one and add it
+        ext.addContact(cQ[1].Id);
+        
+        // verify that the contact was added
+        system.assertEquals(2, ext.activeConIds.size());
+        system.assertEquals(true, ext.activeConIds.contains(cQ[1].Id));
+        
+        cQ = ext.findContacts('zzzzzz');
+        
+        system.assertEquals(0, cQ.size());
+        
+        // add more contacts with different addresses
+        ext.addContact(con.id);
+        ext.addContact(con2.id);
+        ext.addContact(con3.id);
+        
+        system.assertEquals(3, ext.activeConIds.size());
+        
+        // find viable addresses
+        ext.getViableAddresses();
+        
+        //verify that we found two valid addresses even though the matches aren't exactly the same
+        system.AssertEquals(2, ext.viableAddresses.size());
+        
+        
+        Test.stopTest();
+    	
+    }
+    
 	
-	public PageReference SaveEdit() {
-		Contact con = [select Id, ONEN_Household__c, OtherStreet, OtherCity, OtherState,
-			OtherPostalCode, OtherCountry, Home_County__c from Contact where Id =: cm.contactId];
-		con.ONEN_Household__c = hh.Id;
-		
-		// use first contact's address.
-		Contact conSrc = listContact[0];
-		con.OtherStreet = conSrc.OtherStreet;
-		con.OtherCity = conSrc.OtherCity;
-		con.OtherState = conSrc.OtherState;
-		con.OtherPostalCode = conSrc.OtherPostalCode;
-		con.OtherCountry = conSrc.OtherCountry;
-		con.Home_County__c = conSrc.Home_County__c;		
-		update con;
-
-		// the above refresh was nice to keep the new person at the end of the list,
-		// but it wouldn't refresh the other contacts.
-		listContact = null;				
-		return null;
-	}	
-	
-	public PageReference CancelEdit() {
-		listContact.remove(listContact.size()-1);
-		return null;
-	}	
-	
-	public PageReference RemoveContact() {
-		String removeId = ApexPages.currentPage().getParameters().get('removeId');	
-		Contact con = [select Id, ONEN_Household__c from Contact where Id =:removeId];
-		con.ONEN_Household__c = null;
-		update con;	
-		listContact = null;
-		return null;
-	}
-	
-	// TEST METHODS
-	public static testmethod void TestHHMembers() {
-		Contact con1 = new Contact(
-			firstname = 'bart',
-			lastname = 'simpson',
-			OtherCity = 'Bellevue'
-		);		
-		insert con1;
-		con1 = [select Id, name, ONEN_Household__c from Contact where Id =: con1.Id];
-		system.assert(con1.ONEN_Household__c != null);
-		ONEN_Household__c hh = [select Id from ONEN_Household__c where Id =: con1.ONEN_Household__c];
-		system.assert(hh.Id != null);
-		
-		Contact con2 = new Contact(
-			firstname = 'homer',
-			lastname = 'simpson'
-		);		
-		insert con2;
-		
-        PageReference pageRef = new PageReference(hh.Id);
-        Test.setCurrentPageReference(pageRef);
-        ApexPages.StandardController ctrlHH = new ApexPages.StandardController(hh);        
-        GW_EXT_ManageHousehold ctrl = new GW_EXT_ManageHousehold(ctrlHH);
-        system.assertEquals(1, ctrl.listContact.size());
-		ctrl.AddExistingContact();               
-        system.assertEquals(2, ctrl.listContact.size());
-        ctrl.cm.contactId = con2.Id;
-		ctrl.SaveEdit();
-        system.assertEquals(2, ctrl.listContact.size());
-        system.assert(ctrl.listContact[0].Id == con1.Id ||
-        	ctrl.listContact[0].Id == con2.Id );
-        system.assert(ctrl.listContact[1].Id == con1.Id ||
-        	ctrl.listContact[1].Id == con2.Id );
-		ctrl.AddExistingContact();        	
-        system.assertEquals(3, ctrl.listContact.size());
-		ctrl.CancelEdit();        	
-        system.assertEquals(2, ctrl.listContact.size());
-	}		
 }
