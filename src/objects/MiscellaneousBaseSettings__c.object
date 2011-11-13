@@ -2,16 +2,15 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <customSettingsType>Hierarchy</customSettingsType>
     <customSettingsVisibility>Public</customSettingsVisibility>
-    <description>to hold various settings used by Groundwire&apos;s base package.</description>
+    <description>Miscellaneous settings used by GWBase.</description>
     <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>Campaign_Member_Status_Donated__c</fullName>
         <defaultValue>&quot;Donated&quot;</defaultValue>
         <deprecated>false</deprecated>
-        <description>The Campaign Member Status value to use when our Opportunity trigger adds a contact to a campaign based off a donation.</description>
         <externalId>false</externalId>
-        <inlineHelpText>The Campaign Member Status value to use when our Opportunity trigger adds a contact to a campaign based off a donation.</inlineHelpText>
+        <inlineHelpText>The Campaign Member Status value to use for a contact that donates due to a campaign.</inlineHelpText>
         <label>Campaign Member Status Donated</label>
         <length>255</length>
         <required>true</required>
@@ -22,6 +21,7 @@
         <fullName>GW_Help_Docs_Password__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
+        <inlineHelpText>Password for the Groundwire help documentation site.</inlineHelpText>
         <label>GW Help Docs Password</label>
         <length>50</length>
         <required>false</required>
@@ -32,7 +32,7 @@
         <fullName>GW_Help_Docs_Username__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>username for Groundwire help docs account</inlineHelpText>
+        <inlineHelpText>Username for the Groundwire help documentation site.</inlineHelpText>
         <label>GW Help Docs Username</label>
         <length>100</length>
         <required>false</required>
@@ -43,7 +43,7 @@
         <fullName>Individual_Account_Id__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>To increase code efficiency, set this to the ID of the &quot;Individual&quot; bucket account.</inlineHelpText>
+        <inlineHelpText>In order to increase code efficiency, set this to the 15 character Salesforce ID of the Individual account.</inlineHelpText>
         <label>Individual Account Id</label>
         <length>18</length>
         <required>false</required>
@@ -54,9 +54,8 @@
         <fullName>Individual_Account_Name__c</fullName>
         <defaultValue>&quot;Individual&quot;</defaultValue>
         <deprecated>false</deprecated>
-        <description>The name of the special individual bucket account.</description>
         <externalId>false</externalId>
-        <inlineHelpText>The name of the special individual bucket account.</inlineHelpText>
+        <inlineHelpText>The name of the account that Contacts without an Organization should be added to.</inlineHelpText>
         <label>Individual Account Name</label>
         <length>255</length>
         <required>true</required>
@@ -68,7 +67,7 @@
         <defaultValue>&quot;Employee&quot;</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <inlineHelpText>The relationship to specify with the previous employer.</inlineHelpText>
+        <inlineHelpText>The relationship the Job Change Wizard uses for the previous employer.</inlineHelpText>
         <label>Job Change Wizard Relationship</label>
         <length>50</length>
         <required>false</required>
@@ -79,9 +78,8 @@
         <fullName>Lead_Converter_Account_Name_Not_Provided__c</fullName>
         <defaultValue>&quot;[not provided]&quot;</defaultValue>
         <deprecated>false</deprecated>
-        <description>The text leads can have for their account, when it isn&apos;t provided by the user. These will be mapped to the Individual bucket account.</description>
         <externalId>false</externalId>
-        <inlineHelpText>The text leads can have for their account, when it isn&apos;t provided by the user. These will be mapped to the Individual bucket account.</inlineHelpText>
+        <inlineHelpText>The Organization name for Leads where the Organization is unknown. These will be added to the Individual account.</inlineHelpText>
         <label>Lead Converter Account Name Not Provided</label>
         <length>255</length>
         <required>true</required>
