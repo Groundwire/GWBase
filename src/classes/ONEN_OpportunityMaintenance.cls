@@ -249,7 +249,11 @@ Global virtual class ONEN_OpportunityMaintenance {
 		name = name.replace('[recurring]', (opp.Recurring_Payment_Profile__c == null) ? '' : 'Recurring');
 				
 		name = name.replaceAll('  ', ' ');
-        return name.trim();    
+        
+        integer overflow = name.trim().length() - 120; 
+        if (overflow > 0 && payer.length() > overflow) return oppName(opp, payer.substring(0, payer.length() - overflow), monthlygift);
+        else if (overflow > 0) return name.trim().substring(0,120);
+        else return name.trim();
     }
     
     

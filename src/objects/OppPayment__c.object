@@ -78,7 +78,7 @@
     </fields>
     <fields>
         <fullName>IsInstallment__c</fullName>
-        <defaultValue>false</defaultValue>
+        <defaultValue>true</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Is Installment</label>
