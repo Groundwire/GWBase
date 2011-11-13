@@ -110,10 +110,20 @@ public with sharing class GW_CTRL_MarkCampaignHHDupes {
 		// create test data
 		Contact[] testCons = New list<contact> ();
 		
+		list<ONEN_Household__c> hhs = new list<ONEN_Household__c>();
+		
+		//have to create hhs by hand since we don't do this automatically as of 11/2011
+		for (integer i=0;i<50;i++) {
+			ONEN_Household__c hh = new ONEN_Household__c(Name='Foo');
+			hhs.add(hh);
+		}
+		insert hhs;
+		
 		for (integer i=0;i<50;i++) {
 			Contact newCon = New Contact (
 				FirstName = 'Number' + i,
 				LastName = 'Doppleganger',
+				ONEN_Household__c = hhs[i].id,
 				OtherCity = 'Seattle'
 			);
 			testCons.add (newCon);
@@ -200,11 +210,20 @@ public with sharing class GW_CTRL_MarkCampaignHHDupes {
 
 		// create test data
 		Contact[] testCons = New list<contact> ();
+		list<ONEN_Household__c> hhs = new list<ONEN_Household__c>();
+		
+		//have to create hhs by hand since we don't do this automatically as of 11/2011
+		for (integer i=0;i<50;i++) {
+			ONEN_Household__c hh = new ONEN_Household__c(Name='Foo');
+			hhs.add(hh);
+		}
+		insert hhs;
 		
 		for (integer i=0;i<50;i++) {
 			Contact newCon = New Contact (
 				FirstName = 'Number' + i,
 				LastName = 'Doppleganger',
+				ONEN_Household__c = hhs[i].id,
 				OtherCity = 'Seattle'
 			);
 			testCons.add (newCon);

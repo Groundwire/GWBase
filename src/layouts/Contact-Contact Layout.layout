@@ -8,6 +8,7 @@
     <excludeButtons>EnablePartnerPortalUser</excludeButtons>
     <excludeButtons>EnableSelfService</excludeButtons>
     <excludeButtons>RequestUpdate</excludeButtons>
+    <excludeButtons>RequestUseSfdc</excludeButtons>
     <excludeButtons>Submit</excludeButtons>
     <excludeButtons>ViewCustomerPortal</excludeButtons>
     <excludeButtons>ViewPartnerPortalUser</excludeButtons>
@@ -55,6 +56,10 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>ONEN_Household__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>HouseholdName__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>

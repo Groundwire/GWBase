@@ -157,9 +157,9 @@ public class GW_EXT_OppTotals {
         insert testacct;
         id FirstConId = TestCons[4].id;
         Contact UpdatedCon = [SELECT id, account.TotalOppAmount__c, OppAmountThisYear__c, OppAmountLastYear__c, onen_household__c, TotalOppAmount__c FROM Contact WHERE Id = :FirstConId];
-
-        GW_EXT_OppTotals fyt;
-
+		
+		GW_EXT_OppTotals fyt;
+		
         // create a page to test account totals
         fyt = new GW_EXT_OppTotals(new ApexPages.StandardController(testacct));
 
@@ -173,8 +173,14 @@ public class GW_EXT_OppTotals {
         System.AssertEquals ( 100, fyt.totalRow.oppAmount);
 
         // create a page to test household totals
+        //now must create the HH first since automated HH'ing is no more as of 11/2011
+		ONEN_Household__c hh = new ONEN_Household__c(Name='Foo_Household');
+		insert hh;
+		UpdatedCon.ONEN_Household__c = hh.id;
+		update UpdatedCon;
+        
         fyt = new GW_EXT_OppTotals(new ApexPages.StandardController(new ONEN_Household__c(id = UpdatedCon.ONEN_Household__c)));
-
+		
         System.AssertEquals ( 100, fyt.detailRows[0].oppAmount);
         System.AssertEquals ( 100, fyt.totalRow.oppAmount);
 

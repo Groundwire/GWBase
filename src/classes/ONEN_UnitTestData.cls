@@ -72,16 +72,26 @@ global class ONEN_UnitTestData {
 	global static list<Contact> CreateMultipleTestContactsInHouseholds (List<Contact> firstContactList) {
 		
 		list<contact> ContactsToAdd = New list<contact> ();
+		list<ONEN_Household__c> householdsToInsert = new list<ONEN_Household__c>();
+		
+		for (Contact con : firstContactList) {
+			ONEN_Household__c hh = new ONEN_Household__c(Name='Foo');
+			householdsToInsert.add(hh);
+		}
+		insert householdsToInsert;
 		
 		for (integer i=0;i<firstContactList.size();i++) {
+			if (firstContactList[i].ONEN_Household__c == null) firstContactList[i].ONEN_Household__c = householdsToInsert[i].id;
 			Contact newCon = New Contact (
 				FirstName = 'Second Number' + i,
 				LastName = 'Doppleganger',
 				OtherCity = 'Seattle',
-				ONEN_Household__c = firstContactList[i].ONEN_Household__c
+				ONEN_Household__c = firstContactList[i].ONEN_Household__c == null ? householdsToInsert[i].id : firstContactList[i].ONEN_Household__c
 			);
 			ContactsToAdd.add (newCon);
 		}
+		
+		update firstContactList;
 		
 		// testing doing the insert in the calling code - will maybe reinstate this
 		//insert ContactsToAdd;

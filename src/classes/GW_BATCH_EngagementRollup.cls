@@ -34,14 +34,14 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
     private integer RetMbrLvl;
     
     /*******************************************************************************************************
-	* @description This constructor is needed to allow this class to be schedulable.
-	*/
+    * @description This constructor is needed to allow this class to be schedulable.
+    */
     global GW_BATCH_EngagementRollup() { }
     
     
     /*******************************************************************************************************
-	* @description Main constructor.  The arg should be set to true only in a test.
-	*/
+    * @description Main constructor.  The arg should be set to true only in a test.
+    */
     global GW_BATCH_EngagementRollup (boolean isTestArg) {
         isTest = isTestArg;
         GW_OppRollups.isTest = isTestArg;
@@ -50,9 +50,9 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
     }
     
     /*******************************************************************************************************
-	* @description Standard schedulable execute method.  This simply gets the batch started when called from a scheduled job.  Note, this uses a batch size of 50 unless
-	*  a different batch size is given in the settings.
-	*/    
+    * @description Standard schedulable execute method.  This simply gets the batch started when called from a scheduled job.  Note, this uses a batch size of 50 unless
+    *  a different batch size is given in the settings.
+    */    
     global void execute(SchedulableContext SC) {
         
         EngagementTrackerSettings__c settings = EngagementTrackerSettings__c.getOrgDefaults();
@@ -124,16 +124,16 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
     }
 
     /*******************************************************************************************************
-	* @description Standard batch start method.   This doesn't do anything interesting.  
-	*/    
+    * @description Standard batch start method.   This doesn't do anything interesting.  
+    */    
     global Database.QueryLocator start(Database.BatchableContext BC){
         return Database.getQueryLocator(Query);
     }
 
     /*******************************************************************************************************
-	* @description The main batch execute method.  This is where the majority of the real work is done for the engagement calculation.  This method looks at custom settings, 
-	*  and then all related Campaigns and Opps for each contact, to determine the correct score to assign.  It only makes a write to the contact if any of the rollup fields need changing.  
-	*/
+    * @description The main batch execute method.  This is where the majority of the real work is done for the engagement calculation.  This method looks at custom settings, 
+    *  and then all related Campaigns and Opps for each contact, to determine the correct score to assign.  It only makes a write to the contact if any of the rollup fields need changing.  
+    */
     global void execute(Database.BatchableContext BC, List<Sobject> SBatch){
         system.debug (Logginglevel.WARN,'running execute!');
         Map<id,Contact> conMap = new Map<id,Contact>();
@@ -411,11 +411,11 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
     
     
     /*******************************************************************************************************
-	* @description an empty hook method intended for overriding - this will get called once all of the regular logic has been run and all contacts in the batch have been asssigned
-	*  an engagement level (in memory only, not yet written to database)
-	*  This gives developers an opportunity to tweak the levels according to custom logic before those levels get written
-	*  In order to utilize this, extend the engagementRollup class, override this method, and then schedule the subclass to run, and disable any schedules using the superclass
-	*/      
+    * @description an empty hook method intended for overriding - this will get called once all of the regular logic has been run and all contacts in the batch have been asssigned
+    *  an engagement level (in memory only, not yet written to database)
+    *  This gives developers an opportunity to tweak the levels according to custom logic before those levels get written
+    *  In order to utilize this, extend the engagementRollup class, override this method, and then schedule the subclass to run, and disable any schedules using the superclass
+    */      
     global virtual void customFinalLvlAssign (Map<id,engTrackConWrapper> conWrapMap, set<id> conIDs){
         
     }
@@ -424,8 +424,8 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
     
 
     /*******************************************************************************************************
-	* @description The standard batch finish method.  Currently does nothing.
-	*/      
+    * @description The standard batch finish method.  Currently does nothing.
+    */      
     global void finish(Database.BatchableContext BC){
         
     }
@@ -646,6 +646,19 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
                     
         // create & insert contact(s)
         Contact[] TestCons = ONEN_UnitTestData.CreateMultipleTestContacts(howMany);
+        //have to manually create households for primary contacts since they don't get created automatically as of 11/2011
+        list<ONEN_Household__c> hhs = new list<ONEN_Household__c>();
+    
+        for (Contact con : TestCons) {
+          ONEN_Household__c hh = new ONEN_Household__c(Name='Foo');
+          hhs.add(hh);
+        }
+        insert hhs;
+        
+        for (integer i=0;i<TestCons.size();i++) {
+            TestCons[i].ONEN_Household__c = hhs[i].id;
+        }
+        
         TestCons[5].BoardMember__c = 'Current';  // temp
         TestCons[10].Engagement_Level_Numeric__c = 3;  
         TestCons[10].Engagement_Peak_Numeric__c = 3;  

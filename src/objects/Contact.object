@@ -490,7 +490,7 @@ NOTE: This does not take into account any past overrides or formerly-checked che
         <fullName>HouseholdGreeting__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <formula>ONEN_Household__r.Greeting__c</formula>
+        <formula>BLANKVALUE(ONEN_Household__r.Greeting__c, FirstName)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Household Greeting</label>
         <required>false</required>
@@ -521,8 +521,7 @@ NOTE: This does not take into account any past overrides or formerly-checked che
         <fullName>HouseholdName__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <formula>ONEN_Household__r.Name</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <formula>BLANKVALUE(ONEN_Household__r.Name, TRIM(TEXT(Salutation) &amp; &quot; &quot; &amp; FirstName &amp; &quot; &quot; &amp; LastName))</formula>
         <label>Household Name</label>
         <required>false</required>
         <type>Text</type>
@@ -988,7 +987,7 @@ NOTE: This does not take into account any past overrides or formerly-checked che
         <fullName>Primary_Address_Household_Greeting__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
-        <formula>IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) , FirstName , IF ( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ) , HouseholdGreeting__c , IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) , HouseholdGreeting__c , FirstName ) ) )</formula>
+        <formula>IF ( OR( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ), ISPICKVAL ( Primary_Address__c, &quot;Home&quot; )) , FirstName, HouseholdGreeting__c )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Primary Address Household Greeting</label>
         <required>false</required>
@@ -1000,7 +999,7 @@ NOTE: This does not take into account any past overrides or formerly-checked che
         <deprecated>false</deprecated>
         <description>Equals Household Name if effective primary address is Home</description>
         <externalId>false</externalId>
-        <formula>IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) ,  FirstName &amp; &quot; &quot; &amp; LastName , IF ( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ) ,  HouseholdName__c  , IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) , HouseholdName__c , FirstName &amp; &quot; &quot; &amp; LastName ) ) )</formula>
+        <formula>IF ( OR(ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ), AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; )),  HouseholdName__c  , TRIM(FirstName &amp; &quot; &quot; &amp; LastName))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Primary Address Household Name</label>
         <required>false</required>
@@ -1037,10 +1036,8 @@ IF (   Primary_Address_Org_Name__c  &lt;&gt; &quot;&quot; ,  BR() &amp; Primary_
         <deprecated>false</deprecated>
         <description>Equal to the account name if and only if there is an account, and the effective primary address is Work.  (11/17/08 MMS)</description>
         <externalId>false</externalId>
-        <formula>IF ( Account.Name = &quot;Individual&quot; , &quot;&quot; , 
-IF ( ISPICKVAL ( Primary_Address__c, &quot;No Mail&quot; ) , &quot;&quot; ,
-IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) ,  Account.Name , IF ( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ) , &quot;&quot; , IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) , &quot;&quot; ,  Account.Name ) ) )
-)
+        <formula>IF ( OR( Account.Name = &quot;Individual&quot; , ISPICKVAL ( Primary_Address__c, &quot;No Mail&quot; ) ) , &quot;&quot; ,
+IF ( OR( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = &quot;&quot; ) ,  ISPICKVAL( Primary_Address__c, &quot;Work&quot; ) ), Account.Name , &quot;&quot; )
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Primary Address Org Name</label>
