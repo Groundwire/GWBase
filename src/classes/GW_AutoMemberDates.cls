@@ -19,36 +19,28 @@ public class GW_AutoMemberDates {
 	//constructor - instantiates settings variables
 	public GW_AutoMemberDates() {
 		
-		//if there is no instance of settings, set membership period to 1 year and don't do rolling dates.
+		//if there is no instance of settings and we're running a test, set membership period to 1 year and don't do rolling dates.
 		ors = OppRollupSettings__c.getInstance();
-		if (test.isRunningTest() && ors == null ) {
-			ors = new OppRollupSettings__c(
-				Membership_Period__c=365,
-				Membership_Renewal_Period__c=0,
-				Membership_Rolling_Start_Date__c=false,
-				Membership_Record_Types__c='Membership'
-			);
-		} else if ((ors.Membership_Period__c == null || ors.Membership_Renewal_Period__c == null ) && test.isRunningTest()) {
-			ors = new OppRollupSettings__c(
-				Membership_Period__c=365,
-				Membership_Renewal_Period__c=0,
-				Membership_Rolling_Start_Date__c=false,
-				Membership_Record_Types__c='Membership'
-			);
+		if (test.isRunningTest()){
+			if (ors==null || ors.Membership_Period__c == null || ors.Membership_Renewal_Period__c == null) {
+				ors = new OppRollupSettings__c(
+					Membership_Period__c=365,
+					Membership_Renewal_Period__c=0,
+					Membership_Rolling_Start_Date__c=false,
+					Membership_Record_Types__c='Membership'
+				);
+			}
 		}
 		
 		//create a set of membership record types based on the setting
-		if (ors!=null && ors.Membership_Record_Types__c==NULL) {
-			membershipRecTypes.add('Membership');
-		} else for (String s : ors.Membership_Record_Types__c.split(';')) {
-			membershipRecTypes.add(s); 
+		if (ors!=null){
+			if (ors.Membership_Record_Types__c==NULL) membershipRecTypes.add('Membership');
+			else for (String s : ors.Membership_Record_Types__c.split(';')) membershipRecTypes.add(s); 
 		}
-	} 
+	}
 
 	public void memberDates(List<Opportunity> opplist) {
-		
 
-		
 		//creates list of valid opportunities, and sets of contact/account IDs if rolling dates are active
 		if (ors != NULL) {
 			 if(ors.Membership_Period__c!=NULL && ors.Membership_Renewal_Period__c!=NULL) for (Opportunity o:opplist) {
@@ -354,4 +346,5 @@ public class GW_AutoMemberDates {
 		list<Contact> lcon = new list<Contact>();
 		
 	}*/
+	
 }
