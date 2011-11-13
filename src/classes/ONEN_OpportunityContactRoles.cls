@@ -235,7 +235,7 @@ public class ONEN_OpportunityContactRoles {
         }    
     }
     
-    public void reconcileConRoles(List<ONEN_Household__c> hhs) {
+    public void reconcileConRoles(List<contact> cons) {
         
         //turn off the trigger that fires on opp update to set con roles
         runPrimaryContactRoleSync = false;
@@ -244,9 +244,9 @@ public class ONEN_OpportunityContactRoles {
         Set<id> oppIds = new Set<id>();
         
         //grab the set of households for the query of ConRoles
-        set<id> hhIds = new set<id>();  
-        for (ONEN_Household__c hh : hhs) {
-            hhIds.add(hh.id);
+        set<id> conIds = new set<id>();  
+        for (Contact c : cons) {
+            conIds.add(c.id);
         }
         
         //find all of the opp conroles associated with the HHs from the batch query
@@ -255,7 +255,7 @@ public class ONEN_OpportunityContactRoles {
             [SELECT ContactId, OpportunityId, Opportunity.ContactId__c 
                 FROM OpportunityContactRole
                 WHERE IsPrimary = true
-                AND contact.ONEN_Household__c IN : hhIds 
+                AND ContactId IN : conIds 
                 ORDER BY LastModifiedDate ] ) {
             
             if (ocr.ContactId != ocr.Opportunity.ContactId__c && !oppIds.contains(ocr.OpportunityId)) {
@@ -408,21 +408,21 @@ public class ONEN_OpportunityContactRoles {
     
     static testmethod void changeContactRoleFromStdRelatedList() {
         //tests the nightly batch update to reconcile any accidental changes to OCRs using standard list, that did not update Primary Contact on opp
-        List<ONEN_Household__c> hhs = new List<ONEN_Household__c>();
+        List<Contact> cons = new List<Contact>();
         
         ONEN_Household__c hh = new ONEN_Household__c(Name='The_Bromer_Residence');
         insert hh;
-        hhs.add(hh);
         
         ONEN_Household__c hh2 = new ONEN_Household__c(Name='The_Andersen_Residence');
         insert hh2;
-        hhs.add(hh2);
         
         Contact con = new Contact (LastName = 'Halladay_Sucks',ONEN_Household__c=hh.id);
         insert con;
+        cons.add(con);
         
         Contact con2 = new Contact (LastName = 'Halladay_Sucks',ONEN_Household__c=hh2.id);
         insert con2;
+        cons.add(con2);
         
         Opportunity opp = new Opportunity(
             Name='Test_Opportunity',
@@ -447,7 +447,7 @@ public class ONEN_OpportunityContactRoles {
         insert ocr2;
         
         ONEN_OpportunityContactRoles OCRClass = new ONEN_OpportunityContactRoles();
-        OCRClass.reconcileConRoles(hhs);
+        OCRClass.reconcileConRoles(cons);
         
         List<Opportunity> updatedOpps = [SELECT ContactId__c FROM Opportunity WHERE id = :opp.id];
         system.assertEquals(con.id,updatedOpps[0].ContactId__c);
@@ -459,7 +459,7 @@ public class ONEN_OpportunityContactRoles {
         update ocr2;
         
         OCRClass = new ONEN_OpportunityContactRoles();
-        OCRClass.reconcileConRoles(hhs);
+        OCRClass.reconcileConRoles(cons);
         
         List<Opportunity> updatedOpps2 = [SELECT ContactId__c FROM Opportunity WHERE id = :opp.id];
         system.assertEquals(con2.id,updatedOpps2[0].ContactId__c);
