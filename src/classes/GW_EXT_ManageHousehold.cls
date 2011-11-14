@@ -26,7 +26,8 @@ public with sharing class GW_EXT_ManageHousehold {
 	public string activeState;
 	public string activeCountry;
 	
-	private string conSelect = 'SELECT Id, Name, ONEN_Household__c, OtherStreet, OtherCity, OtherState, OtherPostalCode, OtherCountry FROM Contact ';
+	private GW_Householding gwhh = new GW_Householding();
+	private string conSelect = 'SELECT Id, FirstName, LastName, Salutation, Name, Not_in_HH_Name__c, ONEN_Household__c, OtherStreet, OtherCity, OtherState, OtherPostalCode, OtherCountry FROM Contact ';
 	
     public GW_EXT_ManageHousehold(ApexPages.StandardController controller) {
     	
@@ -40,9 +41,7 @@ public with sharing class GW_EXT_ManageHousehold {
         conId = ApexPages.currentPage().getParameters().get('cid');
         //if we have a contact id, get the contact
         if (conId != null) {
-        	con = [SELECT Id, ONEN_Household__c, OtherStreet, OtherCity, OtherState, OtherPostalCode, OtherCountry
-        		   FROM Contact
-        	   	   WHERE Id = :conId ];
+        	con = Database.query(conSelect + 'WHERE Id = \''+conId+'\'');
         	activeConIds.add(conId);
         	activeContacts.put(con.id, con);
         }
@@ -84,10 +83,10 @@ public with sharing class GW_EXT_ManageHousehold {
 	public boolean addContact(Id cid) {
 		
 		String whereClause = 'WHERE Id = \''+cid+'\'';
-		Contact con = Database.query(conSelect + whereClause);
-		if (con != null) {
-			activeConIds.add(con.Id);
-        	activeContacts.put(con.id, con);
+		list<Contact> con = Database.query(conSelect + whereClause);
+		if (!con.isEmpty()) {
+			activeConIds.add(con[0].Id);
+        	activeContacts.put(con[0].id, con[0]);
         	
         	return true;
 		}
@@ -104,19 +103,19 @@ public with sharing class GW_EXT_ManageHousehold {
 	public boolean addContactWithHousehold(Id cid) {
 		
 		String whereClause = 'WHERE Id = \''+cid+'\'';
-		Contact con = Database.query(conSelect + whereClause);
-		if (con != null) {
-			activeConIds.add(con.Id);
-        	activeContacts.put(con.id, con);
+		list<Contact> con = Database.query(conSelect + whereClause);
+		if (!con.isEmpty()) {
+			activeConIds.add(con[0].Id);
+        	activeContacts.put(con[0].id, con[0]);
         	
         	// check for household then find and add contacts
-        	if (con.ONEN_Household__c != null) {
-        		whereClause = 'WHERE ONEN_Household__c = \''+con.ONEN_Household__c+'\'';
+        	if (con[0].ONEN_Household__c != null) {
+        		whereClause = 'WHERE ONEN_Household__c = \''+con[0].ONEN_Household__c+'\'';
         		list<Contact> hhcons = Database.query(conSelect + whereClause);
         		if (!hhcons.isEmpty()) {
         			for (Contact hhcon : hhcons) {
         				activeConIds.add(hhcon.Id);
-        				activeContacts.put(hhcon.id, con);
+        				activeContacts.put(hhcon.id, hhcon);
         			}
         		}
         	}
@@ -176,9 +175,49 @@ public with sharing class GW_EXT_ManageHousehold {
 		return retCons;
 	}
 	
+	/*******************************************************************************************************
+	* @description Returns a formulated string based on the contacts in the household
+	* @return String The name of the household based on the contacts used.
+    ********************************************************************************************************/
+    public string getHHName() {
+    	String name;
+    	if (!activeContacts.isEmpty()) {
+    		list<Contact> sorted = sortingList();
+    		name = gwhh.getHHName(sorted);
+    	}
+    	return name;
+    }
+    
+    /*******************************************************************************************************
+	* @description Returns a formulated string based on the contacts in the household (there is a method
+	* because eventually it will be a javascript remoting method)
+	* @return String The name of the household based on the contacts used.
+    ********************************************************************************************************/
+    public string getHHGreeting() {
+    	String name;
+    	if (!activeContacts.isEmpty()) {
+    		list<Contact> sorted = sortingList();
+    		name = gwhh.getHHGreeting(sorted);
+    	}
+    	return name;
+    }
+    
+    /*******************************************************************************************************
+	* @description Simply queries the list of activeContact ids so that the default sorting is used. This 
+	* is to make it consistant with the sorting of the names that the trigger uses.
+	* @return list<Contact> A sort list of contacts.
+    ********************************************************************************************************/
+	private list<Contact> sortingList() {
+		list<Contact> cons = new list<contact>();
+		if (!activeContacts.isEmpty()) {
+			cons = Database.query(conSelect + 'WHERE Id IN :activeConIds');
+		}
+		return cons;
+	}
+	
 	public void getHHMembers() {
 		string wc = (conId != Null) ? ' or Id=\''+conId+'\'' : '';
-		hhMembers = Database.query('SELECT Id, ONEN_Household__c, OtherStreet, OtherCity, OtherState, OtherPostalCode, OtherCountry FROM Contact WHERE ONEN_HouseHold__c =\''+hh.id+'\''+wc);
+		hhMembers = Database.query(conSelect+'WHERE ONEN_HouseHold__c =\''+hh.id+'\''+wc);
 	}
 	
 	
@@ -223,6 +262,7 @@ public with sharing class GW_EXT_ManageHousehold {
     	insert hh;
     	
     	Contact con = new Contact(
+    		FirstName = 'David',
     		LastName = 'TestContactASDF',
     		email = 'testemail@groundwiretest.org',
     		ONEN_Household__c = hh.id,
@@ -248,6 +288,11 @@ public with sharing class GW_EXT_ManageHousehold {
         system.assertEquals(con.OtherPostalCode, ext.activePostalCode);
         system.assertEquals(con.OtherCountry, ext.activeCountry);
         
+        //test name
+        system.assertEquals('David TestContactASDF', ext.getHHName());
+        
+        //test greeting
+        system.assertEquals('David', ext.getHHGreeting());
         
         Test.stopTest();
     }
@@ -301,6 +346,10 @@ public with sharing class GW_EXT_ManageHousehold {
         // select one and add it
         ext.addContact(con2.id);
         
+        // verify that we receive false when we attempt to add a bad contact
+        system.assertEquals(false, ext.addContact('01pU0000000h6LK'));
+        system.assertEquals(false, ext.addContactWithHousehold('01pU0000000h6LK'));
+        
         //save
         ext.save();
         
@@ -328,8 +377,13 @@ public with sharing class GW_EXT_ManageHousehold {
     		Name = 'test_hh'
     		);
     	
+    	ONEN_Household__c existingHH = new ONEN_Household__c (
+    		Name = 'existing hh'
+    		);
+    	insert existingHH;
     	
     	Contact con = new Contact(
+    		FirstName = 'John',
     		LastName = 'TEST abc Monkey',
     		email = 'testemail@groundwiretest.org',
     		OtherStreet = '1234 Testing Drive Suite 1000',
@@ -341,6 +395,7 @@ public with sharing class GW_EXT_ManageHousehold {
     	insert con;
     	
     	Contact con2 = new Contact(
+    		FirstName = 'Mike',
     		LastName = 'TEST Monkey abc',
     		email = 'testemail@groundwiretest.org',
     		OtherStreet = '1234 Testing Drive Suite  1000',
@@ -352,6 +407,7 @@ public with sharing class GW_EXT_ManageHousehold {
     	insert con2;
     	
     	Contact con3 = new Contact(
+    		FirstName = 'Cheryl',
     		LastName = 'ABC TEST Monkey',
     		email = 'testemail@groundwiretest.org',
     		OtherStreet = '54321 Anderson',
@@ -362,16 +418,34 @@ public with sharing class GW_EXT_ManageHousehold {
     	insert con3;
     	
     	Contact con4 = new Contact(
+    		FirstName = 'Toivo',
     		LastName = 'abc TEST Monkey',
     		email = 'testemail@groundwiretest.org'
     		);
     	insert con4;
     	
     	Contact con5 = new Contact(
+    		FirstName = 'Kelley',
     		LastName = 'adc TEST Monkey',
     		email = 'testemail@groundwiretest.org'
     		);
     	insert con5;
+    	
+    	Contact conWithHH = new Contact (
+    		FirstName = 'Andy',
+    		LastName = 'David WithHousehold',
+    		email = 'testEmail@groundwiretest2.org',
+    		ONEN_Household__c = existingHH.id
+    		);
+    	insert conWithHH;
+    	
+    	Contact conWithHH2 = new Contact (
+    		FirstName = 'Cheryl',
+    		LastName = 'WithHousehold',
+    		email = 'testEmail@groundwiretest3.org',
+    		ONEN_Household__c = existingHH.id
+    		);
+    	insert conWithHH2;
     	
     	Test.startTest();
         ApexPages.StandardController sc = new ApexPages.standardController(hh);
@@ -389,6 +463,13 @@ public with sharing class GW_EXT_ManageHousehold {
         
         // select one and add it
         ext.addContact(cQ[1].Id);
+        
+        string hhName = ext.getHHName();
+        string hhGreeting = ext.getHHGreeting();
+        
+        //test the name
+        system.assertEquals('Mike TEST Monkey abc and Cheryl ABC TEST Monkey', hhName);
+        system.assertEquals('Mike and Cheryl', hhGreeting);
         
         // verify that the contact was added
         system.assertEquals(2, ext.activeConIds.size());
@@ -412,6 +493,15 @@ public with sharing class GW_EXT_ManageHousehold {
         system.AssertEquals(2, ext.viableAddresses.size());
         system.AssertEquals(2, adds.size());
         
+        // now test adding a contact with its existing household members
+        ext.addContactWithHousehold(conWithHH.id);
+        
+        // We should now have 5 total hh members displayed
+        system.assertEquals(5, ext.activeConIds.size());
+        
+        // We should also check that the correct contact got added
+        system.assertEquals(true, ext.activeContacts.containsKey(conWithHH2.id));
+        system.assertEquals(conWithHH2.id, ext.activeContacts.get(conWithHH2.id).id);
         
         Test.stopTest();
     	
