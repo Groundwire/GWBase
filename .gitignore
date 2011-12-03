@@ -74,3 +74,4 @@ src/labels/CustomLabels.labels
 .project
 .settings
 com.salesforce.ide.core.prefs
+src/applications/ONEdev.app
