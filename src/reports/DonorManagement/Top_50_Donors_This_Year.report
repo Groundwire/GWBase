@@ -33,6 +33,10 @@
     </filter>
     <format>Tabular</format>
     <name>Top 50 Donors This Year</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
     <reportType>ContactList</reportType>
     <rowLimit>50</rowLimit>
     <scope>organization</scope>
