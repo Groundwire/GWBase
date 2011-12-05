@@ -20,6 +20,17 @@ public class GW_OppRollups {
 
     // the current year for use in annual rollups
     static integer thisYear;
+    
+    //multi-currency variables
+    static boolean multiCurrency;
+    static SObjectField cfOppty;
+    static SObjectField cfAccount;
+    static SObjectField cfHousehold;
+    static SObjectField cfContact;
+    //exchange rate map
+    static map<string, decimal> exchangeRates = new map<string,decimal>();
+    //corporate currency
+    static string currCorporate;
 
     // need to work slightly differently in tests, and allow different settings
     static public boolean isTest = false;
@@ -33,16 +44,19 @@ public class GW_OppRollups {
     private final static string ACCOUNT_ROLLUP_FIELDS = 'TotalOppAmount__c,AverageAmount__c,SmallestAmount__c,LargestAmount__c,FirstCloseDate__c,LastCloseDate__c,'
         + 'NumberOfClosedOpps__c,OppAmountThisYear__c,OppsClosedThisYear__c,OppAmountLastYear__c,OppsClosedLastYear__c,OppsClosed2YearsAgo__c,OppAmount2YearsAgo__c,'
         + 'OppsClosedLastNDays__c,OppAmountLastNDays__c,TotalMembershipOppAmount__c,NumberOfMembershipOpps__c,LastMembershipDate__c,LastMembershipAmount__c,'
-        + 'LastMembershipLevel__c,LastMembershipOrigin__c,MembershipJoinDate__c,MembershipEndDate__c,LastOppAmount__c'; 
+        + 'LastMembershipLevel__c,LastMembershipOrigin__c,MembershipJoinDate__c,MembershipEndDate__c,LastOppAmount__c'
+        + (isMultiCurrency() ? ', CurrencyIsoCode ' : ''); 
     private final static string CON_ROLLUP_FIELDS = 'TotalOppAmount__c,AverageAmount__c,SmallestAmount__c,LargestAmount__c,FirstCloseDate__c,LastCloseDate__c,NumberOfClosedOpps__c,'
         + 'OppAmountThisYear__c,OppsClosedThisYear__c,OppAmountLastYear__c,OppsClosedLastYear__c,OppsClosed2YearsAgo__c,OppAmount2YearsAgo__c,OppsClosedLastNDays__c,'
         + 'OppAmountLastNDays__c,TotalMembershipOppAmount__c,NumberOfMembershipOpps__c,LastMembershipDate__c,LastMembershipAmount__c,LastMembershipLevel__c,LastMembershipOrigin__c,'
-        + 'MembershipJoinDate__c,MembershipEndDate__c,LastOppAmount__c,Best_Gift_Year__c,Best_Gift_Year_Total__c';
+        + 'MembershipJoinDate__c,MembershipEndDate__c,LastOppAmount__c,Best_Gift_Year__c,Best_Gift_Year_Total__c'
+        + (isMultiCurrency() ? ', CurrencyIsoCode ' : '');
     private final static string CON_ROLLUP_FIELDS_FROM_CONROLE = 'Contact.' + CON_ROLLUP_FIELDS.replace(',' , ',Contact.');    // add relationship name to field list so can use in conrole query
     private final static string HH_ROLLUP_FIELDS = 'TotalOppAmount__c,AverageAmount__c,SmallestAmount__c,LargestAmount__c,FirstCloseDate__c,LastCloseDate__c,NumberOfClosedOpps__c,'
         + 'OppAmountThisYear__c,OppsClosedThisYear__c,OppAmountLastYear__c,OppsClosedLastYear__c,OppsClosed2YearsAgo__c,OppAmount2YearsAgo__c,OppsClosedLastNDays__c,'
         + 'OppAmountLastNDays__c,TotalMembershipOppAmount__c,NumberOfMembershipOpps__c,LastMembershipDate__c,LastMembershipAmount__c,LastMembershipLevel__c,LastMembershipOrigin__c,'
-        + 'MembershipJoinDate__c,MembershipEndDate__c,LastOppAmount__c,Best_Gift_Year__c,Best_Gift_Year_Total__c';  
+        + 'MembershipJoinDate__c,MembershipEndDate__c,LastOppAmount__c,Best_Gift_Year__c,Best_Gift_Year_Total__c'
+        + (isMultiCurrency() ? ', CurrencyIsoCode ' : '');  
     private final static string HH_ROLLUP_FIELDS_FROM_CON = 'ONEN_Household__r.' + HH_ROLLUP_FIELDS.replace(',' , ',ONEN_Household__r.');
     private final static string HH_ROLLUP_FIELDS_FROM_CONROLE = 'Contact.ONEN_Household__r.' + HH_ROLLUP_FIELDS.replace(',' , ',Contact.ONEN_Household__r.');
     private static map<string,string> ConFieldtypeMap;
@@ -130,7 +144,10 @@ public class GW_OppRollups {
     // only accounts that have changed will get updated 
 
         //system.debug (LoggingLevel.WARN,'amap: ' + amap);
-
+		
+		//arg used by multi currency for rollup field currencies
+        map<Id,Opportunity> opptyCurrencies;
+		
         set<id> allAccts = amap.keyset();
         map<id, Account> accountsToUpdate = new map<id, Account>();
 
@@ -140,6 +157,8 @@ public class GW_OppRollups {
             Account newAcct = new Account (id=aid);
             putNoOppDefaults(rollupFields,newAcct,acctFieldtypeMap);
             accountsToUpdate.put(aid,newAcct);
+            if(isMultiCurrency())
+                accountsToUpdate.get(aid).put(cfAccount,amap.get(aid).get(cfAccount));
         }
 
         // exclude the individual account unless the option to roll it up is checked
@@ -148,27 +167,31 @@ public class GW_OppRollups {
 
         // copy all the rollups from each result row into the account objects
         integer startYear = thisYear - 2;
-        for (sobject r : 
-            [SELECT accountId, Fiscal_Year(CloseDate) CalendarYr, 
-                SUM(Amount) TotalOppAmount, AVG(Amount) AverageAmount, MIN(Amount) SmallestAmount,
-                MAX(Amount) LargestAmount, MIN(CloseDate) FirstCloseDate, MAX(CloseDate) LastCloseDate, 
-                COUNT_DISTINCT(Id) NumberOfClosedOpps, MAX(CombinedRollupFieldset__c) RollupFieldset 
-                FROM Opportunity
-                WHERE isWon=true 
-                AND (Amount != 0 AND Amount != null) 
-                AND RecordTypeId NOT IN : recordTypesToExcludeAccts
-                AND Type NOT IN : oppTypesToExcludeAccts
-                AND accountId IN : allAccts
-                GROUP BY ROLLUP (accountId, Fiscal_Year(closeDate))
-                HAVING ( Fiscal_Year(closeDate) = null OR Fiscal_Year(closeDate) >= : startYear )
-                AND accountId != null ] ) {
+        
+        list<sobject> objectList = [SELECT accountId, Fiscal_Year(CloseDate) CalendarYr, 
+            SUM(Amount) TotalOppAmount, AVG(Amount) AverageAmount, MIN(Amount) SmallestAmount,
+            MAX(Amount) LargestAmount, MIN(CloseDate) FirstCloseDate, MAX(CloseDate) LastCloseDate, 
+            COUNT_DISTINCT(Id) NumberOfClosedOpps, MAX(CombinedRollupFieldset__c) RollupFieldset 
+            FROM Opportunity
+            WHERE isWon=true 
+            AND (Amount != 0 AND Amount != null) 
+            AND RecordTypeId NOT IN : recordTypesToExcludeAccts
+            AND Type NOT IN : oppTypesToExcludeAccts
+            AND accountId IN : allAccts
+            GROUP BY ROLLUP (accountId, Fiscal_Year(closeDate))
+            HAVING ( Fiscal_Year(closeDate) = null OR Fiscal_Year(closeDate) >= : startYear )
+            AND accountId != null ];
+        // invokes code to get the currency of associated opportunities
+        opptyCurrencies = (isMultiCurrency() ? rcfFindCurrency(objectList) : null);
+                
+        for (sobject r : objectList ) {
             //system.debug(Logginglevel.WARN, 'ROLLUP ROW: ' + r);
 
             // get the account id for this result row
             id aid = (id)(r.get('accountId'));
     
             // copy all the rollups from this result row into the account object    
-            updateRollupFromResult((sobject)(accountsToUpdate.get(aid)), r);
+            updateRollupFromResult((sobject)(accountsToUpdate.get(aid)), r, opptyCurrencies);
         }
 
         // also do rollups for last N days
@@ -196,32 +219,38 @@ public class GW_OppRollups {
         if (!mbrRecordTypes.isEmpty()) {
             // also roll up memberships
             // uncomment if you are doing annual membership totals
-            for (sobject r : 
-                [SELECT accountId, 
-                    //Fiscal_Year(CloseDate) CalendarYr, 
-                    SUM(Amount) TotalOppAmount, 
-                    //MAX(Amount) LargestAmount, 
-                    //AVG(Amount) AverageAmount, MIN(Amount) SmallestAmount,
-                    MAX(CloseDate) LastCloseDate, 
-                    MIN(membership_start_date__c) FirstStartDate, MAX(membership_end_date__c) LastEndDate, 
-                    COUNT_DISTINCT(Id) NumberOfClosedOpps, MAX(CombinedRollupFieldset__c) RollupFieldset 
-                    FROM Opportunity
-                    WHERE isWon=true 
-                    // AND (Amount > 0 OR Amount < 0) 
-                    AND RecordTypeId IN : mbrRecordTypes
-                    AND Type NOT IN : oppTypesToExcludeAccts
-                    AND accountId IN : allAccts
-                    GROUP BY ROLLUP (accountId, Fiscal_Year(closeDate))
-                    HAVING 
-                    // ( Fiscal_Year(closeDate) = null OR Fiscal_Year(closeDate) >= : startYear ) AND
-                    accountId != null ] ) {
+            
+            objectList.clear();
+        	objectList = [SELECT accountId, 
+                //Fiscal_Year(CloseDate) CalendarYr, 
+                SUM(Amount) TotalOppAmount, 
+                //MAX(Amount) LargestAmount, 
+                //AVG(Amount) AverageAmount, MIN(Amount) SmallestAmount,
+                MAX(CloseDate) LastCloseDate, 
+                MIN(membership_start_date__c) FirstStartDate, MAX(membership_end_date__c) LastEndDate, 
+                COUNT_DISTINCT(Id) NumberOfClosedOpps, MAX(CombinedRollupFieldset__c) RollupFieldset 
+                FROM Opportunity
+                WHERE isWon=true 
+                // AND (Amount > 0 OR Amount < 0) 
+                AND RecordTypeId IN : mbrRecordTypes
+                AND Type NOT IN : oppTypesToExcludeAccts
+                AND accountId IN : allAccts
+                GROUP BY ROLLUP (accountId, Fiscal_Year(closeDate))
+                HAVING 
+                // ( Fiscal_Year(closeDate) = null OR Fiscal_Year(closeDate) >= : startYear ) AND
+                accountId != null ];
+                    
+            // invokes code to get the currency of npo02__CombinedRollupFieldset__c oppty
+            opptyCurrencies = (isMultiCurrency() ? rcfFindCurrency(objectList) : null);
+            
+            for (sobject r : objectList ) {
                 //system.debug('ROLLUP ROW: ' + r);
     
                 // get the account id for this result row
                 id aid = (id)(r.get('accountId'));
         
                 // copy all the rollups from this result row into the account object    
-                updateRollupFromResultMembership((sobject)(accountsToUpdate.get(aid)), r);
+                updateRollupFromResultMembership((sobject)(accountsToUpdate.get(aid)), r, opptyCurrencies);
             }
         }
 
@@ -280,7 +309,10 @@ public class GW_OppRollups {
     // roll up opps for households
         
         //system.debug (LoggingLevel.WARN,'hhmap: ' + hhmap);
-
+		
+		//arg used by multi currency for rollup field currencies
+        map<Id,Opportunity> opptyCurrencies;
+		
         set<id> hhids = hhmap.keyset();
         map<id, ONEN_Household__c> householdsToUpdate = new map<id, ONEN_Household__c>();
 
@@ -290,28 +322,33 @@ public class GW_OppRollups {
             ONEN_Household__c newHH = new ONEN_Household__c (id=hhid);
             putNoOppDefaults(rollupFields,newHH,HHFieldtypeMap);
             householdsToUpdate.put(hhid,newHH);
+            if(isMultiCurrency())
+                householdsToUpdate.get(hhid).put(cfHousehold,hhmap.get(hhid).get(cfHousehold));
         }
+        
+        list<sobject> objectList = [SELECT contact.ONEN_household__c hhid,  
+            Fiscal_Year(Opportunity.CloseDate) CalendarYr, SUM(Opportunity.Amount) TotalOppAmount, 
+            AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,
+            MAX(Opportunity.Amount) LargestAmount, MIN(Opportunity.CloseDate) FirstCloseDate, 
+            MAX(Opportunity.CloseDate) LastCloseDate, COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps,
+            MAX(Opportunity.CombinedRollupFieldset__c) RollupFieldset
+            FROM OpportunityContactRole 
+            WHERE isPrimary=true AND opportunity.isWon=true 
+            AND (Opportunity.Amount != 0 AND Opportunity.Amount != null) 
+            AND Opportunity.RecordTypeId NOT IN : recordTypesToExcludeCons
+            AND Opportunity.Type NOT IN : oppTypesToExcludeCons
+            AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null)  
+            AND contact.ONEN_household__c IN : hhIds
+            GROUP BY ROLLUP(contact.ONEN_household__c, Fiscal_Year(opportunity.closeDate))
+            HAVING // (Fiscal_Year(opportunity.closeDate) = null 
+            // OR Fiscal_Year(opportunity.closeDate) >= : startYear ) AND  
+            contact.ONEN_household__c != null ];
+        // invokes code to get the currency of associated opportunities
+        opptyCurrencies = (isMultiCurrency() ? rcfFindCurrency(objectList) : null);
 
         // copy all the rollups from each result row into the household objects
         integer startYear = thisYear - 2;
-        for (sobject r : 
-            [SELECT contact.ONEN_household__c hhid,  
-                Fiscal_Year(Opportunity.CloseDate) CalendarYr, SUM(Opportunity.Amount) TotalOppAmount, 
-                AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,
-                MAX(Opportunity.Amount) LargestAmount, MIN(Opportunity.CloseDate) FirstCloseDate, 
-                MAX(Opportunity.CloseDate) LastCloseDate, COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps,
-                MAX(Opportunity.CombinedRollupFieldset__c) RollupFieldset
-                FROM OpportunityContactRole 
-                WHERE isPrimary=true AND opportunity.isWon=true 
-                AND (Opportunity.Amount != 0 AND Opportunity.Amount != null) 
-                AND Opportunity.RecordTypeId NOT IN : recordTypesToExcludeCons
-                AND Opportunity.Type NOT IN : oppTypesToExcludeCons
-                AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null)  
-                AND contact.ONEN_household__c IN : hhIds
-                GROUP BY ROLLUP(contact.ONEN_household__c, Fiscal_Year(opportunity.closeDate))
-                HAVING // (Fiscal_Year(opportunity.closeDate) = null 
-                // OR Fiscal_Year(opportunity.closeDate) >= : startYear ) AND  
-                contact.ONEN_household__c != null ] ) {
+        for (sobject r : objectList ) {
             //system.debug(Logginglevel.WARN, 'ROLLUP ROW: ' + r);
 
             // get the household id for this result row
@@ -322,7 +359,7 @@ public class GW_OppRollups {
             if (hhid != null) { 
                 // household row
                 if ( yr >= startYear || yr==null) {
-                    updateRollupFromResult((sobject)(householdsToUpdate.get(hhid)), r);
+                    updateRollupFromResult((sobject)(householdsToUpdate.get(hhid)), r, opptyCurrencies);
                 }
                 // after doing regular processing, calc Best Contact Year stuff
                 // the rows are in year order, so just look start w/ the first yr, and increase as needed as we go
@@ -362,36 +399,41 @@ public class GW_OppRollups {
         if (!mbrRecordTypes.isEmpty()) {
             // also roll up memberships
             // uncomment if you are doing annual membership totals
-            for (sobject r : 
-                [SELECT contact.ONEN_household__c hhid, 
-                    SUM(Opportunity.Amount) TotalOppAmount, 
-                    MAX(Opportunity.CloseDate) LastCloseDate, 
-                    //AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,
-                    //MAX(Opportunity.Amount) LargestAmount, 
-                    MIN(Opportunity.Membership_Start_Date__c) FirstStartDate, 
-                    MAX(Opportunity.Membership_End_Date__c) LastEndDate, 
-                    COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps,
-                    MAX(Opportunity.CombinedRollupFieldset__c) RollupFieldset
-                    FROM OpportunityContactRole 
-                    WHERE isPrimary=true AND opportunity.isWon=true 
-                    // AND (Opportunity.Amount > 0 OR Opportunity.Amount < 0) 
-                    AND Opportunity.RecordTypeId IN : mbrRecordTypes
-                    AND Opportunity.Type NOT IN : oppTypesToExcludeCons
-                    AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null)  
-                    AND contact.ONEN_household__c IN : hhIds
-                    GROUP BY contact.ONEN_household__c
-                    //, Fiscal_Year(opportunity.closeDate)
-                    HAVING 
-                    //(Fiscal_Year(opportunity.closeDate) = null 
-                    //OR Fiscal_Year(opportunity.closeDate) >= : startYear ) AND 
-                    contact.ONEN_household__c != null ] ) {
+            objectList.clear();
+        	objectList = [SELECT contact.ONEN_household__c hhid, 
+                SUM(Opportunity.Amount) TotalOppAmount, 
+                MAX(Opportunity.CloseDate) LastCloseDate, 
+                //AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,
+                //MAX(Opportunity.Amount) LargestAmount, 
+                MIN(Opportunity.Membership_Start_Date__c) FirstStartDate, 
+                MAX(Opportunity.Membership_End_Date__c) LastEndDate, 
+                COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps,
+                MAX(Opportunity.CombinedRollupFieldset__c) RollupFieldset
+                FROM OpportunityContactRole 
+                WHERE isPrimary=true AND opportunity.isWon=true 
+                // AND (Opportunity.Amount > 0 OR Opportunity.Amount < 0) 
+                AND Opportunity.RecordTypeId IN : mbrRecordTypes
+                AND Opportunity.Type NOT IN : oppTypesToExcludeCons
+                AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null)  
+                AND contact.ONEN_household__c IN : hhIds
+                GROUP BY contact.ONEN_household__c
+                //, Fiscal_Year(opportunity.closeDate)
+                HAVING 
+                //(Fiscal_Year(opportunity.closeDate) = null 
+                //OR Fiscal_Year(opportunity.closeDate) >= : startYear ) AND 
+                contact.ONEN_household__c != null ];
+                
+            // invokes code to get the currency of associated opportunities
+        	opptyCurrencies = (isMultiCurrency() ? rcfFindCurrency(objectList) : null);
+            
+            for (sobject r : objectList ) {
                 //system.debug('ROLLUP ROW: ' + r);
     
                 // get the household id for this result row
                 id hhid = (id)(r.get('hhid'));
                 
                 // process the result row, copying it into the contact record(s)
-                updateRollupFromResultMembership((sobject)(householdsToUpdate.get(hhid)), r);
+                updateRollupFromResultMembership((sobject)(householdsToUpdate.get(hhid)), r, opptyCurrencies);
                      
             }
         }
@@ -458,7 +500,10 @@ public class GW_OppRollups {
     
     public void rollupContacts( map<id, contact> cmap ) {
     // roll up opps for a list of contacts
-
+		
+		//arg used by multi currency for rollup field currencies
+        map<Id,Opportunity> opptyCurrencies;
+		
         set<id> conIds = cmap.keySet();
 
         // copy the contacts to a map of zeroed out versions
@@ -471,28 +516,34 @@ public class GW_OppRollups {
             Contact newCon = new Contact(id=cid);
             putNoOppDefaults(conRollupFields,newCon,conFieldtypeMap);
             contactsToUpdate.put(cid,newCon);
+            if(isMultiCurrency())
+                contactsToUpdate.get(cid).put(cfContact,cmap.get(cid).get(cfContact));
         }
         
 //      system.debug (Logginglevel.WARN, 'cmap: ' + cmap);
         
         // copy all the rollups from each result row into the contact objects
         integer startYear = thisYear - 2;
-        for (sobject r : 
-            [SELECT contactId, 
-                Fiscal_Year(Opportunity.CloseDate) CalendarYr, SUM(Opportunity.Amount) TotalOppAmount, 
-                AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,
-                MAX(Opportunity.Amount) LargestAmount, MIN(Opportunity.CloseDate) FirstCloseDate, 
-                MAX(Opportunity.CloseDate) LastCloseDate, COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps,
-                MAX(Opportunity.CombinedRollupFieldset__c) RollupFieldset
-                FROM OpportunityContactRole 
-                WHERE isPrimary=true AND opportunity.isWon=true 
-                AND (Opportunity.Amount != 0 AND Opportunity.Amount != null) 
-                AND Opportunity.RecordTypeId NOT IN : recordTypesToExcludeCons
-                AND Opportunity.Type NOT IN : oppTypesToExcludeCons
-                AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null)  
-                AND contactId IN : conIds
-                GROUP BY ROLLUP(contactId, Fiscal_Year(opportunity.closeDate))
-                ] ) {
+        
+        list<sobject> objectList = [SELECT contactId, 
+	        Fiscal_Year(Opportunity.CloseDate) CalendarYr, SUM(Opportunity.Amount) TotalOppAmount, 
+	        AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,
+	        MAX(Opportunity.Amount) LargestAmount, MIN(Opportunity.CloseDate) FirstCloseDate, 
+	        MAX(Opportunity.CloseDate) LastCloseDate, COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps,
+	        MAX(Opportunity.CombinedRollupFieldset__c) RollupFieldset
+	        FROM OpportunityContactRole 
+	        WHERE isPrimary=true AND opportunity.isWon=true 
+	        AND (Opportunity.Amount != 0 AND Opportunity.Amount != null) 
+	        AND Opportunity.RecordTypeId NOT IN : recordTypesToExcludeCons
+	        AND Opportunity.Type NOT IN : oppTypesToExcludeCons
+	        AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null)  
+	        AND contactId IN : conIds
+	        GROUP BY ROLLUP(contactId, Fiscal_Year(opportunity.closeDate))
+	        ];
+        // invokes code to get the currency of associated opportunities
+        opptyCurrencies = (isMultiCurrency() ? rcfFindCurrency(objectList) : null);
+        
+        for (sobject r : objectList ) {
             
 //          system.debug(Logginglevel.WARN, 'ROLLUP ROW: ' + r);
 
@@ -505,7 +556,7 @@ public class GW_OppRollups {
             if (cid != null) { 
                 // contact row
                 if ( yr >= startYear || yr==null) {
-                    updateRollupFromResult((sobject)(contactsToUpdate.get(cid)), r);
+                    updateRollupFromResult((sobject)(contactsToUpdate.get(cid)), r, opptyCurrencies);
                 }
                 // after doing regular processing, calc Best Contact Year stuff
                 // the rows are in year order, so just look start w/ the first yr, and increase as needed as we go
@@ -548,27 +599,33 @@ public class GW_OppRollups {
         if (!mbrRecordTypes.isEmpty()) {
             // also do rollups for membership
             // if you need annual rollups for membership, uncomment the commented bits
-            for (sobject r : 
-                [SELECT contactId, 
-                    //Fiscal_Year(Opportunity.CloseDate) CalendarYr, 
-                    SUM(Opportunity.Amount) TotalOppAmount, 
-                    MAX(Opportunity.CloseDate) LastCloseDate, 
-                    //AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,
-                    //MAX(Opportunity.Amount) LargestAmount, 
-                    MIN(Opportunity.Membership_Start_Date__c) FirstStartDate, 
-                    MAX(Opportunity.Membership_End_Date__c) LastEndDate, 
-                    COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps,
-                    MAX(Opportunity.CombinedRollupFieldset__c) RollupFieldset
-                    FROM OpportunityContactRole 
-                    WHERE isPrimary=true AND opportunity.isWon=true 
-                    // AND (Opportunity.Amount > 0 OR Opportunity.Amount < 0) 
-                    AND Opportunity.RecordTypeId IN : mbrRecordTypes
-                    AND Opportunity.Type NOT IN : oppTypesToExcludeCons
-                    AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null)  
-                    AND contactid IN : conIds
-                    GROUP BY ROLLUP(contactId 
-                    //, Fiscal_Year(opportunity.closeDate)
-                    ) ] ) {
+            
+            objectList.clear();
+        	objectList = [SELECT contactId, 
+                //Fiscal_Year(Opportunity.CloseDate) CalendarYr, 
+                SUM(Opportunity.Amount) TotalOppAmount, 
+                MAX(Opportunity.CloseDate) LastCloseDate, 
+                //AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,
+                //MAX(Opportunity.Amount) LargestAmount, 
+                MIN(Opportunity.Membership_Start_Date__c) FirstStartDate, 
+                MAX(Opportunity.Membership_End_Date__c) LastEndDate, 
+                COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps,
+                MAX(Opportunity.CombinedRollupFieldset__c) RollupFieldset
+                FROM OpportunityContactRole 
+                WHERE isPrimary=true AND opportunity.isWon=true 
+                // AND (Opportunity.Amount > 0 OR Opportunity.Amount < 0) 
+                AND Opportunity.RecordTypeId IN : mbrRecordTypes
+                AND Opportunity.Type NOT IN : oppTypesToExcludeCons
+                AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null)  
+                AND contactid IN : conIds
+                GROUP BY ROLLUP(contactId 
+                //, Fiscal_Year(opportunity.closeDate)
+                ) ];
+                
+            // invokes code to get the currency of associated opportunities
+        	opptyCurrencies = (isMultiCurrency() ? rcfFindCurrency(objectList) : null);
+        	
+            for (sobject r : objectList ) {
                         
                 // get the ids
                 id cid = (id)(r.get('contactId'));
@@ -576,7 +633,7 @@ public class GW_OppRollups {
                 // process the result row, copying it into the contact record(s)
                 if (cid != null) { 
                     // contact row  
-                    updateRollupFromResultMembership((sobject)(contactsToUpdate.get(cid)), r);
+                    updateRollupFromResultMembership((sobject)(contactsToUpdate.get(cid)), r, opptyCurrencies);
                     // consWithoutMbrOpps.remove(cid);  // this con DOES have opps (mbr opps might be diff rectypes from gift opps)
                 }
             }
@@ -888,7 +945,7 @@ public class GW_OppRollups {
         id batchProcessId = database.executeBatch(batch, batchSize);        
     }
 
-    public static void updateRollupFromResult(sobject obj, sobject r) {
+    public static void updateRollupFromResult(sobject obj, sobject r, map<id, Opportunity> opptyCurrencies) {
     // used for single and batch rollups, this maps query results to the right fields
 
         // get the fiscal year, total amount, and opp count for this result row     
@@ -899,6 +956,13 @@ public class GW_OppRollups {
         // split the special field to get the last opp id and amount
         string[] rcf = ((string)(r.get('RollupFieldset'))).split(';\\|;',-4);
         decimal lastAmt = (rcf.size() > 1 && rcf[1] != '') ? decimal.valueOf(rcf[1]) : null;
+        
+        // calculate amounts into correct currency if needed
+        if(isMultiCurrency()){
+            amt = ConvertFromCorporate((string)obj.get('CurrencyIsoCode'),amt);
+            if(lastAmt != null && rcf.size() > 4 && rcf[4] != '')
+                lastAmt = ConvertCurrency((string)opptyCurrencies.get((Id)rcf[4]).get('CurrencyISOCode'),(string)obj.get('CurrencyIsoCode'),lastAmt);           
+        }
         
         // check if this is an annual total or account total
         if (fy != null) {
@@ -921,11 +985,20 @@ public class GW_OppRollups {
             obj.put('TotalOppAmount__c', amt);
             obj.put('NumberOfClosedOpps__c', cnt);              
             obj.put('LastOppAmount__c', lastAmt);               
-            obj.put('AverageAmount__c', (decimal)(r.get('AverageAmount'))); 
-            obj.put('SmallestAmount__c', (decimal)(r.get('SmallestAmount'))); 
-            obj.put('LargestAmount__c', (decimal)(r.get('LargestAmount'))); 
-            obj.put('FirstCloseDate__c', (date)(r.get('FirstCloseDate'))); 
+            obj.put('FirstCloseDate__c', (date)(r.get('FirstCloseDate')));
             obj.put('LastCloseDate__c', (date)(r.get('LastCloseDate'))); 
+            
+            // calculate amounts into correct currency if needed
+            if(isMultiCurrency()) {         
+            	obj.put('AverageAmount__c', ConvertFromCorporate((string)obj.get('CurrencyIsoCode'),(decimal)r.get('AverageAmount'))); 
+            	obj.put('SmallestAmount__c', ConvertFromCorporate((string)obj.get('CurrencyIsoCode'),(decimal)r.get('SmallestAmount'))); 
+            	obj.put('LargestAmount__c', ConvertFromCorporate((string)obj.get('CurrencyIsoCode'),(decimal)r.get('LargestAmount'))); 
+            } else {
+            	obj.put('SmallestAmount__c', (decimal)(r.get('SmallestAmount'))); 
+	        	obj.put('LargestAmount__c', (decimal)(r.get('LargestAmount'))); 
+	        	obj.put('AverageAmount__c', (decimal)(r.get('AverageAmount'))); 
+            }
+                
         }
     }
 
@@ -934,14 +1007,18 @@ public class GW_OppRollups {
         
         // get the fiscal year, total amount, and opp count for this result row     
         decimal amt = ( r.get('TotalOppAmount') == null ) ? 0 : (decimal)(r.get('TotalOppAmount'));
-        integer cnt = (integer)(r.get('NumberOfClosedOpps'));               
+        integer cnt = (integer)(r.get('NumberOfClosedOpps'));
+        
+        // calculate amounts into correct currency if needed
+        if(isMultiCurrency())
+           amt = ConvertFromCorporate((string)obj.get('CurrencyIsoCode'),amt);              
         
         // fill in totals
         obj.put('OppAmountLastNDays__c', amt);              
         obj.put('OppsClosedLastNDays__c', cnt);
     }
 
-    public static void updateRollupFromResultMembership(sobject obj, sobject r) {
+    public static void updateRollupFromResultMembership(sobject obj, sobject r, map<id, Opportunity> opptyCurrencies) {
     // used for single and batch rollups, this maps query results to the right fields
         
         // get the fiscal year, total amount, and opp count for this result row     
@@ -955,7 +1032,14 @@ public class GW_OppRollups {
         string lastMemberLevel = (rcf.size() > 2) ? rcf[2] : null;
         if (lastMemberLevel=='') lastMemberLevel = null;    // chg to null if empty so that won't cause unnecessary write  
         string lastMemberOrigin = (rcf.size() > 3) ? rcf[3] : null;
-        if (lastMemberOrigin =='') lastMemberOrigin = null; // chg to null if empty so that won't cause unnecessary write  
+        if (lastMemberOrigin =='') lastMemberOrigin = null; // chg to null if empty so that won't cause unnecessary write 
+        
+        // calculate amounts into correct currency if needed
+        if(isMultiCurrency()){
+           amt = ConvertFromCorporate((string)obj.get('CurrencyIsoCode'),amt);
+           if(lastAmt != null && rcf.size() > 4 && rcf[4] != '')
+               lastAmt = ConvertCurrency((string)opptyCurrencies.get((Id)rcf[4]).get('CurrencyISOCode'),(string)obj.get('CurrencyIsoCode'),lastAmt);           
+        } 
         
         // check if this is an annual total or account total
 /* ADD FIELDS AND UNCOMMENT IF YOU NEED ANNUAL MEMBERSHIP TOTAL BREAKOUT
@@ -987,7 +1071,87 @@ public class GW_OppRollups {
 //          system.debug (Logginglevel.WARN, 'object after field property changes: ' + obj);        
 //      }
     }
+	
+	/*********** Multi-Currency Support Methods ***********/
 
+    //returns a boolean if we are in a multi-currency org or not.
+    //on first execution sets up static variables etc
+    public static boolean isMultiCurrency(){
+        
+        if (multiCurrency==null){
+            //create currency field handles for later dynamic dml
+            cfOppty = Schema.sObjectType.Opportunity.fields.getMap().get('CurrencyIsoCode');
+            cfAccount = Schema.sObjectType.Account.fields.getMap().get('CurrencyIsoCode');
+            cfHousehold = Schema.sObjectType.ONEN_household__c.fields.getMap().get('CurrencyIsoCode');
+            cfContact = Schema.sObjectType.Contact.fields.getMap().get('CurrencyIsoCode');
+
+            String queryExchangeRates = 'select IsoCode,ConversionRate,IsCorporate from CurrencyType';
+            SObjectType soCurrencyType = Schema.getGlobalDescribe().get('CurrencyType'); 
+
+            //are we in a multi-currency org?
+            if (cfOppty != null && cfAccount != null && cfHousehold != null && cfContact != null && soCurrencyType != null){
+                multiCurrency = true;
+ 
+                map<string,SObjectField> ctFields = soCurrencyType.getDescribe().fields.getMap();
+                SObjectField ctIsoCode = ctFields.get('IsoCode');
+                SObjectField ctConversionRate = ctFields.get('ConversionRate');
+                SObjectField ctCorporate = ctFields.get('IsCorporate');
+
+                //iterate over all the currencies in the org (inc. inactive ones as they may have been used previously)
+                //this allows us to put them in a map and use the ISO code as key and also set the corporate
+                for(sObject ct: Database.query(queryExchangeRates)){
+                    exchangeRates.put((string)ct.get(ctIsoCode),(decimal)ct.get(ctConversionRate));
+                    if((boolean)ct.get(ctCorporate))currCorporate=(string)ct.get(ctIsoCode);
+                }
+            }
+            else
+                multiCurrency = false; 
+        }
+        
+        return multiCurrency;
+        }
+
+    //do a conversion from amount in corporate currency to the currency specified by the ISO code
+    public static decimal ConvertFromCorporate(String ISO,Decimal amt){
+        if(currCorporate == ISO || currCorporate == null) // no need to convert
+            return amt;
+        else //return value to 2DP
+            return (amt * exchangeRates.get(ISO)).setScale(2) ;
+    }
+
+    public static decimal ConvertCurrency(String fromISO, String toISO, Decimal amt){
+        if(fromISO == toISO) // no need to convert
+            return amt;
+        else //return value to 2DP
+            return ((amt / exchangeRates.get(fromISO)) * exchangeRates.get(toISO)).setScale(2) ;
+    }
+ 
+    //takes the Ids of opptys in the npo02__CombinedRollupFieldset__c field, and looks up the currency of that record
+    //only used in multi currency orgs
+    //returns a map of those Ids and the associated oppty
+    public map<Id,Opportunity> rcfFindCurrency(list<sobject> objectList){
+        //new set to hold the opptys we need to query for
+        set<Id> opptysForCurrency = new set<Id>();
+
+        //iterate over objects provided to us
+        for (sobject r : objectList){
+            //pull Id from rollup field and add to set
+            string[] rcf = ((string)(r.get('RollupFieldset'))).split(';\\|;',-4);
+            if(rcf.size() > 1 && rcf[1] != '')
+                opptysForCurrency.add((Id)rcf[4]);
+        }
+        
+        if (!objectlist.isEmpty()){
+            //query for oppty and currencycode for all Ids in set.
+            string soqlStatement = 'SELECT Id,CurrencyIsoCode FROM Opportunity WHERE Id in :opptysForCurrency';
+            map<Id,Opportunity> opptyCurrencies = new map<Id,Opportunity>((list<Opportunity>)Database.query(soqlStatement));
+            return opptyCurrencies;
+        }
+        else
+            return null;
+        
+    }
+	
     /************ TESTS ***************/
     
     static testMethod void testGivingRollup () {
