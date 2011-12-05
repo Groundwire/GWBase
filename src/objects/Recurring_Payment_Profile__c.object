@@ -33,7 +33,6 @@
         <type>Default</type>
     </actionOverrides>
     <deploymentStatus>Deployed</deploymentStatus>
-    <deprecated>false</deprecated>
     <enableActivities>false</enableActivities>
     <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
@@ -42,7 +41,6 @@
     <fields>
         <fullName>Account__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The organization that makes this payment.</inlineHelpText>
         <label>Organization</label>
@@ -53,7 +51,6 @@
     </fields>
     <fields>
         <fullName>Amount__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Amount</label>
         <precision>18</precision>
@@ -64,7 +61,6 @@
     <fields>
         <fullName>Contact__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Contact who makes this recurring payment.</inlineHelpText>
         <label>Contact</label>
@@ -75,7 +71,6 @@
     </fields>
     <fields>
         <fullName>End_Date__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Date that recurring payment is discontinued.</inlineHelpText>
         <label>End Date</label>
@@ -85,7 +80,6 @@
     <fields>
         <fullName>Frequency__c</fullName>
         <defaultValue>1</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Specify the time between payments by setting both the Frequency and Payment Period fields (e.g. every 2 weeks, every 1 month).</inlineHelpText>
         <label>Frequency</label>
@@ -97,7 +91,6 @@
     </fields>
     <fields>
         <fullName>IsActive__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>IF(OR(ISNULL( End_Date__c ), End_Date__c &gt; TODAY() ), &apos;Yes&apos;, &apos;No&apos;)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -108,7 +101,6 @@
     </fields>
     <fields>
         <fullName>Payment_Notes__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Payment Notes</label>
         <length>32000</length>
@@ -117,7 +109,6 @@
     </fields>
     <fields>
         <fullName>Payment_Period__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Specify the time between payments by setting both the Frequency and Payment Period fields (e.g. every 2 weeks, every 1 month).</inlineHelpText>
         <label>Payment Period</label>
@@ -145,7 +136,6 @@
     <fields>
         <fullName>Start_Date__c</fullName>
         <defaultValue>Today()</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Date of first payment.</inlineHelpText>
         <label>Start Date</label>
@@ -154,7 +144,6 @@
     </fields>
     <fields>
         <fullName>Transaction_Id__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Online Transaction ID</label>
         <length>20</length>
@@ -164,7 +153,6 @@
     </fields>
     <fields>
         <fullName>Type__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Payment Type</label>
         <picklist>

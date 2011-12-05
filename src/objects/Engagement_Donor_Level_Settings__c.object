@@ -7,7 +7,6 @@
     <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>Level__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The number of the Engagement Level this amount of giving corresponds to.</inlineHelpText>
         <label>Level</label>
@@ -19,7 +18,6 @@
     </fields>
     <fields>
         <fullName>Lower_Limit__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The minimum amount a donor must contribute (or pledge) in a year to be assigned the engagement level specified. Do not assign any a lower limit of $0 or less, or make tiers that overlap.</inlineHelpText>
         <label>Lower Limit</label>

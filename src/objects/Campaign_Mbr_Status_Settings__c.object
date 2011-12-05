@@ -7,7 +7,6 @@
     <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>Campaign_Subtype__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The optional Campaign Subtype this Campaign Member Status applies to.</inlineHelpText>
         <label>Campaign Subtype</label>
@@ -18,7 +17,6 @@
     </fields>
     <fields>
         <fullName>Campaign_Type__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The Campaign Type that this Campaign Member Status applies to.</inlineHelpText>
         <label>Campaign Type</label>
@@ -30,7 +28,6 @@
     <fields>
         <fullName>Default_Status__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>This Campaign Member status is the default for Campaigns of this type. Only one value should be default per Campaign Type and Sub Type.</inlineHelpText>
         <label>Default Status?</label>
@@ -39,7 +36,6 @@
     <fields>
         <fullName>IsResponded__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>This Campaign Member Status counts as Responded.</inlineHelpText>
         <label>Counts as Responded</label>
@@ -47,7 +43,6 @@
     </fields>
     <fields>
         <fullName>Status_Label__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The label of this Campaign Member Status.</inlineHelpText>
         <label>Status Label</label>
