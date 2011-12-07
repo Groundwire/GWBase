@@ -1,1 +1,1129 @@
-<apex:page controller="GW_EXT_ManageHousehold" action="{!manageHousehold}"/>
+<apex:page standardController="ONEN_Household__c" extensions="GW_EXT_ManageHousehold" title="Manage Household">
+
+<!-- We need jQuery -->
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js" />
+<!-- We also need jQuery UI --> 
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" />
+<!-- We also need JSON2 -->
+<script src="{!URLFOR($Resource.jQueryFiles, 'js/json2.js')}"/>
+
+<!-- get our jQuery UI theme -->
+<apex:stylesheet value="{!URLFOR($Resource.jQueryFiles, 'css/smoothness/jquery-ui-1.8.16.custom.css')}"/>
+
+<script type="text/javascript">
+    
+var j$ = jQuery.noConflict();
+
+
+
+j$(function () {
+    
+    j$('#hhSearch-input').autocomplete({
+    	minLength: 1,
+    	position: { my: "right top", at: "right bottom", collision: "none" },
+    	source: function(request, response) {
+    		var searchStr = request.term.toLowerCase();      			
+			GW_EXT_ManageHousehold.findContacts(searchStr,gwManageHH.jsonState, function(result, event) {       								
+	        		if (event.type == 'exception') {
+	        			alert(event.message);
+	        		} else {
+	        			if (result != null) {
+	        				response(j$.map(result, function(item) {
+	        					return {label: item.Name, value: item.Id, contact:item};
+	        				}));
+		        		}
+	        		}
+		   	});
+	   	},
+	   	select: function (event, ui) {
+	   		j$(this).val(ui.item.label);
+	   		return false;
+	   	}
+	}).data( "autocomplete" )._renderItem = function( ul, item ) {
+    	var address = gwManageHH.addressStringify(item.contact);
+    	
+    	var linode = j$( '<li class="hhSearch-item"></li>' ).data( "item.autocomplete", item ).append( '<span class="hhSearch-item-name">' + item.label + '</span><span class="hhSearch-item-address">'+address+'</span>' );
+    	
+    	// If the contact is in a household add a visual indicator
+    	if (item.contact.ONEN_Household__c != null) {
+    		linode.find('.hhSearch-item-address').after('<span class="hhSearch-item-hh">Existing household</span>');
+    	}
+    	
+    	// insert add button
+    	linode.append('<button class="gwButton hhSearch-item-add">Add</button>');
+    	linode.find('.hhSearch-item-add').button();
+    	
+    	// insert icon
+    	linode.prepend('<div class="hhCard-icon">Contact</div>');
+    	
+		return linode.appendTo(ul);
+	}
+	
+	// setup search item add buttons
+	j$('.hhSearch-item-add').live('click', gwManageHH.dialogAddMember);
+    
+    // setup search input
+    j$('.hhSearch-input').val(j$('.hhSearch-input').attr('title'));
+    j$('.hhSearch-input').focus(function () {
+    	var ht = j$(this).attr('title');
+    	var v = j$(this).val();
+    	if (ht == v) {
+    		j$(this).val('');
+    	}
+    });
+    j$('.hhSearch-input').blur(function () {
+    	var ht = j$(this).attr('title');
+    	var v = j$(this).val();
+    	if (v == '') {
+    		j$(this).val(ht);
+    	}
+    });
+    
+    //Naming form
+    j$('#hhNaming input[type="checkbox"]').change(gwManageHH.setNaming);
+    j$('#hhNaming input[type="text"]').not('.gwField-disable').change(gwManageHH.setNaming);
+    
+    // Address change scripts
+    //Accordions
+    j$('.hhAddress-change').button();
+    j$('.hhAddress-change').click(gwManageHH.dialogChangeAddress);
+    
+    // Exclude from name checkbox actions
+    j$('.hh-name-exclude-input').live('change', function (event) {
+    	var cid = j$(this).closest('.hhCard').attr('id');
+    	
+    	gwManageHH.setNameExclusion(cid, j$(this).is(':checked'));
+    });
+    
+    // Controls
+    j$('.gwControls-save').click(function () {
+    	gwManageHH.saveHousehold();
+    });
+    
+    // Cards
+    j$('.hhCard').live('mouseenter mouseleave', function (event) {
+    	if (event.type == 'mouseenter') {
+    		j$(this).find('.hhCard-delete').show();
+    	}
+    	if (event.type == 'mouseleave') {
+    		j$(this).find('.hhCard-delete').hide();
+    	}
+    });
+    
+    //Deletes
+    j$('.hhCard-delete').live('mouseenter mouseleave click', function (event) {
+    	if (event.type == 'click') {
+	    	var card = j$(this).closest('.hhCard');
+	    	var cid = card.attr('id');
+	    	
+	    	gwManageHH.removeMember(cid);
+	    }
+	    
+	    if (event.type == 'mouseenter') {
+	    	j$(this).addClass('ui-state-error');
+	    }
+	    if (event.type == 'mouseleave') {
+	    	j$(this).removeClass('ui-state-error');
+	    } 
+    	
+    });
+    
+    // Render all
+    gwManageHH.updateState(gwManageHH.jsonState);
+});
+
+var gwManageHH = new Object();
+
+gwManageHH.state = {!jsonState};
+gwManageHH.jsonState = JSON.stringify(gwManageHH.state);
+gwManageHH.originalState = '{!originalState}';
+gwManageHH.cardPrototype = '<div class="hhCard"><div class="hhCard-icon">Contact</div><div class="hhCard-details"><span class="hhCard-details-name"></span><span class="hhCard-details-address"></span><span class="hh-name-exclude"><input class="hh-name-exclude-input" type="checkbox" /><label>Exclude from name</label></span></div></div>';
+gwManageHH.renderCard = function(contact) {
+	
+	var card = j$(gwManageHH.cardPrototype);
+	
+	// Insert name
+	var cLink = j$('<a />');
+	cLink.attr('href', '/'+contact.Id).attr('target','_blank').text(contact.Name);
+	card.find('.hhCard-details-name').html(cLink);
+	
+	// Insert address
+	card.find('.hhCard-details-address').html(gwManageHH.addressStringify(contact));
+	
+	// Add checks for household name and greeting
+	var nm = card.find('.hh-name-exclude');
+	nm.find('input').attr('id','hhex'+contact.Id).attr('name','hhex'+contact.Id);
+	nm.find('label').attr('for','hhex'+contact.Id);
+	
+	if (contact.Not_in_HH_Name__c) {
+		nm.find('input').attr('checked','checked');
+	} else {
+		nm.find('input').removeAttr('checked');
+	}
+	
+	// Add delete
+	var del = j$('<button class="hhCard-delete" />');
+	del.button({
+		icons: {
+        	primary: "ui-icon-circle-minus"
+        },
+        text: false
+    });
+    del.hide();
+	card.append(del);
+	
+	// Give card unique ID
+	card.attr('id',contact.Id);
+	
+	//Hide the card
+	card.css('opacity','0.0');
+	
+	// Add card to dom
+	j$('div.hhMembers').append(card);
+	
+	// Blingify it
+	card.animate({opacity: 1.0}, 500);
+}
+
+gwManageHH.updateCard = function (contact) {
+	
+	var card = j$('#'+contact.Id);
+	
+	var exAddy = card.find('.hhCard-details-address').html();
+	var newAddy = gwManageHH.addressStringify(contact);
+	
+	if (exAddy != newAddy) {
+		card.find('.hhCard-details-address').html(newAddy);
+	}
+	
+	var nm = card.find('.hh-name-exclude');
+	if (contact.Not_in_HH_Name__c) {
+		nm.find('input').attr('checked','checked');
+	} else {
+		nm.find('input').removeAttr('checked');
+	}
+}
+
+gwManageHH.updateState = function (state) {
+	// First set the state variables
+	gwManageHH.state = JSON.parse(state);
+	gwManageHH.jsonState = state;
+	
+	// Now update the interface
+	gwManageHH.renderMembers();
+	
+	// Set the address
+	gwManageHH.renderAddress();
+	
+	// Setup the naming fields
+	gwManageHH.renderNaming();
+}
+gwManageHH.dialogAddMember = function(event) {
+	var linode = j$(this).closest('.hhSearch-item');
+	var contact = linode.data('item.autocomplete').contact;
+	
+	if (contact.ONEN_Household__c != null) {
+		var dialog = j$('#dialog-addmember');
+		dialog.data('contact',contact);
+		
+		// Tweak the text of the dialog to show the contact's name
+		dialog.find('strong').text(contact.Name);
+		
+		dialog.dialog({
+			buttons: {
+				"Add and Merge Households": function() {
+					j$( this ).dialog( "close" );
+					j$(this).fadeOut();
+					linode.toggleClass('hhSearch-item-added');
+					gwManageHH.addMember(contact.Id, true);
+				},
+				"Add and remove from old household": function() {
+					j$( this ).dialog( "close" );
+					j$(this).fadeOut();
+					linode.toggleClass('hhSearch-item-added');
+					gwManageHH.addMember(contact.Id, false);
+				},
+				Cancel: function() {
+					j$( this ).dialog( "close" );
+				}
+			}
+		});
+	} else {
+		j$(this).fadeOut();
+		linode.toggleClass('hhSearch-item-added');
+		gwManageHH.addMember(contact.Id, false);
+	}
+}
+
+gwManageHH.dialogChangeAddress = function (event) {
+	
+	var state = gwManageHH.state;
+	var dialog = j$('#dialog-changeaddress');
+	var displayAddresses = new Array();
+	
+	if (state.viableAddresses != {}) {
+		var contactIds = new Array();
+		// Get viable addresses if there are any and build an array of address strings
+		for (as in state.viableAddresses) {
+			contactIds.push(state.viableAddresses[as]);
+		}
+		
+		var adList = j$('<ul />');
+		j$(contactIds).each( function () {
+			var adItem = j$('<li />');
+			var contact = state.activeContacts[this];
+			displayAddresses.push(gwManageHH.addressStringify(contact));
+			adItem.addClass('hhAddress-list-item').html(gwManageHH.addressStringify(contact));
+			
+			adItem.data('cid',this);
+			
+			if (state.activeAddressConId != null && gwManageHH.addressStringify(contact) == gwManageHH.addressStringify(state.activeContacts[state.activeAddressConId])) adItem.addClass('selected');
+			
+			adItem.bind('mouseover mouseout click', function(event) {
+		    	switch (event.type) {
+		    		case 'mouseover':
+		    			j$(this).addClass('hhAddress-list-item-hover');
+		    			break;
+		    		case 'mouseout':
+		    			j$(this).removeClass('hhAddress-list-item-hover');
+		    			break;
+		    		case 'click':
+		    			j$('.hhAddress-list-item.selected').removeClass('selected');
+		    			j$(this).addClass('selected');
+		    			break;
+		    	}
+		    });
+			
+			adList.append(adItem);
+		});
+		
+		j$('#hhExistingAddress').html(adList);
+		
+	}
+	
+	dialog.dialog({
+			modal: true,
+			resizable: false,
+			height: 390,
+			width: 400,
+			buttons: {
+				"Set Address": function() {
+					
+					var createNew = j$('#hhExistingAddress').hasClass('ui-accordion-content-active');
+					
+					if (!createNew) {
+						state.activeAddressConId = null;
+						state.activeStreet = j$('#hhAddressStreet').val();
+						state.activeCity = j$('#hhAddressCity').val();
+						state.activePostalCode = j$('#hhAddressPostalCode').val();
+						state.activeState = j$('#hhAddressState').val();
+						state.activeCountry = j$('#hhAddressCountry').val();
+						state.useAddress = true;
+					} else {
+						
+						var cid = j$('#hhExistingAddress li.selected').data('cid');
+						
+						if (cid != undefined) {
+							var contact = state.activeContacts[cid];
+							
+							state.activeAddressConId = contact.Id;
+							state.activeStreet = contact.OtherStreet;
+							state.activeCity = contact.OtherCity;
+							state.activePostalCode = contact.OtherPostalCode;
+							state.activeState = contact.OtherState;
+							state.activeCountry = contact.OtherCountry;
+						}
+					}
+					gwManageHH.updateState(JSON.stringify(state));
+					if (gwManageHH.jsonState != gwManageHH.originalState) j$('.gwNotifications').gwNotify('Changes have not been saved.', {type:'info'});
+					j$( this ).dialog( "close" );
+				},
+				Cancel: function() {
+					j$( this ).dialog( "close" );
+				}
+			}
+		});
+	var icons = {
+		header: "ui-icon-bullet",
+		headerSelected: "ui-icon-circle-check"
+	};
+	dialog.find('.gwAccordion').accordion({height: 350, icons: icons});
+}
+
+gwManageHH.addMember = function (cid, wHH) {
+	
+	gwManageHH.jsonState = JSON.stringify(gwManageHH.state);
+	
+	GW_EXT_ManageHousehold.remoteAddMember(cid, wHH, gwManageHH.jsonState, function(result, event) {       								
+     	if (event.type == 'exception') {
+     		j$('.gwNotifications').gwNotify(event.message, {type:'alert'});
+     	} else {
+     		if (result != null) {
+     			gwManageHH.updateState(result);
+     			if (gwManageHH.jsonState != gwManageHH.originalState) j$('.gwNotifications').gwNotify('Changes have not been saved.', {type:'info'});
+      		}
+     	}
+	}, {escape:false});
+	
+}
+
+gwManageHH.removeMember = function (cid) {
+	
+	gwManageHH.jsonState = JSON.stringify(gwManageHH.state);
+	
+	GW_EXT_ManageHousehold.remoteRemoveMember(cid, gwManageHH.jsonState, function(result, event) {       								
+     	if (event.type == 'exception') {
+     		j$('.gwNotifications').gwNotify(event.message, {type:'alert'});
+     	} else {
+     		if (result != null) {
+     			gwManageHH.updateState(result);
+     			if (gwManageHH.jsonState != gwManageHH.originalState) j$('.gwNotifications').gwNotify('Changes have not been saved.', {type:'info'});
+      		}
+     	}
+	}, {escape:false});
+	
+}
+
+gwManageHH.setNameExclusion = function (cid, ex) {
+	
+	gwManageHH.state.activeContacts[cid].Not_in_HH_Name__c = ex;
+	
+	gwManageHH.jsonState = JSON.stringify(gwManageHH.state);
+	
+	gwManageHH.setNaming();
+}
+
+gwManageHH.setNaming = function () {
+	
+	var aN = j$('#hhAutoName:checked').length > 0 ? true : false;
+	var nN = j$('#hhName').val();
+	
+	var aG = j$('#hhAutoGreeting:checked').length > 0 ? true : false;
+	var nG = j$('#hhGreeting').val();
+	
+	gwManageHH.jsonState = JSON.stringify(gwManageHH.state);
+	
+	GW_EXT_ManageHousehold.remoteSetNaming(aN, nN, aG, nG, gwManageHH.jsonState, function(result, event) {
+		if (event.type == 'exception') {
+     		j$('.gwNotifications').gwNotify(event.message, {type:'alert'});
+     	} else {
+     		if (result != null) {
+     			gwManageHH.updateState(result);
+     			if (gwManageHH.jsonState != gwManageHH.originalState) j$('.gwNotifications').gwNotify('Changes have not been saved.', {type:'info'});
+      		}
+     	}
+	}, {escape: false});
+}
+
+gwManageHH.saveHousehold = function () {
+	
+	gwManageHH.jsonState = JSON.stringify(gwManageHH.state);
+	
+	GW_EXT_ManageHousehold.remoteSave(gwManageHH.jsonState, function(result, event) {
+		if (event.type == 'exception') {
+     		j$('.gwNotifications').gwNotify(event.message, {type:'alert'});
+     	} else {
+     		if (result != null) {
+     			gwManageHH.updateState(result);
+     			gwManageHH.originalState = JSON.stringify(gwManageHH.state);
+     			j$('.gwNotifications').gwNotify('Changes saved.', {type:'success'});
+      		}
+     	}
+	}, {escape: false});
+}
+
+
+gwManageHH.renderMembers = function() {
+	
+	var members = gwManageHH.getHHMembers();
+	var cids = new Array();
+	
+	// Add or update cards
+	j$(members).each( function (i) {
+		
+		var hasCard = j$('#'+members[i].Id);
+		cids.push(members[i].Id);
+		
+		if (hasCard.length < 1) {
+			gwManageHH.renderCard(members[i]);
+		} else {
+			gwManageHH.updateCard(members[i]);
+		}
+	});
+	
+	
+	
+	j$('.hhCard').each(function () {
+		var cid = j$(this).attr('id');
+		
+		// Check to see if the address is different from the active address
+		if (gwManageHH.compareAddress(cid) === false) {
+			j$(this).find('.hhCard-details-address').addClass('gwModified');
+		} else {
+			j$(this).find('.hhCard-details-address').removeClass('gwModified');
+		}
+		
+		// Cleanup any cards that were removed
+		if (j$.inArray(cid, cids) < 0) {
+			j$(this).fadeOut(200,function () {
+				j$(this).remove();
+			});
+		}
+	});
+}
+
+gwManageHH.compareAddress = function (cid) {
+	var state, contact, activeCon, newAddress, oldAddress;
+	
+	state = gwManageHH.state;
+	contact = state.activeContacts[cid];
+	
+	if (contact != null && contact != undefined && (state.activeAddressConId != null || state.useAddress == true)) {
+		if (state.useAddress === true) {
+			activeCon = {
+				OtherStreet: state.activeStreet,
+				OtherCity: state.activeCity,
+				OtherState: state.activeState,
+				OtherPostalCode: state.activePostalCode,
+				OtherCountry: state.activeCountry
+				}
+		} else {
+			activeCon = state.activeContacts[state.activeAddressConId];
+		}
+		
+		newAddress = gwManageHH.addressStringify(contact);
+		oldAddress = gwManageHH.addressStringify(activeCon);
+		
+		return newAddress == oldAddress;
+	}
+	return true;
+}
+
+gwManageHH.renderNaming = function () {
+	var state = gwManageHH.state;
+	
+	if (state.autoName == true) {
+		
+		j$('#hhAutoName').attr('checked','checked');
+		
+		j$('#hhName').val(state.hhName);
+		j$('#hhName').attr('disabled','disabled').addClass('gwField-disabled', 200);
+	} else {
+		j$('#hhAutoName').removeAttr('checked');
+		
+		j$('#hhName').val(state.hhName);
+		j$('#hhName').removeAttr('disabled').removeClass('gwField-disabled', 200);
+	}
+	
+	if (state.autoGreeting == true) {
+		j$('#hhAutoGreeting').attr('checked','checked');
+		
+		j$('#hhGreeting').val(state.hhGreeting);
+		j$('#hhGreeting').attr('disabled','disabled').addClass('gwField-disabled', 200);
+	} else {
+		j$('#hhAutoGreeting').removeAttr('checked');
+		
+		j$('#hhGreeting').val(state.hhGreeting);
+		j$('#hhGreeting').removeAttr('disabled').removeClass('gwField-disabled', 200);
+	}
+}
+
+gwManageHH.renderControls = function () {
+
+}
+
+gwManageHH.getHHMembers = function() {
+	
+	var members = new Array();
+	var state = gwManageHH.state;
+	
+	var cmap = state.activeContacts;
+	
+	for (id in cmap) {
+		members.push(cmap[id]);
+	}
+	return members;
+}
+
+gwManageHH.renderAddress = function () {
+	
+	//Helper for state
+	var state = gwManageHH.state;
+	
+	var contact;
+	
+	if (state.activeAddressConId == null) {
+		contact = {
+			OtherStreet: state.activeStreet,
+			OtherCity: state.activeCity,
+			OtherState: state.activeState,
+			OtherPostalCode: state.activePostalCode,
+			OtherCountry: state.activeCountry
+		}
+	} else {
+		contact = state.activeContacts[state.activeAddressConId];
+	}
+	
+	// Primary address node in the DOM
+	var prnode = j$('.hhAddress');
+	
+	var adnode = j$('.hhAddress-address');
+	
+	adnode.html(gwManageHH.addressStringify(contact));
+	
+	prnode.fadeIn();
+	
+}
+
+gwManageHH.addressStringify = function(contact) {
+	
+	var address = new String();
+	
+	
+	if (contact.OtherStreet != null && contact.OtherStreet != '') {
+		var strt = contact.OtherStreet.replace(/(\r\n|\n|\r)/gm, '<br />');
+		address += strt;
+		if (contact.OtherCity != null ||
+		    contact.OtherState != null ||
+		    contact.OtherPostalCode != null ||
+		    contact.OtherCountry != null) {
+			address += '<br />';
+		}
+	}
+	if (contact.OtherCity != null && contact.OtherCity != '') {
+		address += contact.OtherCity;
+		address += contact.OtherState != null && contact.OtherState != '' ? ', ' : '';
+	}
+	if (contact.OtherState != null && contact.OtherState != '') {
+		address += contact.OtherState + ' ';
+	}
+	if (contact.OtherPostalCode != null && contact.OtherPostalCode != '') {
+		address += contact.OtherPostalCode + ' ';
+	}
+	if (contact.OtherCountry != null && contact.OtherCountry != '') {
+		address += contact.OtherCountry;
+	}
+	
+	return address;
+}
+
+j$.fn.gwNotify = function (message, options) {
+	
+	var obj, config, cur_msg;
+	
+	obj = j$(this);
+	
+	cur_msg = obj.find('p.gwNotify-message').length > 0 ? obj.find('p.gwNotify-message').text() : '';
+	
+	if (cur_msg === message && message != '') return obj;
+	
+	if (message == undefined || message == '') {
+		obj.fadeOut(200, function() {
+			obj.find('p.gwNotify-message').text('');
+		});
+	}
+	
+	// set the default config
+	config = j$.extend({
+		type: 'info',
+		icons: {
+			info: 'ui-icon-info',
+			alert: 'ui-icon-alert',
+			success: 'ui-icon-check'
+		},
+		cssClass: {
+			info: 'ui-state-highlight',
+			alert: 'gwError',
+			success: 'gwSuccess'
+		}
+	}, options);
+	
+	
+	
+	if (obj.is(':hidden')) obj.css('opacity','0').removeClass('gwHidden');
+	
+	if (obj.find('.gwNotify-message').length < 1) obj.html('<p class="gwNotify-message"></p>');
+	
+	/*if (obj.find('gwNotify-icon').length < 1) obj.prepend('<span class="gwNotify-icon"></span>');
+	
+	var ico = obj.find('.gwNotify-icon');
+	ico.addClass(config.icons[config.type]);
+	ico.addClass('ui-icon');
+	obj.prepend(ico);*/
+	
+	obj.animate({opacity: 0}, 200, function() {
+		// Insert message
+		obj.find('p.gwNotify-message').text(message);
+		// Apply classes
+		obj.addClass('ui-corner-all');
+		for (c in config.cssClass) {
+			obj.removeClass( config.cssClass[c] );
+		}
+		obj.addClass( config.cssClass[config.type] );
+		obj.animate({opacity: 1.0}, 200);
+	});
+	
+	return obj;
+}
+
+</script>
+<div id="dialog-addmember" class="gwDialog gwHidden" title="Already in household">
+	<p><strong>name</strong>, is already in a household. Would you like to add this contact with or without their existing household members?</p>
+</div>
+<div id="dialog-changeaddress" class="gwDialog gwHidden" title="Change Address">
+	<div class="gwAccordion">
+		<h3><a href="#">Select an existing address</a></h3>
+		<div id="hhExistingAddress">
+		
+		</div>
+		<h3><a href="#">Enter a new address</a></h3>
+		<div id="hhNewAddress">
+			<div class="gwField">
+				<label for="hhAddressStreet" class="gwField-label">Street</label>
+				<textarea class="gwField-input" id="hhAddressStreet" name="hhAddressStreet" />
+			</div>
+			<div class="gwField">
+				<label for="hhAddressCity" class="gwField-label">City</label>
+				<input type="text" class="gwField-input" id="hhAddressCity" name="hhAddressCity" />
+			</div>
+			<div class="gwField">
+				<label for="hhAddressState" class="gwField-label">State/Province</label>
+				<input type="text" class="gwField-input" id="hhAddressState" name="hhAddressState" />
+			</div>
+			<div class="gwField">
+				<label for="hhAddressPostalCode" class="gwField-label">Zip/Postal Code</label>
+				<input type="text" class="gwField-input" id="hhAddressPostalCode" name="hhAddressPostalCode" />
+			</div>
+			<div class="gwField">
+				<label for="hhAddressCountry" class="gwField-label">Country</label>
+				<input type="text" class="gwField-input" id="hhAddressCountry" name="hhAddressCountry" />
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+.ui-autocomplete {
+	max-height: 300px;
+	width: 290px;
+	overflow-y: auto;
+	padding: 0.4em;
+	/* prevent horizontal scrollbar */
+	overflow-x: hidden;
+	/* add padding to account for vertical scrollbar */
+	background-color: rgba(255,255,255,0.8);
+}
+.gwHidden {
+	display: none;
+}
+
+.gwSection {
+    background-color: #F8F8F8;
+    border: 1px solid #fff;
+    margin: 0.5em 0 1em 0;
+    
+    border-radius: 8px;
+    box-shadow: 0px 0px 2px rgba(0,0,0,0.5);
+}
+
+.gwSection-header {
+    border-bottom: 1px solid #DBDBDB;
+    display: block;
+    padding: 1em;
+}
+
+.gwSection-title {
+    
+}
+
+.gwSection-content {
+    padding: 1em;
+}
+
+.gwDialog-hidden {
+	display: none;
+}
+
+.gwDiscreet {
+	font-size: 0.9em;
+	color: #444;
+}
+
+.hhCard {
+	display: inline-block;
+	width: 180px;
+	position: relative;
+	border: 1px solid #fff;
+	margin: 0 1em 1em 0;
+	vertical-align: top;
+	
+	border-radius: 8px;
+	box-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+	
+	background-color: #fff;
+	
+	background-image: linear-gradient(bottom, rgb(255,255,255) 30%, rgb(230,230,255) 100%);
+    background-image: -o-linear-gradient(bottom, rgb(255,255,255) 30%, rgb(230,230,255) 100%);
+    background-image: -moz-linear-gradient(bottom, rgb(255,255,255) 30%, rgb(230,230,255) 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(255,255,255) 30%, rgb(230,230,255) 100%);
+    background-image: -ms-linear-gradient(bottom, rgb(255,255,255) 30%, rgb(230,230,255) 100%);
+}
+.hhCard-prototype {
+	display: none;
+}
+
+.hhCard-icon {
+	display: block;
+	width: 32px;
+	height: 23px;
+	background: transparent url('/img/sprites/master.png') no-repeat left -503px;
+	position: absolute;
+	font-size: 1px;
+	text-indent: -9999px;
+	overflow: hidden;
+	margin: 0px;
+	left: 5px;
+	top: 5px;
+}
+
+.hhCard-details {
+	margin: 5px 5px 5px 40px;
+	line-height: 1.4em;
+	display: inline-block;
+}
+
+
+.hhCard-details-name {
+	font-size: 1.1em;
+	font-weight: bold;
+	display:block;
+}
+.hhCard-details-address {
+
+}
+
+button.hhCard-delete {
+	border: none;
+	background: transparent;
+	position: absolute;
+	right: 0;
+	top: 5px;
+	width: 20px;
+}
+
+.hhSearch {
+	width: 340px;
+	float: right;
+	text-align: right;
+}
+.hhSearch label {
+	font-weight: bold;
+}
+.hhSearch-input {
+	border-radius: 5px;
+	border: 1px solid #d8d8d8;
+	font-size: 1.05em;
+	width: 200px;
+	color: #777;
+	padding: 0.4em 0em 0.3em 0.3em;
+}
+.hhSearch-input:focus {
+	color: black;
+}
+
+.hhSearch ul {
+	width: 340px;
+}
+#hhExistingAddress ul,
+#hhExistingAddress li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.hhSearch-item {
+	padding: 0.5em 5em 0.5em 3em;
+	margin: 0 0 0.5em 0;
+	position: relative;
+	font-size: 0.9em;
+}
+
+#hhExistingAddress li {
+	padding: 0.5em;
+	margin-bottom: 0.5em;
+	border-bottom: 1px solid #d8d8d8;
+}
+.hhAddress-list-item-hover {
+	background-color: #b8d8f8;
+}
+#hhExistingAddress li.selected {
+	background-color: #1797C0;
+	color: white;
+}
+
+.hhSearch-item-added {
+	background-color: rgba(239,139,62,0.4);
+}
+.hhSearch-item-name {
+	font-weight: bold;
+}
+.hhSearch-item-address {
+	font-size: 0.9em;
+	color: #777;
+	display: block;
+}
+.hhSearch-item-add {
+	position: absolute;
+	right: 0.5em;
+	top: 1em;
+	font-size: 0.9em;
+}
+.hhSearch-item-hh {
+	color: #AC6207;
+	font-size: 0.9em;
+	display: block;
+	height: 20px;
+	line-height: 20px;
+	padding-left: 20px;
+	background: transparent url('/img/sprites/master.png') no-repeat left -260px;
+}
+
+.hhAddress {
+	margin-top: 1em;
+	width: 50%;
+	min-width: 420px;
+	max-width: 500px;
+}
+.hhAddress-title {
+	color: #666;
+	font-size: 1em;
+	padding-left: 0.5em;
+}
+.hhAddress-content {
+	background-color: #fff;
+	border: 2px solid #ccc;
+	padding: 0.8em 200px 0.8em 1em;
+	border-radius: 8px;
+	position: relative;
+	min-height: 2em;
+}
+.hhAddress-details {
+	border-right: 1px solid #d8d8d8;
+	padding: 0 6em 0 0;
+	position: relative;
+	min-height: 2em;
+}
+.hhAddress-change {
+	position: absolute;
+	right: 1em;
+	top: 0;
+}
+.hhAddress-help {
+	display: inline-block;
+	width: 190px;
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+.hh-name-exclude {
+	margin-top: 0.4em;
+	display:block;
+}
+
+.gwField {
+	margin: 0.5em 0;
+}
+.gwField-label {
+	font-weight: bold;
+	display: inline-block;
+	vertical-align: top;
+	padding: 0.4em 0 0.3em 0.2em;
+	width: 11em;
+	font-size: 0.9em;
+}
+.gwField-input {
+	opacity: 1.0;
+	border: 1px solid #333;
+	padding: 0.4em 0 0.3em 0.2em;
+	vertical-align: middle;
+}
+textarea.gwField-input {
+	resize: vertical;
+}
+.gwField-input-active {
+	border-color: #EF8B3D;
+	outline: none;
+}
+.gwField-disabled { 
+	opacity: 0.8;
+	border: 1px solid #777;
+}
+
+.gwButton {
+	font-size: 0.9em;
+}
+
+#hhNaming .gwField-input {
+	width: 250px;
+}
+
+
+h3 {
+	display: block;
+}
+
+#dialog-changeaddress .ui-accordion-content {
+	
+}
+#hhExistingAddress.ui-accordion-content {
+	padding-left: 1em;
+	padding-right: 1em;
+}
+
+#hhNewAddress .gwField {
+	font-size: 0.9em;
+}
+#hhNewAddress .gwField-label {
+	width: 10em;
+	font-weight: normal;
+	margin-right: 1em;
+}
+#hhNewAddress .gwField-input {
+	width: 14em;
+}
+#hhNewAddress textarea.gwField-input {
+	display: inline-block;
+}
+
+.gwModified {
+	font-style: italic;
+	text-decoration: line-through;
+}
+.gwNotifications {
+	position: relative;
+	font-size: 1.1em;
+	padding: 7px 15px;
+	margin-bottom: 18px;
+	color: #404040;
+	background-color: #EEDC94;
+	background-repeat: repeat-x;
+	background-image: -khtml-gradient(linear, left top, left bottom, from(#fceec1), to(#eedc94));
+	background-image: -moz-linear-gradient(top, #fceec1, #eedc94);
+	background-image: -ms-linear-gradient(top, #fceec1, #eedc94);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fceec1), color-stop(100%, #eedc94));
+	background-image: -webkit-linear-gradient(top, #fceec1, #eedc94);
+	background-image: -o-linear-gradient(top, #fceec1, #eedc94);
+	background-image: linear-gradient(top, #fceec1, #eedc94);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fceec1', endColorstr='#eedc94', GradientType=0);
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+	border-color: #EEDC94 #EEDC94 #E4C652;
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+	border-width: 1px;
+	border-style: solid;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+	-moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+	max-width: 540px;
+}
+.gwNotifications p {
+	margin: 0.2em 0;
+	padding: 0;
+}
+.gwNotifications .ui-icon {
+	float: left;
+	margin-left: -20px;
+}
+.gwSuccess {
+	color: white;
+	background-color: #57A957;
+	background-repeat: repeat-x;
+	background-image: -khtml-gradient(linear, left top, left bottom, from(#62c462), to(#57a957));
+	background-image: -moz-linear-gradient(top, #62c462, #57a957);
+	background-image: -ms-linear-gradient(top, #62c462, #57a957);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #62c462), color-stop(100%, #57a957));
+	background-image: -webkit-linear-gradient(top, #62c462, #57a957);
+	background-image: -o-linear-gradient(top, #62c462, #57a957);
+	background-image: linear-gradient(top, #62c462, #57a957);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#62c462', endColorstr='#57a957', GradientType=0);
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+	border-color: #57A957 #57A957 #3D773D;
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
+.gwError {
+	color: white;
+	background-color: #C43C35;
+	background-repeat: repeat-x;
+	background-image: -khtml-gradient(linear, left top, left bottom, from(#ee5f5b), to(#c43c35));
+	background-image: -moz-linear-gradient(top, #ee5f5b, #c43c35);
+	background-image: -ms-linear-gradient(top, #ee5f5b, #c43c35);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ee5f5b), color-stop(100%, #c43c35));
+	background-image: -webkit-linear-gradient(top, #ee5f5b, #c43c35);
+	background-image: -o-linear-gradient(top, #ee5f5b, #c43c35);
+	background-image: linear-gradient(top, #ee5f5b, #c43c35);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ee5f5b', endColorstr='#c43c35', GradientType=0);
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+	border-color: #C43C35 #C43C35 #882A25;
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+}
+
+.gwClear { clear:both; }
+
+</style>
+<apex:sectionHeader title="Manage Household" />
+
+<div class="gwNotifications gwHidden"> </div>
+
+<div class="gwSection">
+<div class="gwSection-header">
+    <h2 class="gwSection-title">Household Members</h2>
+    <div class="hhSearch">
+    	<label for="hhSearch-input">Add Members</label>
+    	<input id="hhSearch-input" type="text" title="Find contact by name ..." class="hhSearch-input" name="hhSearch-input" />
+    </div>
+    <div class="gwClear"></div>
+</div>
+<div class="gwSection-content">
+	<div class="hhMembers"> </div>
+	<div class="hhAddress gwHidden">
+		<h3 class="hhAddress-title">Household Address</h3>
+		<div class="hhAddress-content">
+			<div class="hhAddress-details">
+				<span class="hhAddress-address"></span>
+				<button class="gwButton hhAddress-change">Change</button>
+			</div>
+			<div class="hhAddress-help">
+				<p class="gwDiscreet">The home address on all household members will be set to this address.</p>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+<div id="hhNaming" class="gwSection">
+	<div class="gwSection-content">
+		<div class="gwField">
+			<label for="hhName" class="gwField-label">Household Name</label>
+			<input type="text" class="gwField-input" id="hhName" name="hhName" />
+			<input type="checkbox" id="hhAutoName" name="hhAutoName" /><label for="hhAutoName">Auto Name</label>
+		</div>
+		<div class="gwField">
+			<label for="hhGreeting" class="gwField-label">Household Greeting</label>
+			<input type="text" class="gwField-input" id="hhGreeting" name="hhGreeting" />
+			<input type="checkbox" id="hhAutoGreeting" name="hhAutoGreeting" /><label for="hhAutoGreeting">Auto Greeting</label>
+		</div>
+	</div>
+</div>
+<div class="gwSection gwControls">
+	<apex:form >
+	<button class="gwControls-save gwButton">Save</button>
+	<button>Update</button>
+	
+	<apex:commandButton action="{!delete}" value="Delete" id="hhDelete"/>
+	<apex:commandButton action="{!cancel}" value="Cancel" id="hhCancel"/>
+	</apex:form>
+</div>
+
+</apex:page>
