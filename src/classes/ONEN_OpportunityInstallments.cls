@@ -92,9 +92,9 @@ public class ONEN_OpportunityInstallments {
 		for ( aggregateResult result : 
 			[SELECT opportunity__c, sum(amount__c) amt FROM OppPayment__c WHERE IsInstallment__c = true
 				AND Opportunity__c IN :changedAmtOpps GROUP BY opportunity__c]) {
-					oppsToUpdate.put((id)(result.get('opportunity__c')),
+					oppsToUpdate.put((id)(result.get(GW_Utilities.StrTokenNSPrefix('opportunity__c'))),
 						new Opportunity(
-							id = (id)(result.get('opportunity__c')), 
+							id = (id)(result.get(GW_Utilities.StrTokenNSPrefix('opportunity__c'))), 
 							amount = (decimal)(result.get('amt'))
 						));
 		}
@@ -423,7 +423,7 @@ public class ONEN_OpportunityInstallments {
     static testMethod void testInstallmentManagement () {
 	// test that adding an installment payment updates the opp amount AND deletes the mirror payment,
 	// and that marking the last installment paid closes the opp
-
+		
         // create & insert Account
         Account[] TestAccts = ONEN_UnitTestData.CreateMultipleTestAccounts(1) ;
         insert TestAccts;
@@ -441,7 +441,7 @@ public class ONEN_OpportunityInstallments {
 		// did the opp amount get updated?
 		Opportunity[] opp2 = [SELECT id, stagename, Amount FROM Opportunity WHERE id = :Opp1.id];
 		system.assertEquals(123, opp2[0].amount);
-		system.assertNotEquals(ONEN_Constants.OPP_DEFAULT_CLOSED_WON_STAGE, opp2[0].stagename);
+		system.assertEquals(ONEN_Constants.OPP_DEFAULT_STAGE, opp2[0].stagename);
         
 		// did the mirror payment get deleted?
         OppPayment__c[] mirrorOPs = [SELECT id, Opportunity__c, IsInstallment__c, Amount__c, Date__c, Paid__c FROM OppPayment__c 

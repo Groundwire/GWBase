@@ -63,6 +63,10 @@
         <sortOrder>Asc</sortOrder>
     </groupingsDown>
     <name>Donor Retention from Last Year</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
     <reportType>ContactList</reportType>
     <scope>organization</scope>
     <showDetails>false</showDetails>

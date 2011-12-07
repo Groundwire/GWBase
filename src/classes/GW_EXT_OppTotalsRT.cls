@@ -241,6 +241,12 @@ public class GW_EXT_OppTotalsRT {
         System.AssertEquals ( 100, fyt.totalRow.totalAmount);
 
         // create a page to test household totals
+        //now must create the HH first since automated HH'ing is no more as of 11/2011
+		ONEN_Household__c hh = new ONEN_Household__c(Name='Foo_Household');
+		insert hh;
+		UpdatedCon.ONEN_Household__c = hh.id;
+		update UpdatedCon;
+        
         fyt = new GW_EXT_OppTotalsRT(new ApexPages.StandardController(new ONEN_Household__c(id = UpdatedCon.ONEN_Household__c)));
 
         System.AssertEquals ( 100, fyt.detailRows[0].totalAmount);

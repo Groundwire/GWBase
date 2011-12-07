@@ -3,10 +3,10 @@
     <customSettingsType>List</customSettingsType>
     <customSettingsVisibility>Public</customSettingsVisibility>
     <description>Assign an Engagement Level to a Contact based on the value of a field on a Contact record.</description>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>Field_Type__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Only values supported are checkbox and text. Text can correspond to a number of Salesforce field types that are text based, e.g. Text, Text Area, Picklist, Email, et al.</inlineHelpText>
         <label>Field Type</label>
@@ -17,7 +17,6 @@
     </fields>
     <fields>
         <fullName>Field_Value__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The value of the field necessary to assign this level, e.g. True or False for checkbox type, or any text value for text type. An asterisk (*) corresponds to any non-empty value</inlineHelpText>
         <label>Field Value</label>
@@ -28,7 +27,6 @@
     </fields>
     <fields>
         <fullName>Fieldname__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The Developer name of the field, e.g. my_checkbox__c or my_textfield__c.</inlineHelpText>
         <label>Fieldname</label>
@@ -39,7 +37,6 @@
     </fields>
     <fields>
         <fullName>Level_Value__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The number of the level earned by this field.</inlineHelpText>
         <label>Level Value</label>

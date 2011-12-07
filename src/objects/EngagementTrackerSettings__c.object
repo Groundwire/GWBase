@@ -2,10 +2,10 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <customSettingsType>Hierarchy</customSettingsType>
     <customSettingsVisibility>Public</customSettingsVisibility>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>Batch_Size__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Batch Size</label>
         <precision>3</precision>
@@ -17,14 +17,12 @@
     <fields>
         <fullName>Include_Membership__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Include Membership</label>
         <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Include_Opp_Rectypes__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>semicolon-delimited list of Opp rectype names that should be considered</inlineHelpText>
         <label>Include Opp Rectypes</label>
@@ -36,7 +34,6 @@
     <fields>
         <fullName>Include_Opps__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>if checked, will consider opportunities as part of engagement rating</inlineHelpText>
         <label>Include Opps</label>
@@ -44,7 +41,6 @@
     </fields>
     <fields>
         <fullName>Level_1_Name__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Level 1 Name</label>
         <length>40</length>
@@ -54,7 +50,6 @@
     </fields>
     <fields>
         <fullName>Level_2_Name__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Level 2 Name</label>
         <length>40</length>
@@ -64,7 +59,6 @@
     </fields>
     <fields>
         <fullName>Level_3_Name__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Level 3 Name</label>
         <length>40</length>
@@ -74,7 +68,6 @@
     </fields>
     <fields>
         <fullName>Level_4_Name__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Level 4 Name</label>
         <length>40</length>
@@ -84,7 +77,6 @@
     </fields>
     <fields>
         <fullName>Level_5_Name__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Level 5 Name</label>
         <length>40</length>
@@ -94,7 +86,6 @@
     </fields>
     <fields>
         <fullName>Level_6_Name__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Level 6 Name</label>
         <length>40</length>
@@ -104,7 +95,6 @@
     </fields>
     <fields>
         <fullName>Level_7_Name__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Level 7 Name</label>
         <length>40</length>
@@ -114,7 +104,6 @@
     </fields>
     <fields>
         <fullName>Level_8_Name__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Level 8 Name</label>
         <length>40</length>
@@ -124,7 +113,6 @@
     </fields>
     <fields>
         <fullName>Levels_Don_t_Require_Responded__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>If any apply, enter as numbers separated by semi-colons,  (Most of the time, campaign mbrship will only count toward level if the mbrship is flagged as Responded.  However, for some (receiving newsletter) etc we want it to count even if not responded.)</inlineHelpText>
         <label>Levels Don&apos;t Require Responded</label>
@@ -135,7 +123,6 @@
     </fields>
     <fields>
         <fullName>Membership_Record_Types__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>list of recordtype names, separated by commas, that count as memberships for the sake of calculating engagement levels</inlineHelpText>
         <label>Membership Record Types</label>
@@ -146,7 +133,6 @@
     </fields>
     <fields>
         <fullName>New_Member_Level__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>level assigned to new members</inlineHelpText>
         <label>New Member Level</label>
@@ -158,7 +144,6 @@
     </fields>
     <fields>
         <fullName>Override_Default_Duration__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>in months</inlineHelpText>
         <label>Override Default Duration</label>
@@ -170,7 +155,6 @@
     </fields>
     <fields>
         <fullName>Renewing_Member_Level__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Level assigned to renewing or returning members</inlineHelpText>
         <label>Renewing Member Level</label>
@@ -183,7 +167,6 @@
     <fields>
         <fullName>Testing_Mode__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>if checked, will only operate on contacts that include the string &apos;testeng&apos; in the Title field.  Otherwise will operate on all contacts</inlineHelpText>
         <label>Testing Mode</label>
@@ -191,7 +174,6 @@
     </fields>
     <fields>
         <fullName>Timeframe_Medium__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>number of months to go back for moderately-recent activity</inlineHelpText>
         <label>Timeframe Medium</label>
@@ -203,7 +185,6 @@
     </fields>
     <fields>
         <fullName>Timeframe_Recent__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>number of months to go back for recent activity</inlineHelpText>
         <label>Timeframe Recent</label>

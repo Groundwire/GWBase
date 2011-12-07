@@ -3,11 +3,11 @@
     <customSettingsType>Hierarchy</customSettingsType>
     <customSettingsVisibility>Public</customSettingsVisibility>
     <description>Enable or disable all trigger based functionality for GWBase.</description>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>Enable_Active_Campaign__c</fullName>
         <defaultValue>true</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Automatically mark campaigns as Active.</inlineHelpText>
         <label>Enable Active Campaign</label>
@@ -16,7 +16,6 @@
     <fields>
         <fullName>Enable_Auto_Membership_Dates__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Calculate Membership Start Date, Membership End Date, and Membership Origin for Membership Opportunities. Advanced settings for this feature are in Opportunity &amp; Rollup Settings.</inlineHelpText>
         <label>Enable Auto Membership Dates</label>
@@ -25,7 +24,6 @@
     <fields>
         <fullName>Enable_Contact_Relationships__c</fullName>
         <defaultValue>true</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Manages reciprocal and orphaned Contact relationships.</inlineHelpText>
         <label>Enable Contact Relationships</label>
@@ -34,7 +32,6 @@
     <fields>
         <fullName>Enable_Contact_Smart_Fields__c</fullName>
         <defaultValue>true</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Smart handling of Do Not Mail, Inactive, Deceased, and Bad Email Address fields.</inlineHelpText>
         <label>Enable Contact Smart Fields</label>
@@ -43,7 +40,6 @@
     <fields>
         <fullName>Enable_Default_Campaign_Member_Statuses__c</fullName>
         <defaultValue>true</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Sets default campaign member status values on campaign creation. The status values are specified by Campaign Type in Campaign Mbr Status Settings.</inlineHelpText>
         <label>Enable Default Campaign Member Statuses</label>
@@ -52,7 +48,6 @@
     <fields>
         <fullName>Enable_Engagement_Tracker__c</fullName>
         <defaultValue>true</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Calculates and assigns Engagement levels for Contacts based on Engagement custom settings.</inlineHelpText>
         <label>Enable Engagement Tracker</label>
@@ -61,7 +56,6 @@
     <fields>
         <fullName>Enable_Households__c</fullName>
         <defaultValue>true</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Automatically create and manage Households.</inlineHelpText>
         <label>Enable Households</label>
@@ -70,7 +64,6 @@
     <fields>
         <fullName>Enable_Individual_Account__c</fullName>
         <defaultValue>true</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Associates new Contacts without an Organization to the Individual account, and prevent the Individual account from being modified by the user.</inlineHelpText>
         <label>Enable Individual Account</label>
@@ -79,7 +72,6 @@
     <fields>
         <fullName>Enable_InterAccount_Relationships__c</fullName>
         <defaultValue>true</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Manages reciprocal and orphaned InterAccount Relationships.</inlineHelpText>
         <label>Enable InterAccount Relationships</label>
@@ -88,7 +80,6 @@
     <fields>
         <fullName>Enable_Lead_Add_To_Campaign__c</fullName>
         <defaultValue>true</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Adds leads with Campaign ID field to the appropriate campaign.</inlineHelpText>
         <label>Enable Lead Add To Campaign</label>
@@ -97,7 +88,6 @@
     <fields>
         <fullName>Enable_Lead_Smart_Fields__c</fullName>
         <defaultValue>true</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Sets lead company if not provided, and smart handling of address fields.</inlineHelpText>
         <label>Enable Lead Smart Fields</label>
@@ -106,7 +96,6 @@
     <fields>
         <fullName>Enable_Opportunity_Add_To_Campaign__c</fullName>
         <defaultValue>true</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>If an Opportunity is associated with a campaign, adds the primary contact role as a campaign member.</inlineHelpText>
         <label>Enable Opportunity Add To Campaign</label>
@@ -115,7 +104,6 @@
     <fields>
         <fullName>Enable_Opportunity_AutoName__c</fullName>
         <defaultValue>true</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Automatically name Opportunities, based on Opp Name Format in Opportunity &amp; Rollup Settings.</inlineHelpText>
         <label>Enable Opportunity AutoName</label>
@@ -124,7 +112,6 @@
     <fields>
         <fullName>Enable_Opportunity_Contact_Roles__c</fullName>
         <defaultValue>true</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Creates Primary and Household Contact Roles for new Opportunities.</inlineHelpText>
         <label>Enable Opportunity Contact Roles</label>
@@ -133,7 +120,6 @@
     <fields>
         <fullName>Enable_Opportunity_Mirror_Payments__c</fullName>
         <defaultValue>true</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Creates hidden mirror payments on Opportunities, which allows for revenue reporting on the Payment object.</inlineHelpText>
         <label>Enable Opportunity Mirror Payments</label>
@@ -142,7 +128,6 @@
     <fields>
         <fullName>Enable_Opportunity_Recurring_Creation__c</fullName>
         <defaultValue>true</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Automatically creates a new installment for recurring Opportunities when the latest installment is Closed/Won, based on the Recurring Payment Profile of that Opportunity.</inlineHelpText>
         <label>Enable Opportunity Recurring Creation</label>
@@ -151,7 +136,6 @@
     <fields>
         <fullName>Enable_Opportunity_Rollups__c</fullName>
         <defaultValue>true</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Recalculates Oppotunity Rollup information each time an Opportunity is created or modified.</inlineHelpText>
         <label>Enable Opportunity Rollups</label>
@@ -168,7 +152,6 @@
     <fields>
         <fullName>Enable_Primary_Contact_On_Accounts__c</fullName>
         <defaultValue>true</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Automatically maintain the Primary Contact field on Accounts.</inlineHelpText>
         <label>Enable Primary Contact On Accounts</label>
@@ -177,7 +160,6 @@
     <fields>
         <fullName>Enable_RPP_Opportunity_Closing__c</fullName>
         <defaultValue>true</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>When a Recurring Payment Profile&apos;s EndDate is set, closes opportunities for this RPP in the Recurring stage, and marks them Lost if they are after the new EndDate.</inlineHelpText>
         <label>Enable RPP Opportunity Closing</label>
@@ -186,7 +168,6 @@
     <fields>
         <fullName>Enable_Zip_Lookup__c</fullName>
         <defaultValue>true</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>If Zip lookup code is present, City, State, and County are filled for new Accounts and Contacts with Zip code provided.</inlineHelpText>
         <label>Enable Zip Lookup</label>

@@ -33,7 +33,6 @@
         <type>Default</type>
     </actionOverrides>
     <deploymentStatus>Deployed</deploymentStatus>
-    <deprecated>false</deprecated>
     <enableActivities>false</enableActivities>
     <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
@@ -41,7 +40,6 @@
     <enableReports>true</enableReports>
     <fields>
         <fullName>Amount__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Payment Amount</label>
         <precision>18</precision>
@@ -51,7 +49,6 @@
     </fields>
     <fields>
         <fullName>Check_Date__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>date the check was written or dated</inlineHelpText>
         <label>Check Date</label>
@@ -60,7 +57,6 @@
     </fields>
     <fields>
         <fullName>Check_Number__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Check Number</label>
         <length>80</length>
@@ -70,7 +66,6 @@
     </fields>
     <fields>
         <fullName>Date__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Payment Date</label>
         <required>false</required>
@@ -78,8 +73,7 @@
     </fields>
     <fields>
         <fullName>IsInstallment__c</fullName>
-        <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
+        <defaultValue>true</defaultValue>
         <externalId>false</externalId>
         <label>Is Installment</label>
         <type>Checkbox</type>
@@ -87,7 +81,6 @@
     <fields>
         <fullName>Online_Transaction_ID__c</fullName>
         <caseSensitive>false</caseSensitive>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>For online payments, this is the Transaction Id of the installment payment assigned by the online payment service, such as Paypal.</inlineHelpText>
         <label>Online Transaction ID</label>
@@ -99,7 +92,6 @@
     <fields>
         <fullName>Opp_For_Installment__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The Opportunity this is an installment for.  If null, then this is a mirror payment for its master opportunity.</inlineHelpText>
         <label>Opp For Payment</label>
@@ -111,7 +103,6 @@
     </fields>
     <fields>
         <fullName>Opportunity__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Opportunity</label>
         <referenceTo>Opportunity</referenceTo>
@@ -123,14 +114,12 @@
     <fields>
         <fullName>Paid__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Paid</label>
         <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Projection_Amount__c</fullName>
-        <deprecated>false</deprecated>
         <description>for use in projection reports</description>
         <externalId>false</externalId>
         <formula>Amount__c  *  Opportunity__r.Probability</formula>
@@ -143,7 +132,6 @@
     </fields>
     <fields>
         <fullName>Recurring_Payment_Profile__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <formula>HYPERLINK(&quot;/&quot; &amp;  Opportunity__r.Recurring_Payment_Profile__c , Opportunity__r.Recurring_Payment_Profile__r.Name, &quot;_self&quot;)</formula>
         <label>Recurring Payment Profile</label>
@@ -154,7 +142,6 @@
     <fields>
         <fullName>Written_Off__c</fullName>
         <defaultValue>false</defaultValue>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <label>Written Off</label>
         <type>Checkbox</type>

@@ -61,6 +61,10 @@
         <sortOrder>Asc</sortOrder>
     </groupingsDown>
     <name>YTD Non-Giver Relations to Givers</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
     <reportType>ContactCustomEntity$Contact_Relationship__c@Contact_Relationship__c.Related_Contact__c</reportType>
     <scope>organization</scope>
     <showDetails>true</showDetails>

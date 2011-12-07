@@ -7,7 +7,6 @@
     <enableFeeds>false</enableFeeds>
     <fields>
         <fullName>Field_Value_1__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Optional. The value of Fieldname 1 required for a Campaign to count toward this rule. For checkboxes, &quot;True&quot; corresponds to checked.</inlineHelpText>
         <label>Field Value 1</label>
@@ -18,7 +17,6 @@
     </fields>
     <fields>
         <fullName>Fieldname_1__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Optional. The developer name of a field in Campaign to count toward this rule.</inlineHelpText>
         <label>Campaign Fieldname 1</label>
@@ -29,7 +27,6 @@
     </fields>
     <fields>
         <fullName>Level_Required__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Optional. The minimum engagement level of a Campaign required to count towards this rule.</inlineHelpText>
         <label>Level Required</label>
@@ -41,7 +38,6 @@
     </fields>
     <fields>
         <fullName>Level_To_Assign__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The engagement level assigned to Contacts fitting these requirements.</inlineHelpText>
         <label>Level To Assign</label>
@@ -53,7 +49,6 @@
     </fields>
     <fields>
         <fullName>Number_of_Actions_Required__c</fullName>
-        <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>The number of Campaigns that fit this criteria a Contact should have participated in to be assigned a new level.</inlineHelpText>
         <label>Number of Actions Required</label>

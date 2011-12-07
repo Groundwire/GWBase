@@ -120,6 +120,10 @@
         <name>scopeid</name>
         <value></value>
     </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
     <reportType>CampaignList</reportType>
     <scope>orgAll</scope>
     <showDetails>true</showDetails>

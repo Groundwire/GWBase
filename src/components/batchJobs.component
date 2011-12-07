@@ -42,6 +42,9 @@
             <apex:column value="{!b.job.CreatedDate}"/>
             <apex:column value="{!b.job.CreatedById}"/>
             <apex:column value="{!b.job.Status}"/>
+            <apex:column value="{!b.job.TotalJobItems}"/> 
+            <apex:column value="{!b.job.JobItemsProcessed}"/>
+            <apex:column value="{!b.job.NumberOfErrors}"/> 
             <apex:column width="320px" >
  
                 <!-- Here with have two divs that construct our progresses bar. An outer which is the entire bar,

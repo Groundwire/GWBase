@@ -74,4 +74,6 @@ src/labels/CustomLabels.labels
 .project
 .settings
 com.salesforce.ide.core.prefs
-Referenced Packages
+src/applications/ONEdev.app
+src/classes/ONEN_BATCH_CloneMonthlyGifts.cls
+src/classes/ONEN_BATCH_CloneMonthlyGifts.cls-meta.xml

@@ -180,287 +180,289 @@ public class ONEN_OpportunityContactRoles {
     // copy primary contact lookup to opportunity contact role
     public static void updatePrimaryOppContactRole(Map<id, Opportunity> oldMap, Map<id, Opportunity> newMap) {
       
-		Map<id, list<OpportunityContactRole>> oppsAndOCRList = new Map<id, list<OpportunityContactRole>>();
-		Map<id, id> oppsWithPrimaryContacts = new Map<id, id>();
-		Map<id,id> rtMap = new Map<id,id>();
+        Map<id, list<OpportunityContactRole>> oppsAndOCRList = new Map<id, list<OpportunityContactRole>>();
+        Map<id, id> oppsWithPrimaryContacts = new Map<id, id>();
+        Map<id,id> rtMap = new Map<id,id>();
       
-	    map<string,ConRole_Settings__c> allSettings = ConRole_Settings__c.getAll();
-		
-		// if contact is not in existing contact roles, add it
-		for (Opportunity opp : newMap.values()) {
-			if (opp.ContactId__c != oldMap.get(opp.id).ContactId__c && opp.ContactId__c != null) {
-				oppsAndOCRList.put(opp.id, new list<OpportunityContactRole>());
-				oppsWithPrimaryContacts.put(opp.id, opp.ContactId__c);
-				rtMap.put(opp.id,opp.RecordTypeId);
-			}
-		}
-      	
-      	if (!oppsAndOCRList.isEmpty()) {
-	      	//query for all of the Opportunity Contact Roles from opps with a change to Primary Contact
-			List<OpportunityContactRole> existingRoles = [select id, ContactId, OpportunityId, Opportunity.RecordType.Name, isPrimary, Contact.ONEN_Household__c from OpportunityContactRole where OpportunityId in :oppsAndOCRList.keySet()];
-			for (OpportunityContactRole ocr : existingRoles) {
-				if (oppsAndOCRList.containsKey(ocr.OpportunityId)) {
-					oppsAndOCRList.get(ocr.OpportunityId).add(ocr);
-				} else {
-					oppsAndOCRList.put(ocr.OpportunityId,new List<OpportunityContactRole>{ocr});
-				}
-			}
-			
-			List<OpportunityContactRole> ocrsToUpdate = new List<OpportunityContactRole>();
-	      	
-			// loop through all opps where primary contact has changed
-			for (id oppToProcess : oppsAndOCRList.keyset()) {
-				boolean primaryAlreadyExists = false;
-				
-				// loop through existing contact roles for this opp
-				for (OpportunityContactRole ocr : oppsAndOCRList.get(oppToProcess)) {
-	        		// if the primary contact for this opp matches the conrole contact, set it to primary
-	        		if (ocr.ContactId == oppsWithPrimaryContacts.get(ocr.OpportunityId)) {
-	        			ocr.IsPrimary = true;
-	        			ocr.Role = ONEN_Constants.OPP_GIFT_DONOR_ROLE(ocr.Opportunity.RecordType.Name);
-	        			ocrsToUpdate.add(ocr);
-	        			primaryAlreadyExists = true;
-	        			//once we find the ConRole for this Primary Contact, stop looping through the OCRs
-	        			break;
-	        		}
-		        }
-		        if (!primaryAlreadyExists) {
-		        	ocrsToUpdate.add(new OpportunityContactRole(opportunityId = oppToProcess, contactId = oppsWithPrimaryContacts.get(oppToProcess), isPrimary = true, role = ONEN_Constants.OPP_GIFT_DONOR_ROLE(GW_RecTypes.getRecordTypeName('Opportunity',rtMap.get(oppToProcess)))));
-		        }
-	        
-			}
-	 		if (!ocrsToUpdate.isEmpty()) {
-		 		upsert ocrsToUpdate;           
-	 		}
-      	}    
-	}
-	
-	public void reconcileConRoles(List<ONEN_Household__c> hhs) {
-    	
-    	//turn off the trigger that fires on opp update to set con roles
-    	runPrimaryContactRoleSync = false;
-    	
-    	List<Opportunity> oppsToUpdate = new List<Opportunity>();
-    	Set<id> oppIds = new Set<id>();
-    	
-    	//grab the set of households for the query of ConRoles
-    	set<id> hhIds = new set<id>();	
-    	for (ONEN_Household__c hh : hhs) {
-    		hhIds.add(hh.id);
-    	}
-    	
-    	//find all of the opp conroles associated with the HHs from the batch query
-    	//and find differences between primary OppConRole and Primary Contact on Opp and update as needed
-    	for (OpportunityContactRole ocr :
-    		[SELECT ContactId, OpportunityId, Opportunity.ContactId__c 
-    			FROM OpportunityContactRole
-    			WHERE IsPrimary = true
-    			AND contact.ONEN_Household__c IN : hhIds 
-    			ORDER BY LastModifiedDate ] ) {
-    		
-    		if (ocr.ContactId != ocr.Opportunity.ContactId__c && !oppIds.contains(ocr.OpportunityId)) {
-    			Opportunity o = new Opportunity(
-    				id = ocr.OpportunityId,
-    				ContactId__c = ocr.ContactId
-    				);
-    			oppsToUpdate.add(o);
-    			oppIds.add(o.id);
-    		}
-    		
-    	}
-    	
-    	//process the updates
-    	if (!oppsToUpdate.isEmpty()) {
-    		try {
-    			update oppsToUpdate;
-    		} catch (exception e) {}
-    	}
+        map<string,ConRole_Settings__c> allSettings = ConRole_Settings__c.getAll();
+        
+        // if contact is not in existing contact roles, add it
+        for (Opportunity opp : newMap.values()) {
+            if (opp.ContactId__c != oldMap.get(opp.id).ContactId__c && opp.ContactId__c != null) {
+                oppsAndOCRList.put(opp.id, new list<OpportunityContactRole>());
+                oppsWithPrimaryContacts.put(opp.id, opp.ContactId__c);
+                rtMap.put(opp.id,opp.RecordTypeId);
+            }
+        }
+        
+        if (!oppsAndOCRList.isEmpty()) {
+            //query for all of the Opportunity Contact Roles from opps with a change to Primary Contact
+            List<OpportunityContactRole> existingRoles = [select id, ContactId, OpportunityId, Opportunity.RecordType.Name, isPrimary, Contact.ONEN_Household__c from OpportunityContactRole where OpportunityId in :oppsAndOCRList.keySet()];
+            for (OpportunityContactRole ocr : existingRoles) {
+                if (oppsAndOCRList.containsKey(ocr.OpportunityId)) {
+                    oppsAndOCRList.get(ocr.OpportunityId).add(ocr);
+                } else {
+                    oppsAndOCRList.put(ocr.OpportunityId,new List<OpportunityContactRole>{ocr});
+                }
+            }
+            
+            List<OpportunityContactRole> ocrsToUpdate = new List<OpportunityContactRole>();
+            
+            // loop through all opps where primary contact has changed
+            for (id oppToProcess : oppsAndOCRList.keyset()) {
+                boolean primaryAlreadyExists = false;
+                
+                // loop through existing contact roles for this opp
+                for (OpportunityContactRole ocr : oppsAndOCRList.get(oppToProcess)) {
+                    // if the primary contact for this opp matches the conrole contact, set it to primary
+                    if (ocr.ContactId == oppsWithPrimaryContacts.get(ocr.OpportunityId)) {
+                        ocr.IsPrimary = true;
+                        ocr.Role = ONEN_Constants.OPP_GIFT_DONOR_ROLE(ocr.Opportunity.RecordType.Name);
+                        ocrsToUpdate.add(ocr);
+                        primaryAlreadyExists = true;
+                        //once we find the ConRole for this Primary Contact, stop looping through the OCRs
+                        break;
+                    }
+                }
+                if (!primaryAlreadyExists) {
+                    ocrsToUpdate.add(new OpportunityContactRole(opportunityId = oppToProcess, contactId = oppsWithPrimaryContacts.get(oppToProcess), isPrimary = true, role = ONEN_Constants.OPP_GIFT_DONOR_ROLE(GW_RecTypes.getRecordTypeName('Opportunity',rtMap.get(oppToProcess)))));
+                }
+            
+            }
+            if (!ocrsToUpdate.isEmpty()) {
+                upsert ocrsToUpdate;           
+            }
+        }    
+    }
+    
+    public void reconcileConRoles(List<contact> cons) {
+        
+        //turn off the trigger that fires on opp update to set con roles
+        runPrimaryContactRoleSync = false;
+        
+        List<Opportunity> oppsToUpdate = new List<Opportunity>();
+        Set<id> oppIds = new Set<id>();
+        
+        //grab the set of households for the query of ConRoles
+        set<id> conIds = new set<id>();  
+        for (Contact c : cons) {
+            conIds.add(c.id);
+        }
+        
+        //find all of the opp conroles associated with the HHs from the batch query
+        //and find differences between primary OppConRole and Primary Contact on Opp and update as needed
+        for (OpportunityContactRole ocr :
+            [SELECT ContactId, OpportunityId, Opportunity.ContactId__c 
+                FROM OpportunityContactRole
+                WHERE IsPrimary = true
+                AND ContactId IN : conIds 
+                ORDER BY LastModifiedDate ] ) {
+            
+            if (ocr.ContactId != ocr.Opportunity.ContactId__c && !oppIds.contains(ocr.OpportunityId)) {
+                Opportunity o = new Opportunity(
+                    id = ocr.OpportunityId,
+                    ContactId__c = ocr.ContactId
+                    );
+                oppsToUpdate.add(o);
+                oppIds.add(o.id);
+            }
+            
+        }
+        
+        //process the updates
+        if (!oppsToUpdate.isEmpty()) {
+            try {
+                update oppsToUpdate;
+            } catch (exception e) {}
+        }
     }
 
 //////////////////////////
 // TEST CODE
 /////////////////////////
-	private static transient string GiftRectype = ONEN_Constants.OPP_DEFAULT_RECTYPE_FORTESTS;
-	
-	static testmethod void testNewOppCRSingle () {
-		
-		Contact TestCon1 = ONEN_UnitTestData.CreateTestContact (1) ;
-		insert TestCon1;
-		Contact[] cons = new Contact[] {TestCon1};
-		
-		// insert an opp for this contact
-		// this method puts the ConID into the proper field in Opp
-		Opportunity[] newOpps = ONEN_UnitTestData.OppsForContactList ( cons, null, 'Closed Won', System.Today(), 100 , GiftRectype,null);
-		insert newOpps;
-		
-		// test we got one opp back:
-		System.assertEquals ( 1 , newOpps.size() );
-		
-		// test the opp has ConRole for our contact, and that they're the Primary
-		Opportunity thisOpp = newOpps[0];
-		OpportunityContactRole[] thisCR = [SELECT id, ContactId, OpportunityId, IsPrimary, Role FROM OpportunityContactRole WHERE ContactId = :thisOpp.CR_Contact_Id__c AND OpportunityId = :thisOpp.id ];
-		
-		System.assertEquals ( 1 , thisCR.size() );
-		System.assertEquals ( true , thisCR[0].IsPrimary ) ;		
-		System.AssertEquals(TestCon1.Id, GetPrimaryContactId(thisOpp.Id));  
-		
-	}
-	
-	static testmethod void testNewOppCRHouseholds () {
+    private static transient string GiftRectype = ONEN_Constants.OPP_DEFAULT_RECTYPE_FORTESTS;
+    
+    static testmethod void testNewOppCRSingle () {
+        
+        Contact TestCon1 = ONEN_UnitTestData.CreateTestContact (1) ;
+        insert TestCon1;
+        Contact[] cons = new Contact[] {TestCon1};
+        
+        // insert an opp for this contact
+        // this method puts the ConID into the proper field in Opp
+        Opportunity[] newOpps = ONEN_UnitTestData.OppsForContactList ( cons, null, 'Closed Won', System.Today(), 100 , GiftRectype,null);
+        insert newOpps;
+        
+        // test we got one opp back:
+        System.assertEquals ( 1 , newOpps.size() );
+        
+        // test the opp has ConRole for our contact, and that they're the Primary
+        Opportunity thisOpp = newOpps[0];
+        OpportunityContactRole[] thisCR = [SELECT id, ContactId, OpportunityId, IsPrimary, Role FROM OpportunityContactRole WHERE ContactId = :thisOpp.CR_Contact_Id__c AND OpportunityId = :thisOpp.id ];
+        
+        System.assertEquals ( 1 , thisCR.size() );
+        System.assertEquals ( true , thisCR[0].IsPrimary ) ;        
+        System.AssertEquals(TestCon1.Id, GetPrimaryContactId(thisOpp.Id));  
+        
+    }
+    
+    static testmethod void testNewOppCRHouseholds () {
 
-		Integer sizeOfTest = 10;
-		Contact[] TestCon1 = ONEN_UnitTestData.CreateMultipleTestContacts (sizeOfTest) ;
-		Test.StartTest();
-		insert TestCon1;
-		Test.StopTest();
-		List<Id> createContactIds = new List<Id>();
-		for (Contact firstContact : TestCon1) {
-			createContactIds.add(firstContact.Id);
-		}
-		Contact[] TestCon1WithHoueshold = [Select Id, ONEN_Household__c from Contact where id in :createContactIds];
-		//system.debug('first contacts with hh: ' + TestCon1WithHoueshold);
-		Contact[] secondContacts = ONEN_UnitTestData.CreateMultipleTestContactsInHouseholds (TestCon1WithHoueshold);
-		
-		insert secondContacts;
-		//system.debug('second contacts: ' + secondContacts);
-		
-		List<Id> secondContactIds = new List<Id>();
-		for (Contact secondContact : secondContacts) {
-			secondContactIds.add(secondContact.Id);
-		}
-		//system.debug (secondContactIds);
-				
-		// insert an opp for this contact
-		// this method puts the ConID into the proper field in Opp
-		Opportunity[] newOpps = ONEN_UnitTestData.OppsForContactList ( TestCon1, null, 'Closed Won', System.Today(), 100 , GiftRectype,null);
-		insert newOpps;
-		
-		// test we got one opp back:
-		System.assertEquals ( sizeOfTest , newOpps.size() );
-		List<Id> createdOppIds = new List<Id>();
-		for (Opportunity thisOpp : newOpps) {
-			createdOppIds.add(thisOpp.Id);
-		}
-//		system.debug (newOpps[0]);
-		
-		// test the opp has ConRole for our contact, and that they're the Primary
-		Opportunity thisOpp = newOpps[0];
-		OpportunityContactRole[] theseCR = [SELECT id, ContactId, OpportunityId, IsPrimary, Role FROM OpportunityContactRole WHERE ContactId in :createContactIds AND OpportunityId in :createdOppIds ];
-		
-//		system.debug (thisCR[0]);
-		
-		System.assertEquals ( sizeOfTest , theseCR.size() );
-		for(OpportunityContactRole thisCR : theseCR) {
-			System.assertEquals ( true , thisCR.IsPrimary ) ;
-			System.assertEquals ( ONEN_Constants.OPP_GIFT_DONOR_ROLE(GiftRectype) , thisCR.Role ) ;
-		}
-		
-		
-		OpportunityContactRole[] theseHouseholdCR = [SELECT id, ContactId, OpportunityId, IsPrimary, Role FROM OpportunityContactRole WHERE ContactId in :secondContactIds AND OpportunityId in :createdOppIds ];
-		
-		System.assertEquals ( sizeOfTest , theseHouseholdCR.size() );
-		for(OpportunityContactRole thisHHCR : theseHouseholdCR) {
-			System.assertEquals ( false , thisHHCR.IsPrimary ) ;
-			System.assertEquals (ONEN_Constants.OPP_GIFT_HH_DONOR_ROLE , thisHHCR.Role ) ;
-		}
-		
-		// test code to exercise GetPrimaryContactIdsBulk()
-		map<Id,Id> mapOppIdCRId;
-		set<Id> setOppId = new set<Id>(createdOppIds);
-		mapOppIdCRId = GetPrimaryContactIdsBulk(setOppId);
-		System.AssertEquals(mapOppIdCRId.size(), setOppId.size());		
-	}
+        Integer sizeOfTest = 10;
+        Contact[] TestCon1 = ONEN_UnitTestData.CreateMultipleTestContacts (sizeOfTest) ;
+        
+        Test.StartTest();
+        insert TestCon1;
+        Test.StopTest();
+        List<Id> createContactIds = new List<Id>();
+        
+        for (Contact firstContact : TestCon1) {
+            createContactIds.add(firstContact.Id);
+        }
+        Contact[] TestCon1WithHoueshold = [Select Id, ONEN_Household__c from Contact where id in :createContactIds];
+        //system.debug('first contacts with hh: ' + TestCon1WithHoueshold);
+        Contact[] secondContacts = ONEN_UnitTestData.CreateMultipleTestContactsInHouseholds (TestCon1WithHoueshold);
+        
+        insert secondContacts;
+        //system.debug('second contacts: ' + secondContacts);
+        
+        List<Id> secondContactIds = new List<Id>();
+        for (Contact secondContact : secondContacts) {
+            secondContactIds.add(secondContact.Id);
+        }
+        //system.debug (secondContactIds);
+                
+        // insert an opp for this contact
+        // this method puts the ConID into the proper field in Opp
+        Opportunity[] newOpps = ONEN_UnitTestData.OppsForContactList ( TestCon1, null, 'Closed Won', System.Today(), 100 , GiftRectype,null);
+        insert newOpps;
+        
+        // test we got one opp back:
+        System.assertEquals ( sizeOfTest , newOpps.size() );
+        List<Id> createdOppIds = new List<Id>();
+        for (Opportunity thisOpp : newOpps) {
+            createdOppIds.add(thisOpp.Id);
+        }
+//      system.debug (newOpps[0]);
+        
+        // test the opp has ConRole for our contact, and that they're the Primary
+        Opportunity thisOpp = newOpps[0];
+        OpportunityContactRole[] theseCR = [SELECT id, ContactId, OpportunityId, IsPrimary, Role FROM OpportunityContactRole WHERE ContactId in :createContactIds AND OpportunityId in :createdOppIds ];
+        
+//      system.debug (thisCR[0]);
+        
+        System.assertEquals ( sizeOfTest , theseCR.size() );
+        for(OpportunityContactRole thisCR : theseCR) {
+            System.assertEquals ( true , thisCR.IsPrimary ) ;
+            System.assertEquals ( ONEN_Constants.OPP_GIFT_DONOR_ROLE(GiftRectype) , thisCR.Role ) ;
+        }
+        
+        
+        OpportunityContactRole[] theseHouseholdCR = [SELECT id, ContactId, OpportunityId, IsPrimary, Role FROM OpportunityContactRole WHERE ContactId in :secondContactIds AND OpportunityId in :createdOppIds ];
+        
+        System.assertEquals ( sizeOfTest , theseHouseholdCR.size() );
+        for(OpportunityContactRole thisHHCR : theseHouseholdCR) {
+            System.assertEquals ( false , thisHHCR.IsPrimary ) ;
+            System.assertEquals (ONEN_Constants.OPP_GIFT_HH_DONOR_ROLE , thisHHCR.Role ) ;
+        }
+        
+        // test code to exercise GetPrimaryContactIdsBulk()
+        map<Id,Id> mapOppIdCRId;
+        set<Id> setOppId = new set<Id>(createdOppIds);
+        mapOppIdCRId = GetPrimaryContactIdsBulk(setOppId);
+        System.AssertEquals(mapOppIdCRId.size(), setOppId.size());      
+    }
 
-	static testmethod void testNewOppCRMany () {
-		
-		List<id> OppIds = new List<id> ();
-		integer howMany = 50;
-	
-		Contact[] TestCons = ONEN_UnitTestData.CreateMultipleTestContacts ( howMany ) ;
-		insert TestCons;
-		
-		// this method puts the ConID into the proper field in Opp
-		Opportunity[] newOpps = ONEN_UnitTestData.OppsForContactList ( TestCons, null, 'Closed Won', System.Today(), 100 , GiftRectype,null);
-		Test.StartTest();
-		insert newOpps;
-		Test.StopTest();
-		
-		// test we got opps back:
-		System.assertEquals ( howMany , newOpps.size() );
-		
-		// get a list of the opp id's created
-		for ( Opportunity thisOpp : newOpps ) {
-			OppIds.add (thisOpp.id);	
-		}
-		
-		// find all corresponding opp CR's
-		OpportunityContactRole[] newCRs = [SELECT id, ContactId, OpportunityId, IsPrimary, Role FROM OpportunityContactRole WHERE OpportunityId IN :OppIds ];
-		
-		// check we got the right number and that all of them are Primary
-		System.assertEquals ( howMany , newCRs.size() );
-		
-		OpportunityContactRole[] newCRsPrimary = [SELECT id, ContactId, OpportunityId, IsPrimary, Role FROM OpportunityContactRole WHERE OpportunityId IN :OppIds and IsPrimary = true];
-		System.assertEquals ( howMany , newCRsPrimary.size () );
-		
-	}
-	
-	static testmethod void changeContactRoleFromStdRelatedList() {
- 		//tests the nightly batch update to reconcile any accidental changes to OCRs using standard list, that did not update Primary Contact on opp
- 		List<ONEN_Household__c> hhs = new List<ONEN_Household__c>();
- 		
- 		ONEN_Household__c hh = new ONEN_Household__c(Name='The_Bromer_Residence');
- 		insert hh;
- 		hhs.add(hh);
- 		
- 		ONEN_Household__c hh2 = new ONEN_Household__c(Name='The_Andersen_Residence');
- 		insert hh2;
- 		hhs.add(hh2);
- 		
- 		Contact con = new Contact (LastName = 'Halladay_Sucks',ONEN_Household__c=hh.id);
- 		insert con;
- 		
- 		Contact con2 = new Contact (LastName = 'Halladay_Sucks',ONEN_Household__c=hh2.id);
- 		insert con2;
- 		
- 		Opportunity opp = new Opportunity(
- 			Name='Test_Opportunity',
- 			CloseDate = system.today(),
- 			StageName = ONEN_Constants.OPP_DEFAULT_CLOSED_WON_STAGE,
- 			Amount = 100
- 			);
- 		insert opp;
- 		
- 		OpportunityContactRole ocr = new OpportunityContactRole(
- 			OpportunityId = opp.id, 
- 			ContactId = con.id, 
- 			Role = ONEN_Constants.OPP_GIFT_DONOR_ROLE(ONEN_Constants.OPP_DEFAULT_RECTYPE_FORTESTS), 
- 			IsPrimary = true); 
- 		insert ocr;
- 		
- 		OpportunityContactRole ocr2 = new OpportunityContactRole(
- 			OpportunityId = opp.id, 
- 			ContactId = con2.id, 
- 			Role = ONEN_Constants.OPP_GIFT_DONOR_ROLE(ONEN_Constants.OPP_DEFAULT_RECTYPE_FORTESTS), 
- 			IsPrimary = false); 
- 		insert ocr2;
- 		
- 		ONEN_OpportunityContactRoles OCRClass = new ONEN_OpportunityContactRoles();
- 		OCRClass.reconcileConRoles(hhs);
- 		
- 		List<Opportunity> updatedOpps = [SELECT ContactId__c FROM Opportunity WHERE id = :opp.id];
- 		system.assertEquals(con.id,updatedOpps[0].ContactId__c);
- 		
- 		//now update to the second contact as primary and see if Primary Contact changes correctly
- 		ocr.IsPrimary = false;
- 		update ocr;
- 		ocr2.isPrimary = true;
- 		update ocr2;
- 		
- 		OCRClass = new ONEN_OpportunityContactRoles();
- 		OCRClass.reconcileConRoles(hhs);
- 		
- 		List<Opportunity> updatedOpps2 = [SELECT ContactId__c FROM Opportunity WHERE id = :opp.id];
- 		system.assertEquals(con2.id,updatedOpps2[0].ContactId__c);
- 		
+    static testmethod void testNewOppCRMany () {
+        
+        List<id> OppIds = new List<id> ();
+        integer howMany = 50;
+    
+        Contact[] TestCons = ONEN_UnitTestData.CreateMultipleTestContacts ( howMany ) ;
+        insert TestCons;
+        
+        // this method puts the ConID into the proper field in Opp
+        Opportunity[] newOpps = ONEN_UnitTestData.OppsForContactList ( TestCons, null, 'Closed Won', System.Today(), 100 , GiftRectype,null);
+        Test.StartTest();
+        insert newOpps;
+        Test.StopTest();
+        
+        // test we got opps back:
+        System.assertEquals ( howMany , newOpps.size() );
+        
+        // get a list of the opp id's created
+        for ( Opportunity thisOpp : newOpps ) {
+            OppIds.add (thisOpp.id);    
+        }
+        
+        // find all corresponding opp CR's
+        OpportunityContactRole[] newCRs = [SELECT id, ContactId, OpportunityId, IsPrimary, Role FROM OpportunityContactRole WHERE OpportunityId IN :OppIds ];
+        
+        // check we got the right number and that all of them are Primary
+        System.assertEquals ( howMany , newCRs.size() );
+        
+        OpportunityContactRole[] newCRsPrimary = [SELECT id, ContactId, OpportunityId, IsPrimary, Role FROM OpportunityContactRole WHERE OpportunityId IN :OppIds and IsPrimary = true];
+        System.assertEquals ( howMany , newCRsPrimary.size () );
+        
+    }
+    
+    static testmethod void changeContactRoleFromStdRelatedList() {
+        //tests the nightly batch update to reconcile any accidental changes to OCRs using standard list, that did not update Primary Contact on opp
+        List<Contact> cons = new List<Contact>();
+        
+        ONEN_Household__c hh = new ONEN_Household__c(Name='The_Bromer_Residence');
+        insert hh;
+        
+        ONEN_Household__c hh2 = new ONEN_Household__c(Name='The_Andersen_Residence');
+        insert hh2;
+        
+        Contact con = new Contact (LastName = 'Halladay_Sucks',ONEN_Household__c=hh.id);
+        insert con;
+        cons.add(con);
+        
+        Contact con2 = new Contact (LastName = 'Halladay_Sucks',ONEN_Household__c=hh2.id);
+        insert con2;
+        cons.add(con2);
+        
+        Opportunity opp = new Opportunity(
+            Name='Test_Opportunity',
+            CloseDate = system.today(),
+            StageName = ONEN_Constants.OPP_DEFAULT_CLOSED_WON_STAGE,
+            Amount = 100
+            );
+        insert opp;
+        
+        OpportunityContactRole ocr = new OpportunityContactRole(
+            OpportunityId = opp.id, 
+            ContactId = con.id, 
+            Role = ONEN_Constants.OPP_GIFT_DONOR_ROLE(ONEN_Constants.OPP_DEFAULT_RECTYPE_FORTESTS), 
+            IsPrimary = true); 
+        insert ocr;
+        
+        OpportunityContactRole ocr2 = new OpportunityContactRole(
+            OpportunityId = opp.id, 
+            ContactId = con2.id, 
+            Role = ONEN_Constants.OPP_GIFT_DONOR_ROLE(ONEN_Constants.OPP_DEFAULT_RECTYPE_FORTESTS), 
+            IsPrimary = false); 
+        insert ocr2;
+        
+        ONEN_OpportunityContactRoles OCRClass = new ONEN_OpportunityContactRoles();
+        OCRClass.reconcileConRoles(cons);
+        
+        List<Opportunity> updatedOpps = [SELECT ContactId__c FROM Opportunity WHERE id = :opp.id];
+        system.assertEquals(con.id,updatedOpps[0].ContactId__c);
+        
+        //now update to the second contact as primary and see if Primary Contact changes correctly
+        ocr.IsPrimary = false;
+        update ocr;
+        ocr2.isPrimary = true;
+        update ocr2;
+        
+        OCRClass = new ONEN_OpportunityContactRoles();
+        OCRClass.reconcileConRoles(cons);
+        
+        List<Opportunity> updatedOpps2 = [SELECT ContactId__c FROM Opportunity WHERE id = :opp.id];
+        system.assertEquals(con2.id,updatedOpps2[0].ContactId__c);
+        
     }
 }
