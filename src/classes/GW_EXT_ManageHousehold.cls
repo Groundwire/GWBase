@@ -47,10 +47,9 @@ public with sharing class GW_EXT_ManageHousehold {
 		set;
 	}
 	
-	public List<Contact> hhMembers;
+	//public List<Contact> hhMembers;
 	public Id conId;
 	public Contact con;
-	public set<Id> activeConIds {get; set;}
 	public map<Id, Contact> activeContacts;
 	public set<Contact> removeContacts;
 	
@@ -72,45 +71,44 @@ public with sharing class GW_EXT_ManageHousehold {
 	
     public GW_EXT_ManageHousehold(ApexPages.StandardController controller) {
     	
-    	
-    	
-    	activeConIds = new set<id>();
     	activeContacts = new map<Id, Contact>();
     	removeContacts = new set<Contact>();
     	viableAddresses = new map<String, Id>();
     	
+    	Id tempHHid;
         ONEN_Household__c thh = (ONEN_Household__c)controller.getRecord();
-        hh = thh.Id != Null ? getHH(thh.Id) : thh;
+        if (thh.Id == null) {
+        	String paramHhId = ApexPages.currentPage().getParameters().get('hhid');
+        	try {
+        		tempHHid = paramHhId;
+        	} catch (Exception e) {
+        		tempHHid = null;
+        	}
+        } else {
+        	tempHHid = thh.Id;
+        }
+        hh = tempHHid != Null ? getHH(tempHHid) : thh;
+		
+        //Get the contact id from the query if present
+        conId = ApexPages.currentPage().getParameters().get('cid');
         
-        getHHMembers();
+        list<Contact> hhMembers = getHHMembers();
         
         //if we are an existing household, get the members
-        if (hh.Id != Null) {
+        if (hh.Id != Null || conId != null) {
+        	
         	if (!hhMembers.isEmpty()) {
-        		for (Contact con : hhMembers) {
-        			activeConIds.add(con.id);
-        		}
         		activeContacts.putAll(hhMembers);
         		
         	}
         }
-		
-		// Set the active address
+        
+        // Set the active address
 		if (!activeContacts.isEmpty()) {
 			list<Id> aCids = new list<Id>();
 			aCids.addAll(activeContacts.keySet());
 			if (!aCids.isEmpty()) setActiveAddress(aCids[0]);
 		}
-		
-        //Get the contact id from the query if present
-        conId = ApexPages.currentPage().getParameters().get('cid');
-        //if we have a contact id, get the contact
-        if (conId != null) {
-        	con = Database.query(conSelect + 'WHERE Id = \''+conId+'\'');
-        	activeConIds.add(conId);
-        	activeContacts.put(con.id, con);
-        }
-        
         
         getViableAddresses();
         
@@ -142,13 +140,14 @@ public with sharing class GW_EXT_ManageHousehold {
 		GW_EXT_ManageHousehold gwMH = unpackState(state);
 		
 		string excludeIds = '';
-		
-		if (!gwMH.activeConIds.isEmpty()) {
+		list<Id> activeConIds = new list<Id>();
+		activeConIds.addAll(gwMH.activeContacts.keySet());
+		if (!activeConIds.isEmpty()) {
 			excludeIds =  'AND Id NOT IN (';
 			integer i = 1;
-			for (Id conId : gwMH.activeConIds) {
+			for (Id conId : activeConIds) {
 				excludeIds += '\''+conId+'\'';
-				if (i != gwMH.activeConIds.size()) excludeIds += ',';
+				if (i != activeConIds.size()) excludeIds += ',';
 				i += 1;
 			}
 			excludeIds += ')';
@@ -265,7 +264,6 @@ public with sharing class GW_EXT_ManageHousehold {
 		String whereClause = 'WHERE Id = \''+cid+'\'';
 		list<Contact> con = Database.query(conSelect + whereClause);
 		if (!con.isEmpty()) {
-			activeConIds.add(con[0].Id);
         	activeContacts.put(con[0].id, con[0]);
         	
         	return true;
@@ -311,7 +309,6 @@ public with sharing class GW_EXT_ManageHousehold {
 		String whereClause = 'WHERE Id = \''+cid+'\'';
 		list<Contact> con = Database.query(conSelect + whereClause);
 		if (!con.isEmpty()) {
-			activeConIds.add(con[0].Id);
         	activeContacts.put(con[0].id, con[0]);
         	
         	// check for household then find and add contacts
@@ -320,7 +317,7 @@ public with sharing class GW_EXT_ManageHousehold {
         		list<Contact> hhcons = Database.query(conSelect + whereClause);
         		if (!hhcons.isEmpty()) {
         			for (Contact hhcon : hhcons) {
-        				activeConIds.add(hhcon.Id);
+        				
         				activeContacts.put(hhcon.id, hhcon);
         			}
         		}
@@ -356,6 +353,9 @@ public with sharing class GW_EXT_ManageHousehold {
 	public list<Contact> getViableAddresses() {
 		list<Contact> retCons = new list<contact>();
 		if (activeContacts.isEmpty()) return retCons;
+		
+		list<Id> activeConIds = new list<Id>();
+		activeConIds.addAll(activeContacts.keySet());
 		
 		list<Contact> cons = Database.query(conSelect + 'WHERE id IN :activeConIds');
 		
@@ -428,11 +428,59 @@ public with sharing class GW_EXT_ManageHousehold {
 		return cons;
 	}
 	
-	public void getHHMembers() {
-		string wc = (conId != Null) ? ' Id=\''+conId+'\'' : '';
-		string inhh = (hh.id != Null) ?  ' ONEN_HouseHold__c = \''+hh.id+'\'' : '';
-		string ior = (wc != '' && inhh != '') ? ' or' : '';
-		hhMembers = Database.query(conSelect+'WHERE' + inhh + ior + wc);
+	public list<Contact> getHHMembers() {
+		String q = conSelect;
+		
+		if (conId != null || hh.id != null) q += ' WHERE';
+		if (conId != null) q += ' Id=\''+conId+'\'';
+		if (conId != null && hh.id != null) q += ' or';
+		if (hh.id != null) q += ' ONEN_HouseHold__c = \''+hh.id+'\'';
+		
+		return Database.query(q);
+	}
+	
+	public static boolean editableField(String fieldName) {
+		
+		list<String> nonEditable = new list<String> {
+			'Auto_HHGreeting__c',
+			'Auto_HHName__c',
+			'AverageAmount__c',
+			'Best_Gift_Year_Total__c',
+			'Best_Gift_Year__c',
+			'FirstCloseDate__c',
+			'Greeting__c',
+			'LargestAmount__c',
+			'LastCloseDate__c',
+			'LastMembershipAmount__c',
+			'LastMembershipDate__c',
+			'LastMembershipLevel__c',
+			'LastMembershipOrigin__c',
+			'LastOppAmount__c',
+			'Member_Count__c',
+			'MembershipEndDate__c',
+			'MembershipJoinDate__c',
+			'NumberOfClosedOpps__c',
+			'NumberOfMembershipOpps__c',
+			'OppAmount2YearsAgo__c',
+			'OppAmountLastNDays__c',
+			'OppAmountLastYear__c',
+			'OppAmountThisYear__c',
+			'OppsClosed2YearsAgo__c',
+			'OppsClosedLastNDays__c',
+			'OppsClosedLastYear__c',
+			'OppsClosedThisYear__c',
+			'Override_Greeting__c',
+			'Override_Household_Name__c',
+			'SmallestAmount__c',
+			'TotalMembershipOppAmount__c',
+			'TotalOppAmount__c'
+		};
+		
+		for (string ex : nonEditable) {
+			if (ex == fieldName) return false;
+		}
+		return true;
+		
 	}
 	
 	
@@ -463,12 +511,7 @@ public with sharing class GW_EXT_ManageHousehold {
 			}
 		}
 		
-		// Update our contacts to remove
-		if (!removeContacts.isEmpty()) {
-			list<contact> consToRemove = new list<contact>();
-			consToRemove.addAll(removeContacts);
-			update consToRemove;
-		}
+		
 	}
 
 	
@@ -498,7 +541,7 @@ public with sharing class GW_EXT_ManageHousehold {
         
         GW_EXT_ManageHousehold ext = new GW_EXT_ManageHousehold(sc);
         
-        system.assertEquals(false, ext.hhMembers.isEmpty());
+        //system.assertEquals(false, ext.hhMembers.isEmpty());
         
         //test active address variables are set
         system.assertEquals(con.OtherStreet, ext.activeStreet);
@@ -556,7 +599,7 @@ public with sharing class GW_EXT_ManageHousehold {
         system.assertEquals(con.id, ext.conId);
         system.assertNotEquals(null, ext.con);
         
-        system.assertEquals(null, ext.hhMembers);
+        //system.assertEquals(null, ext.hhMembers);
         system.assertEquals(null, ext.hh.id);
         
         //test that active address IS NOT set
@@ -667,9 +710,10 @@ public with sharing class GW_EXT_ManageHousehold {
     	insert conWithHH2;
     	
     	Test.startTest();
-        ApexPages.StandardController sc = new ApexPages.standardController(hh);
+        ApexPages.StandardController sc = new ApexPages.standardController(new ONEN_Household__c());
         
         ApexPages.currentPage().getParameters().put('cid', con2.id);
+        ApexPages.currentPage().getParameters().put('hhid', hh.id);
         
         GW_EXT_ManageHousehold ext = new GW_EXT_ManageHousehold(sc);
         
@@ -691,8 +735,8 @@ public with sharing class GW_EXT_ManageHousehold {
         system.assertEquals('Mike and Cheryl', hhGreeting);
         
         // verify that the contact was added
-        system.assertEquals(2, ext.activeConIds.size());
-        system.assertEquals(true, ext.activeConIds.contains(cQ[1].Id));
+        system.assertEquals(2, ext.activeContacts.size());
+        //system.assertEquals(true, ext.activeConIds.contains(cQ[1].Id));
         
         cQ = GW_EXT_ManageHousehold.findContacts('zzzzzz', ext.jsonState);
         
@@ -703,7 +747,7 @@ public with sharing class GW_EXT_ManageHousehold {
         ext.addContact(con2.id);
         ext.addContact(con3.id);
         
-        system.assertEquals(3, ext.activeConIds.size());
+        system.assertEquals(3, ext.activeContacts.size());
         
         // find viable addresses
         list<Contact> adds = ext.getViableAddresses();
@@ -716,7 +760,7 @@ public with sharing class GW_EXT_ManageHousehold {
         ext.addContactWithHousehold(conWithHH.id);
         
         // We should now have 5 total hh members displayed
-        system.assertEquals(5, ext.activeConIds.size());
+        system.assertEquals(5, ext.activeContacts.size());
         
         // We should also check that the correct contact got added
         system.assertEquals(true, ext.activeContacts.containsKey(conWithHH2.id));
