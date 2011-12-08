@@ -12,9 +12,9 @@ trigger GW_HouseholdTriggerBefore on ONEN_Household__c (before delete, before up
         GW_Householding.FixNaming();
     }
     
-    if (trigger.isDelete) {
+    /*if (trigger.isDelete) {
         // prevent user from deleting households unless they are already empty
         GW_Householding.PreventDeletion();      
-    }
+    }*/
 
 }
