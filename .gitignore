@@ -77,3 +77,11 @@ com.salesforce.ide.core.prefs
 src/applications/ONEdev.app
 src/classes/ONEN_BATCH_CloneMonthlyGifts.cls
 src/classes/ONEN_BATCH_CloneMonthlyGifts.cls-meta.xml
+src/documents/SharedDocuments
+src/documents/SharedDocuments/Groundwire_Salesforce_Logo.png
+src/documents/SharedDocuments/Groundwire_Salesforce_Logo.png-meta.xml
+src/documents/SharedDocuments/partner_portal_test_footer.txt
+src/documents/SharedDocuments/partner_portal_test_footer.txt-meta.xml
+src/documents/SharedDocuments/partner_portal_test_logo.png
+src/documents/SharedDocuments/partner_portal_test_logo.png-meta.xml
+src/documents/SharedDocuments-meta.xml
