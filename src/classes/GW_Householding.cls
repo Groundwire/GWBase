@@ -830,6 +830,66 @@ public class GW_Householding {
         //what about case where second contact doesn't have address, they should get address
     }
     
+    /*********************************************************************************
+    * Test contacts with null households
+    *********************************************************************************/
+    public static testMethod void TestContactWithNullHouseholds() {  
+
+		//create household
+		ONEN_Household__c hh = new ONEN_Household__c (
+			Name = 'Blah'
+			);
+		insert hh;
+        
+        //create contact without household
+        Contact con1 = new Contact (
+            FirstName='Joe',
+            LastName='Johanssen',
+            otherStreet='123 Test Street',
+            otherCity='Wauwatosa',
+            otherState='WI',
+            otherPostalCode='53213',
+            otherCountry='USA'          
+        );
+        insert con1;
+        
+        //create another contact without household
+        Contact con2 = new Contact (
+            FirstName='David',
+            LastName='Lynch',
+            otherStreet='ZZaaYYbb',
+            otherCity='Wauwatosa',
+            otherState='WI',
+            otherPostalCode='53213',
+            otherCountry='USA'          
+        );
+        insert con2;
+        
+        Contact firstContact = [SELECT Id, OtherStreet FROM Contact WHERE id = :con1.id];
+        system.assertNotEquals('ZZaaYYbb', firstContact.otherStreet);
+        
+        //Add the contacts to the household
+        con1.ONEN_Household__c = hh.id;
+        con2.ONEN_Household__c = hh.id;
+        update con1;
+        update con2;
+        
+        list<Contact> hhMembers = [SELECT Id, OtherStreet, ONEN_Household__c FROM Contact WHERE ONEN_Household__c = :hh.id];
+        
+        // Verify that their addresses are the same
+        system.assertEquals(2, hhMembers.size());
+        system.assertEquals(hhMembers[0].OtherStreet,hhMembers[1].OtherStreet);
+        
+        // Remove a contact from a household and change the address
+        con2.OtherStreet = 'ZZZ222EEER';
+        con2.ONEN_Household__c = null;
+        update con2;
+        
+        // Make sure that the other contact wasn't affected
+        list<Contact> crazyAddressContact = [SELECT Id, OtherStreet FROM Contact WHERE OtherStreet = 'ZZZ222EEER'];
+        system.assertEquals(1, crazyAddressContact.size());
+    }
+    
     
     /*********************************************************************************
     * Test creation of one contact and change address. Household address should change
