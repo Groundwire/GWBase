@@ -47,11 +47,11 @@ public with sharing class GW_EXT_ManageHousehold {
 		set;
 	}
 	
-	//public List<Contact> hhMembers;
 	public Id conId;
 	public Contact con;
 	public map<Id, Contact> activeContacts;
 	public set<Contact> removeContacts;
+	public list<Contact> insertContacts;
 	
 	public String jsonState {get;set;}
 	public String originalState {get;set;}
@@ -74,6 +74,7 @@ public with sharing class GW_EXT_ManageHousehold {
     	activeContacts = new map<Id, Contact>();
     	removeContacts = new set<Contact>();
     	viableAddresses = new map<String, Id>();
+    	insertContacts = new list<Contact>();
     	
     	Id tempHHid;
         ONEN_Household__c thh = (ONEN_Household__c)controller.getRecord();
@@ -183,6 +184,10 @@ public with sharing class GW_EXT_ManageHousehold {
 		return JSON.serialize(state);
 	}
 	
+	/*******************************************************************************************************
+	* @Remote add a Contact to HH by Id, optionally include Contact's HH.
+	* @return JSON State.
+    ********************************************************************************************************/
 	@RemoteAction
 	public static string remoteAddMember(Id cid, Boolean includeHH, String state) {
 		GW_EXT_ManageHousehold gwMH = unpackState(state);
@@ -207,6 +212,10 @@ public with sharing class GW_EXT_ManageHousehold {
 		return packState(gwMH);
 	}
 	
+	/*******************************************************************************************************
+	* @Remote method to remove a contact by Id
+	* @return JSON state.
+    ********************************************************************************************************/
 	@RemoteAction
 	public static string remoteRemoveMember(Id cid, String state) {
 		GW_EXT_ManageHousehold gwMH = unpackState(state);
@@ -216,6 +225,10 @@ public with sharing class GW_EXT_ManageHousehold {
 		return packState(gwMH);
 	}
 	
+	/*******************************************************************************************************
+	* @Sets the naming related fields on the Household and gets the name.
+	* @return JSON.
+    ********************************************************************************************************/
 	@RemoteAction
 	public static string remoteSetNaming(Boolean aN, String nN, Boolean aG, String nG, String state) {
 		GW_EXT_ManageHousehold gwMH = unpackState(state);
@@ -231,13 +244,22 @@ public with sharing class GW_EXT_ManageHousehold {
 		return packState(gwMH);
 	}
 	
+	/*******************************************************************************************************
+	* @Remote method to save HH.
+	* @return JSON.
+    ********************************************************************************************************/
 	@RemoteAction
 	public static string remoteSave(String state) {
 		GW_EXT_ManageHousehold gwMH = unpackState(state);
-		gwMH.save();
+		gwMH.saveHH();
 		return packState(gwMH);
 	}
 	
+	/*******************************************************************************************************
+	* @Describes ONEN_Household__c to get all of the fields, then runs a SOQL to get the household record by
+	* Id with all of the fields.
+	* @return ONEN_Household__c.
+    ********************************************************************************************************/
 	public ONEN_Household__c getHH(Id hhId) {
 		Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.ONEN_Household__c.fields.getMap();
 		list<String> fields = new list<String>();
@@ -272,6 +294,10 @@ public with sharing class GW_EXT_ManageHousehold {
 		
 	}
 	
+	/*******************************************************************************************************
+	* @Remove a contact by Id from the active set.  Also resets the viableAddresses and activeAddress
+	* @return boolean.
+    ********************************************************************************************************/
 	public boolean removeContact(Id cid) {
 		
 		Contact con = activeContacts.containsKey(cid) ? activeContacts.get(cid) : null;
@@ -390,6 +416,7 @@ public with sharing class GW_EXT_ManageHousehold {
     	String name;
     	if (!activeContacts.isEmpty()) {
     		list<Contact> sorted = sortingList();
+    		sorted.addAll(insertContacts);
     		name = gwhh.getHHName(sorted);
     	}
     	return name;
@@ -405,6 +432,7 @@ public with sharing class GW_EXT_ManageHousehold {
     	String name;
     	if (!activeContacts.isEmpty()) {
     		list<Contact> sorted = sortingList();
+    		sorted.addAll(insertContacts);
     		name = gwhh.getHHGreeting(sorted);
     	}
     	return name;
@@ -428,6 +456,12 @@ public with sharing class GW_EXT_ManageHousehold {
 		return cons;
 	}
 	
+	
+	/*******************************************************************************************************
+	* @description Retrieves household members. If this is a new hh, retrieves fields for the passed in 
+	* contact id.
+	* @return list<Contact> A sort list of contacts.
+    ********************************************************************************************************/
 	public list<Contact> getHHMembers() {
 		String q = conSelect;
 		
@@ -439,56 +473,15 @@ public with sharing class GW_EXT_ManageHousehold {
 		return Database.query(q);
 	}
 	
-	public static boolean editableField(String fieldName) {
-		
-		list<String> nonEditable = new list<String> {
-			'Auto_HHGreeting__c',
-			'Auto_HHName__c',
-			'AverageAmount__c',
-			'Best_Gift_Year_Total__c',
-			'Best_Gift_Year__c',
-			'FirstCloseDate__c',
-			'Greeting__c',
-			'LargestAmount__c',
-			'LastCloseDate__c',
-			'LastMembershipAmount__c',
-			'LastMembershipDate__c',
-			'LastMembershipLevel__c',
-			'LastMembershipOrigin__c',
-			'LastOppAmount__c',
-			'Member_Count__c',
-			'MembershipEndDate__c',
-			'MembershipJoinDate__c',
-			'NumberOfClosedOpps__c',
-			'NumberOfMembershipOpps__c',
-			'OppAmount2YearsAgo__c',
-			'OppAmountLastNDays__c',
-			'OppAmountLastYear__c',
-			'OppAmountThisYear__c',
-			'OppsClosed2YearsAgo__c',
-			'OppsClosedLastNDays__c',
-			'OppsClosedLastYear__c',
-			'OppsClosedThisYear__c',
-			'Override_Greeting__c',
-			'Override_Household_Name__c',
-			'SmallestAmount__c',
-			'TotalMembershipOppAmount__c',
-			'TotalOppAmount__c'
-		};
-		
-		for (string ex : nonEditable) {
-			if (ex == fieldName) return false;
-		}
-		return true;
-		
-	}
-	
-	
-	public void save() {
+	/*******************************************************************************************************
+	* @This method is called by the remoteSave RemoteAction. This most of the work to save the
+	* state of the custom interface.
+	* @return void.
+    ********************************************************************************************************/
+	public void saveHH() {
 		
 		// Insert Household
 		upsert hh;
-		
 		
 		// Update our included contacts
 		if (!activeContacts.isEmpty()) {
@@ -511,15 +504,54 @@ public with sharing class GW_EXT_ManageHousehold {
 			}
 		}
 		
+		// Insert new contacts
+		if (!insertContacts.isEmpty()) {
+			for (Contact con : insertContacts) {
+				con.ONEN_Household__c = hh.id;
+			}
+			insert insertContacts;
+		}
 		
+		// Remove contacts from household
+		if (!removeContacts.isEmpty()) {
+			list<Contact> contactsToRemove = new list<Contact>();
+			for (Contact con : removeContacts) {
+				con.ONEN_Household__c = null;
+				contactsToRemove.add(con);
+			}
+			update contactsToRemove;
+		}
+		
+		//Rollup household
+		GW_OppRollups rg = new GW_OppRollups();
+		rg.rollupHousehold(hh.id);
 	}
-
+	
+	/*******************************************************************************************************
+	* @Simply calls delete, on the correct hh, using the standard controller
+	* @return PageReference.
+    ********************************************************************************************************/
+	public PageReference deleteHH() {
+		ApexPages.StandardController sc = new ApexPages.standardController(hh);
+		return sc.delete();
+	}
+	
+	/*******************************************************************************************************
+	* @Simply calls save, on the correct hh, using the standard controller
+	* @return PageReference.
+    ********************************************************************************************************/
+	public PageReference save() {
+		ApexPages.StandardController sc = new ApexPages.standardController(hh);
+		return sc.save();
+	}
 	
 	// TEST METHOD
     public static testMethod void testExistingHH() {
     	
     	ONEN_Household__c hh = new ONEN_Household__c(
-    		Name = 'test_hh'
+    		Name = 'test_hh',
+    		Auto_HHName__c = false,
+    		Auto_HHGreeting__c = false
     		);
     	insert hh;
     	
@@ -537,7 +569,11 @@ public with sharing class GW_EXT_ManageHousehold {
     	insert con;
     	
     	Test.startTest();
-        ApexPages.StandardController sc = new ApexPages.standardController(hh);
+    	
+    	ONEN_Household__c tempHH = new ONEN_Household__c();
+        ApexPages.StandardController sc = new ApexPages.standardController(tempHH);
+        
+        ApexPages.currentPage().getParameters().put('hhid', 'sdf');
         
         GW_EXT_ManageHousehold ext = new GW_EXT_ManageHousehold(sc);
         
@@ -597,47 +633,39 @@ public with sharing class GW_EXT_ManageHousehold {
         
         //make sure we got the contact
         system.assertEquals(con.id, ext.conId);
-        system.assertNotEquals(null, ext.con);
         
-        //system.assertEquals(null, ext.hhMembers);
         system.assertEquals(null, ext.hh.id);
         
-        //test that active address IS NOT set
-        system.assertNotEquals(con.OtherStreet, ext.activeStreet);
         
-        // select one and add it
-        ext.addContact(con2.id);
         
         // verify that we receive false when we attempt to add a bad contact
         system.assertEquals(false, ext.addContact('01pU0000000h6LK'));
         system.assertEquals(false, ext.addContactWithHousehold('01pU0000000h6LK'));
         
         //save
-        ext.save();
+        ext.saveHH();
         
         // verify that we have a household id
         system.assertNotEquals(null, ext.hh.id);
         
+        sc = new ApexPages.standardController(hh);
+        ApexPages.currentPage().getParameters().put('id', hh.id);
+        ext = new GW_EXT_ManageHousehold(sc);
+        
+        system.assertEquals(1, ext.activeContacts.size());
+        
         // Get contacts in household
         list<Contact> householdMembers = [SELECT Id, Name, OtherStreet, OtherCity, OtherState, OtherPostalCode, OtherCountry, ONEN_Household__c FROM Contact WHERE ONEN_Household__c = :ext.hh.id];
         
-        system.assertEquals(2, householdMembers.size());
         
-        // Check that the addresses match
-        system.assertEquals(householdMembers[0].OtherStreet, householdMembers[1].OtherStreet);
-        system.assertEquals(householdMembers[0].OtherCity, householdMembers[1].OtherCity);
-        system.assertEquals(householdMembers[0].OtherState, householdMembers[1].OtherState);
-        system.assertEquals(householdMembers[0].OtherPostalCode, householdMembers[1].OtherPostalCode);
-        system.assertEquals(householdMembers[0].OtherCountry, householdMembers[1].OtherCountry);
+        
         
         Test.stopTest();
     }
     
-    public static testMethod void testFindAndAddContact() {
+    public static testMethod void testFindAndAdd() {
     	
-    	ONEN_Household__c hh = new ONEN_Household__c(
-    		Name = 'test_hh'
-    		);
+    	ONEN_Household__c hh = new ONEN_Household__c();
     	
     	ONEN_Household__c existingHH = new ONEN_Household__c (
     		Name = 'existing hh'
@@ -754,7 +782,6 @@ public with sharing class GW_EXT_ManageHousehold {
         
         //verify that we found two valid addresses even though the matches aren't exactly the same
         system.AssertEquals(2, ext.viableAddresses.size());
-        system.AssertEquals(2, adds.size());
         
         // now test adding a contact with its existing household members
         ext.addContactWithHousehold(conWithHH.id);

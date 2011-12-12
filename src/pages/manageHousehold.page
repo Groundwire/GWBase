@@ -50,7 +50,7 @@ j$(function () {
     	}
     	
     	// insert add button
-    	linode.append('<button class="gwButton hhSearch-item-add">Add</button>');
+    	linode.append('<button class="gwPreventUI gwButton hhSearch-item-add">Add</button>');
     	linode.find('.hhSearch-item-add').button();
     	
     	// insert icon
@@ -63,20 +63,20 @@ j$(function () {
 	j$('.hhSearch-item-add').live('click', gwManageHH.dialogAddMember);
     
     // setup search input
-    j$('.hhSearch-input').val(j$('.hhSearch-input').attr('title'));
-    j$('.hhSearch-input').focus(function () {
+    j$('.gwTitleLabel').val(j$('.gwTitleLabel').attr('title'));
+    j$('.gwTitleLabel').live('focusin focusout', function (event) {
     	var ht = j$(this).attr('title');
-    	var v = j$(this).val();
-    	if (ht == v) {
-    		j$(this).val('');
+	    var v = j$(this).val();
+    	if (event.type == 'focusin') {
+	    	if (ht == v) {
+	    		j$(this).val('');
+	    	}
+    	} else if (event.type == 'focusout') {
+    		if (v == '') {
+    			j$(this).val(ht);
+    		}
     	}
-    });
-    j$('.hhSearch-input').blur(function () {
-    	var ht = j$(this).attr('title');
-    	var v = j$(this).val();
-    	if (v == '') {
-    		j$(this).val(ht);
-    	}
+    	
     });
     
     //Naming form
@@ -90,9 +90,18 @@ j$(function () {
     
     // Exclude from name checkbox actions
     j$('.hh-name-exclude-input').live('change', function (event) {
-    	var cid = j$(this).closest('.hhCard').attr('id');
+    	var card = j$(this).closest('.hhCard');
+    	if (!card.hasClass('hhCard-new')) {
+    		var cid = card.attr('id');
     	
-    	gwManageHH.setNameExclusion(cid, j$(this).is(':checked'));
+    		gwManageHH.setNameExclusion(cid, j$(this).is(':checked'));
+    	} else {
+    		var contact = card.data('contact');
+    		contact.Not_in_HH_Name__c = j$(this).is(':checked');
+    		card.data('contact',contact);
+    		gwManageHH.setInsertContacts();
+    		gwManageHH.setNaming();
+    	}
     });
     
     // Controls
@@ -111,13 +120,26 @@ j$(function () {
     	}
     });
     
+    // Add new
+    j$('.hhAddNew').live('click', function (event) {
+    	gwManageHH.addNewContact();
+    	return false;
+    });
+    
     //Deletes
     j$('.hhCard-delete').live('mouseenter mouseleave click', function (event) {
     	if (event.type == 'click') {
 	    	var card = j$(this).closest('.hhCard');
-	    	var cid = card.attr('id');
-	    	
-	    	gwManageHH.removeMember(cid);
+	    	var isNew = card.hasClass('hhCard-new');
+	    	if (!isNew) {
+	    		var cid = card.attr('id');
+	    		
+	    		gwManageHH.removeMember(cid);
+	    	} else {
+	    		card.remove();
+	    		gwManageHH.setInsertContacts();
+	    		gwManageHH.setNaming();
+	    	}
 	    }
 	    
 	    if (event.type == 'mouseenter') {
@@ -129,6 +151,8 @@ j$(function () {
     	
     });
     
+    j$('.hhAddNew').button();
+    
     // Render all
     gwManageHH.updateState(gwManageHH.jsonState);
     
@@ -139,7 +163,7 @@ var gwManageHH = new Object();
 gwManageHH.state = {!jsonState};
 gwManageHH.jsonState = JSON.stringify(gwManageHH.state);
 gwManageHH.originalState = JSON.stringify({!originalState});
-gwManageHH.cardPrototype = '<div class="hhCard"><div class="hhCard-icon">Contact</div><div class="hhCard-details"><span class="hhCard-details-name"></span><span class="hhCard-details-address"></span><span class="hh-name-exclude"><input class="hh-name-exclude-input" type="checkbox" /><label>Exclude from name</label></span></div></div>';
+gwManageHH.cardPrototype = '<div class="hhCard"><div class="hhCard-icon">Contact</div><div class="hhCard-details"><span class="hhCard-details-name"></span><span class="hhCard-details-address"></span><span class="hh-name-exclude"><input class="gwPreventUI hh-name-exclude-input" type="checkbox" /><label>Exclude from name</label></span></div></div>';
 gwManageHH.renderCard = function(contact) {
 	
 	var card = j$(gwManageHH.cardPrototype);
@@ -164,7 +188,7 @@ gwManageHH.renderCard = function(contact) {
 	}
 	
 	// Add delete
-	var del = j$('<button class="hhCard-delete" />');
+	var del = j$('<button class="gwPreventUI hhCard-delete" />');
 	del.button({
 		icons: {
         	primary: "ui-icon-circle-minus"
@@ -204,6 +228,68 @@ gwManageHH.updateCard = function (contact) {
 	} else {
 		nm.find('input').removeAttr('checked');
 	}
+}
+gwManageHH.addNewContact = function () {
+	var card = j$(gwManageHH.cardPrototype);
+	
+	card.addClass('hhCard-new');
+	
+	card.find('.hhCard-details-address').remove();
+	card.find('.hhCard-details-name').remove();
+	
+	var firstN = j$('<input class="gwTitleLabel hhCard-new-input" name="FirstName" title="First Name" type="text" />');
+	var lastN = j$('<input class="gwTitleLabel hhCard-new-input" name="LastName" title="Last Name" type="text" />');
+	
+	var err = j$('<span class="hhCard-error" />');
+	err.text('Enter a first and last name.');
+	
+	var cardD = card.find('.hhCard-details');
+	
+	cardD.prepend(err);
+	cardD.prepend(lastN);
+	cardD.prepend(firstN);
+	firstN.val(firstN.attr('title'));
+	lastN.val(lastN.attr('title'));
+	
+	// Add delete
+	var del = j$('<button class="gwPreventUI hhCard-delete" />');
+	del.button({
+		icons: {
+        	primary: "ui-icon-circle-minus"
+        },
+        text: false
+    });
+    del.hide();
+	card.append(del);
+	
+	card.data('contact',{"FirstName": "", "LastName": "","Not_in_HH_Name__c": false});
+	
+	firstN.focus(function () {
+		var obj = j$(this);
+		var nm = obj.attr('name');
+		if (nm == 'FirstName') obj.removeClass('gwTitleLabel');
+	});
+	
+	card.find('.hhCard-new-input').change( function () {
+		var obj = j$(this);
+		var hhcard = obj.closest('.hhCard-new');
+		var contact = hhcard.data('contact');
+		
+		var nm = obj.attr('name');
+		
+		contact[nm] = obj.val();
+		if (contact.LastName == '' || contact.LastName == 'Last Name') {
+			hhcard.find('.hhCard-error').text('Last name is required.');
+		} else {
+			hhcard.find('.hhCard-error').text('');
+			hhcard.find('.hhCard-error').text('Contact will be created when Household is saved.');
+			gwManageHH.setInsertContacts();
+			gwManageHH.setNaming();
+		}
+		hhcard.data('contact',contact);
+	});
+	
+	j$('div.hhMembers').append(card);
 }
 
 gwManageHH.updateState = function (state) {
@@ -356,6 +442,8 @@ gwManageHH.addMember = function (cid, wHH) {
 	
 	gwManageHH.jsonState = JSON.stringify(gwManageHH.state);
 	
+	j$('.gwPreventUI').gwsetui('disable');
+	
 	GW_EXT_ManageHousehold.remoteAddMember(cid, wHH, gwManageHH.jsonState, function(result, event) {       								
      	if (event.type == 'exception') {
      		j$('.gwNotifications').gwNotify(event.message, {type:'alert'});
@@ -365,15 +453,33 @@ gwManageHH.addMember = function (cid, wHH) {
      			if (gwManageHH.jsonState != gwManageHH.originalState) j$('.gwNotifications').gwNotify('Changes have not been saved.', {type:'info'});
       		}
      	}
+     	j$('.gwPreventUI').gwsetui('enable');
 	}, {escape:false});
 	
+}
+
+gwManageHH.setInsertContacts = function () {
+	var state = gwManageHH.state;
+	var cards = j$('.hhCard-new');
+	
+	state.insertContacts = new Array();
+	cards.each(function () {
+		var obj = j$(this);
+		var contact = obj.data('contact');
+		if (contact.LastName != '' && contact.LastName != 'Last Name') {
+			state.insertContacts.push(contact);
+		}
+	});
 }
 
 gwManageHH.removeMember = function (cid) {
 	
 	gwManageHH.jsonState = JSON.stringify(gwManageHH.state);
 	
-	GW_EXT_ManageHousehold.remoteRemoveMember(cid, gwManageHH.jsonState, function(result, event) {       								
+	j$('.gwPreventUI').gwsetui('disable');
+	
+	GW_EXT_ManageHousehold.remoteRemoveMember(cid, gwManageHH.jsonState, function(result, event) {
+		       								
      	if (event.type == 'exception') {
      		j$('.gwNotifications').gwNotify(event.message, {type:'alert'});
      	} else {
@@ -382,6 +488,7 @@ gwManageHH.removeMember = function (cid) {
      			if (gwManageHH.jsonState != gwManageHH.originalState) j$('.gwNotifications').gwNotify('Changes have not been saved.', {type:'info'});
       		}
      	}
+     	j$('.gwPreventUI').gwsetui('enable');
 	}, {escape:false});
 	
 }
@@ -405,6 +512,8 @@ gwManageHH.setNaming = function () {
 	
 	gwManageHH.jsonState = JSON.stringify(gwManageHH.state);
 	
+	j$('.gwPreventUI').gwsetui('disable');
+	
 	GW_EXT_ManageHousehold.remoteSetNaming(aN, nN, aG, nG, gwManageHH.jsonState, function(result, event) {
 		if (event.type == 'exception') {
      		j$('.gwNotifications').gwNotify(event.message, {type:'alert'});
@@ -414,12 +523,17 @@ gwManageHH.setNaming = function () {
      			if (gwManageHH.jsonState != gwManageHH.originalState) j$('.gwNotifications').gwNotify('Changes have not been saved.', {type:'info'});
       		}
      	}
+     	j$('.gwPreventUI').gwsetui('enable');
 	}, {escape: false});
 }
 
 gwManageHH.saveHousehold = function () {
 	
 	gwManageHH.jsonState = JSON.stringify(gwManageHH.state);
+	
+	j$('.gwPreventUI').gwsetui('disable');
+	
+	var newHH = gwManageHH.state.hh.Id == null;
 	
 	GW_EXT_ManageHousehold.remoteSave(gwManageHH.jsonState, function(result, event) {
 		if (event.type == 'exception') {
@@ -428,10 +542,17 @@ gwManageHH.saveHousehold = function () {
      		if (result != null) {
      			gwManageHH.updateState(result);
      			gwManageHH.originalState = JSON.stringify(gwManageHH.state);
+     			
      			//j$('.gwNotifications').gwNotify('Changes saved.', {type:'success'});
-     			j$('input[id$="saveHH"]').click();
+     			if (!newHH) {
+     				alert(newHH);
+	     			j$('input[id$="gwControls-StdSave"]').click();
+	     		} else {
+	     			window.location = '/'+gwManageHH.state.hh.Id;
+	     		}
       		}
      	}
+     	j$('.gwPreventUI').gwsetui('enable');
 	}, {escape: false});
 }
 
@@ -456,7 +577,7 @@ gwManageHH.renderMembers = function() {
 	
 	
 	
-	j$('.hhCard').each(function () {
+	j$('.hhCard').not('.hhCard-new').each(function () {
 		var cid = j$(this).attr('id');
 		
 		// Check to see if the address is different from the active address
@@ -468,11 +589,14 @@ gwManageHH.renderMembers = function() {
 		
 		// Cleanup any cards that were removed
 		if (j$.inArray(cid, cids) < 0) {
-			j$(this).fadeOut(200,function () {
-				j$(this).remove();
-			});
+			j$(this).hide().remove();
 		}
 	});
+	if (members.length > 0) {
+		j$('.hhMembers-none').addClass('gwHidden');
+	} else {
+		j$('.hhMembers-none').removeClass('gwHidden');
+	}
 }
 
 gwManageHH.compareAddress = function (cid) {
@@ -505,17 +629,26 @@ gwManageHH.compareAddress = function (cid) {
 gwManageHH.renderNaming = function () {
 	var state = gwManageHH.state;
 	
+	j$('.sfField-Name').val(state.hhName);
+	j$('.sfField-Greeting__c').val(state.hhGreeting);
+	
 	if (state.autoName == true) {
 		
 		j$('#hhAutoName').attr('checked','checked');
 		
 		j$('#hhName').val(state.hhName);
 		j$('#hhName').attr('disabled','disabled').addClass('gwField-disabled', 200);
+		
+		
+		j$('.sfField-Auto_HHName__c').attr('checked','checked');
 	} else {
 		j$('#hhAutoName').removeAttr('checked');
 		
 		j$('#hhName').val(state.hhName);
 		j$('#hhName').removeAttr('disabled').removeClass('gwField-disabled', 200);
+		
+		
+		j$('.sfField-Auto_HHName__c').removeAttr('checked');
 	}
 	
 	if (state.autoGreeting == true) {
@@ -523,11 +656,15 @@ gwManageHH.renderNaming = function () {
 		
 		j$('#hhGreeting').val(state.hhGreeting);
 		j$('#hhGreeting').attr('disabled','disabled').addClass('gwField-disabled', 200);
+		
+		j$('.sfField-Auto_HHGreeting__c').attr('checked','checked');
 	} else {
 		j$('#hhAutoGreeting').removeAttr('checked');
 		
 		j$('#hhGreeting').val(state.hhGreeting);
 		j$('#hhGreeting').removeAttr('disabled').removeClass('gwField-disabled', 200);
+		
+		j$('.sfField-Auto_HHGreeting__c').removeAttr('checked');
 	}
 }
 
@@ -553,6 +690,13 @@ gwManageHH.renderAddress = function () {
 	//Helper for state
 	var state = gwManageHH.state;
 	
+	var hasContacts = false;
+	var addString = '';
+	for (p in state.activeContacts) {
+		hasContacts = true;
+		break;
+	}
+	
 	var contact;
 	
 	if (state.activeAddressConId == null) {
@@ -572,9 +716,10 @@ gwManageHH.renderAddress = function () {
 	
 	var adnode = j$('.hhAddress-address');
 	
-	adnode.html(gwManageHH.addressStringify(contact));
+	addString = (hasContacts) ? gwManageHH.addressStringify(contact) : '';
 	
-	prnode.fadeIn();
+	adnode.html(addString);
+	if (hasContacts) prnode.fadeIn(200);
 	
 }
 
@@ -667,6 +812,44 @@ j$.fn.gwNotify = function (message, options) {
 	});
 	
 	return obj;
+}
+
+j$.fn.gwsetui = function (options) {
+	
+	return j$(this).each(function () {
+		var obj;
+		
+		obj = j$(this);
+		
+		if (options == 'enable') {
+			
+			if (obj.is('button')) {
+				obj.button('enable').button('refresh');
+			}
+			if (obj.is('input')) {
+				if (obj.is('.gwUIDisabled')) {
+					obj.removeAttr('disabled');
+				}
+			}
+			obj.removeClass('gwUIDisabled');
+		}
+		
+		if (options == 'disable') {
+			
+			obj.not(':disabled').addClass('gwUIDisabled');
+			
+			if (obj.is('button')) {
+				obj.button('disable').button('refresh');
+			}
+			if (obj.is('input')) {
+				obj.attr('disabled','disabled');
+			}
+		}
+		
+		if (options == 'toggle') {
+		
+		}
+	});
 }
 
 </script>
@@ -811,7 +994,7 @@ j$.fn.gwNotify = function (message, options) {
 }
 
 .gwSection-title {
-    
+    font-size: 1.25em;
 }
 
 .gwSection-content {
@@ -845,11 +1028,33 @@ j$.fn.gwNotify = function (message, options) {
     background-image: -moz-linear-gradient(bottom, rgb(255,255,255) 30%, rgb(230,230,255) 100%);
     background-image: -webkit-linear-gradient(bottom, rgb(255,255,255) 30%, rgb(230,230,255) 100%);
     background-image: -ms-linear-gradient(bottom, rgb(255,255,255) 30%, rgb(230,230,255) 100%);
+    
 }
 .hhCard-prototype {
 	display: none;
 }
+.hhCard-new {
+	background-color: rgb(230,255,230) ;
+	
+	background-image: linear-gradient(bottom, rgb(255,255,255) 30%, rgb(230,255,230) 100%);
+    background-image: -o-linear-gradient(bottom, rgb(255,255,255) 30%, rgb(230,255,230) 100%);
+    background-image: -moz-linear-gradient(bottom, rgb(255,255,255) 30%, rgb(230,255,230) 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(255,255,255) 30%, rgb(230,255,230) 100%);
+    background-image: -ms-linear-gradient(bottom, rgb(255,255,255) 30%, rgb(230,255,230) 100%);
 
+}
+.hhCard-new-input {
+	width: 115px;
+	opacity: 0.85;
+	margin-bottom: 2px;
+}
+.hhCard-new-input:focus {
+	opacity: 1;
+}
+.hhCard-error {
+	font-size: 0.9em;
+	font-color: #666;
+}
 .hhCard-icon {
 	display: block;
 	width: 32px;
@@ -886,11 +1091,11 @@ button.hhCard-delete {
 	position: absolute;
 	right: 0;
 	top: 5px;
-	width: 20px;
+	width: 15px;
 }
 
 .hhSearch {
-	width: 340px;
+	width: 540px;
 	float: right;
 	text-align: right;
 }
@@ -899,7 +1104,7 @@ button.hhCard-delete {
 }
 .hhSearch-input {
 	border-radius: 5px;
-	border: 1px solid #d8d8d8;
+	border: 1px solid #999;
 	font-size: 1.05em;
 	width: 200px;
 	color: #777;
@@ -907,6 +1112,7 @@ button.hhCard-delete {
 }
 .hhSearch-input:focus {
 	color: black;
+	border: 1px solid #333;
 }
 
 .hhSearch ul {
@@ -997,7 +1203,7 @@ button.hhCard-delete {
 	top: 0;
 }
 .hhAddress-help {
-	display: inline-block;
+	display: block;
 	width: 190px;
 	position: absolute;
 	right: 0;
@@ -1039,6 +1245,15 @@ textarea.gwField-input {
 
 .gwButton {
 	font-size: 0.9em;
+	background-image: none;
+	background-image: linear-gradient(bottom, rgb(220,220,220) 0%, rgb(255,255,255) 100%);
+    background-image: -o-linear-gradient(bottom, rgb(220,220,220) 0%, rgb(255,255,255) 100%);
+    background-image: -moz-linear-gradient(bottom, rgb(220,220,220) 0%, rgb(255,255,255) 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(220,220,220) 0%, rgb(255,255,255) 100%);
+    background-image: -ms-linear-gradient(bottom, rgb(220,220,220) 0%, rgb(255,255,255) 100%);
+    border: 1px solid #777;
+    border-bottom-color: #444;
+    color: #222;
 }
 
 #hhNaming .gwField-input {
@@ -1078,6 +1293,16 @@ h3 {
 	text-decoration: line-through;
 }
 
+.gwUIDisabled {
+	
+}
+
+.hhMembers-none {
+	text-align: center;
+	font-size: 1.4em;
+	color: #555;
+	padding: 2em 4em;
+	}
 
 .gwControls {
 text-align: center;
@@ -1085,24 +1310,66 @@ text-align: center;
 .gwClear { clear:both; }
 
 </style>
+
+<apex:outputText escape="false" value="{!'<'}!--[if IE]{!'>'}"/>
+
+<style>
+.hhCard {
+	border: 1px solid #b8b8b8 !important;
+	display: inline;
+	zoom: 1;
+}
+
+.hhAddress-help {
+	display: block;
+	width: 190px;
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+.gwSection {
+	border: 1px solid #d8d8d8;
+}
+</style>
+
+<apex:outputText escape="false" value="{!'<'}![endif]--{!'>'}"/>
+
+<apex:outputText escape="false" value="{!'<'}!--[if IE 7]{!'>'}"/>
+
+<style>
+
+.hhAddress-help {
+
+	top: 12px;
+}
+
+</style>
+
+<apex:outputText escape="false" value="{!'<'}![endif]--{!'>'}"/>
+
+
 <apex:sectionHeader title="Manage Household" />
 
 
 
-
 <div class="gwNotifications gwHidden"> </div>
+
+
 
 <div class="gwSection">
 <div class="gwSection-header">
     <h2 class="gwSection-title">Household Members</h2>
     <div class="hhSearch">
     	<label for="hhSearch-input">Add Members</label>
-    	<input id="hhSearch-input" type="text" title="Find contact by name ..." class="hhSearch-input" name="hhSearch-input" />
+    	<input id="hhSearch-input" type="text" title="Find contact by name ..." class="gwTitleLabel hhSearch-input" name="hhSearch-input" />
+    	<button class="gwButton hhAddNew">New Contact</button>
     </div>
     <div class="gwClear"></div>
 </div>
 <div class="gwSection-content">
-	<div class="hhMembers"> </div>
+	<div class="hhMembers">
+		<div class="hhMembers-none">There are currently no Contacts in this Household.</div>
+	</div>
 	<div class="hhAddress gwHidden">
 		<h3 class="hhAddress-title">Household Address</h3>
 		<div class="hhAddress-content">
@@ -1122,40 +1389,49 @@ text-align: center;
 		<div class="gwField">
 			<label for="hhName" class="gwField-label">Household Name</label>
 			<input type="text" class="gwField-input" id="hhName" name="hhName" />
-			<input type="checkbox" id="hhAutoName" name="hhAutoName" /><label for="hhAutoName">Auto Name</label>
+			<input type="checkbox" class="gwPreventUI" id="hhAutoName" name="hhAutoName" /><label for="hhAutoName">Auto Name</label>
 		</div>
 		<div class="gwField">
 			<label for="hhGreeting" class="gwField-label">Household Greeting</label>
 			<input type="text" class="gwField-input" id="hhGreeting" name="hhGreeting" />
-			<input type="checkbox" id="hhAutoGreeting" name="hhAutoGreeting" /><label for="hhAutoGreeting">Auto Greeting</label>
+			<input type="checkbox" class="gwPreventUI" id="hhAutoGreeting" name="hhAutoGreeting" /><label for="hhAutoGreeting">Auto Greeting</label>
 		</div>
 	</div>
 </div>
-<apex:form id="gwManageHHForm">
-<apex:pageBlock id="hhDetails" >
+
+<apex:form >
+
+<apex:inputField value="{!hh['Auto_HHName__c']}" styleClass="gwHidden sfField sfField-Auto_HHName__c" />
+<apex:inputField value="{!hh['Auto_HHGreeting__c']}" styleClass="gwHidden sfField sfField-Auto_HHGreeting__c" />
+<apex:inputField value="{!hh['Name']}" styleClass="gwHidden sfField sfField-Name" />
+<apex:inputField value="{!hh['Greeting__c']}" styleClass="gwHidden sfField sfField-Greeting__c" />
+
+<apex:pageBlock id="hhDetails" rendered="{!hh.id!=null}" title="Household Details">
 
 <apex:pageBlockSection columns="2">
 
+		
 		<apex:repeat value="{!$ObjectType.ONEN_Household__c.FieldSets.Manage_Household_Custom}" var="f">
-			
 			<apex:inputField rendered="{!NOT(CONTAINS('Auto_HHGreeting__c,Auto_HHName__c,AverageAmount__c,Best_Gift_Year_Total__c,Best_Gift_Year__c,FirstCloseDate__c,Greeting__c,LargestAmount__c,LastCloseDate__c,LastMembershipAmount__c,LastMembershipDate__c,LastMembershipLevel__c,LastMembershipOrigin__c,LastOppAmount__c,Member_Count__c,MembershipEndDate__c,MembershipJoinDate__c,NumberOfClosedOpps__c,NumberOfMembershipOpps__c,OppAmount2YearsAgo__c,OppAmountLastNDays__c,OppAmountLastYear__c,OppAmountThisYear__c,OppsClosed2YearsAgo__c,OppsClosedLastNDays__c,OppsClosedLastYear__c,OppsClosedThisYear__c,Override_Greeting__c,Override_Household_Name__c,SmallestAmount__c,TotalMembershipOppAmount__c,TotalOppAmount__c', f.FieldPath))}"
 				value="{!hh[f]}" styleClass="sfField sfField-{!f.FieldPath}"/>
-				
+
 			<apex:outputField rendered="{!CONTAINS('Auto_HHGreeting__c,Auto_HHName__c,AverageAmount__c,Best_Gift_Year_Total__c,Best_Gift_Year__c,FirstCloseDate__c,Greeting__c,LargestAmount__c,LastCloseDate__c,LastMembershipAmount__c,LastMembershipDate__c,LastMembershipLevel__c,LastMembershipOrigin__c,LastOppAmount__c,Member_Count__c,MembershipEndDate__c,MembershipJoinDate__c,NumberOfClosedOpps__c,NumberOfMembershipOpps__c,OppAmount2YearsAgo__c,OppAmountLastNDays__c,OppAmountLastYear__c,OppAmountThisYear__c,OppsClosed2YearsAgo__c,OppsClosedLastNDays__c,OppsClosedLastYear__c,OppsClosedThisYear__c,Override_Greeting__c,Override_Household_Name__c,SmallestAmount__c,TotalMembershipOppAmount__c,TotalOppAmount__c', f.FieldPath)}"
 				value="{!hh[f]}" styleClass="sfField sfField-{!f.FieldPath}"/>
 		</apex:repeat>
 
 </apex:pageBlockSection>
+
 </apex:pageBlock>
 
 <div class="gwNotifications gwHidden"> </div>
 <div class="gwControls">
 <div class="gwSection-content">
 	
-	<button class="gwControls-save">Save</button>
-	<apex:commandButton id="saveHH" action="{!save}" value="Save" />
-	<apex:commandButton action="{!delete}" value="Delete" />
-	<apex:commandButton action="{!cancel}" value="Cancel" />
+	<button class="gwPreventUI btn gwControls-save">Save</button>
+	<apex:outputText value="{!conId}" />
+	<apex:commandButton styleClass="gwHidden" id="gwControls-StdSave" action="{!save}" value="Save" />
+	<apex:commandButton rendered="{!hh.id != null}" styleClass="gwPreventUI" action="{!deleteHH}" value="Delete" />
+	<apex:commandButton styleClass="gwPreventUI" action="{!cancel}" value="Cancel" />
 	
 </div>
 </div>
