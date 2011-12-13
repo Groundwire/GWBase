@@ -16,9 +16,9 @@ global class GW_Utilities {
 	global static boolean InManagedPackage {
 		get {
 			if (!fCheckedForManagedPackage) {
-				Schema.DescribeSObjectResult r = ONEN_Household__c.SObjectType.getDescribe();
+				Schema.SObjectType token = Schema.getGlobalDescribe().get('GWBase__ONEN_Household__c');				
 				// if we are running in managed scope, the local name won't have the prefix, but the name will.
-				InManagedPackage = (r.getName() != r.getLocalName());  
+				InManagedPackage = (token != null);
 				fCheckedForManagedPackage = true;				
 			}
 			return InManagedPackage;			
