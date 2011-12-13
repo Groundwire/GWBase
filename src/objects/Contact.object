@@ -916,7 +916,7 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>Primary_Address_Household_Greeting__c</fullName>
         <externalId>false</externalId>
-        <formula>IF ( OR( AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; ), ISPICKVAL ( Primary_Address__c, &quot;Home&quot; )) , FirstName, HouseholdGreeting__c )</formula>
+        <formula>IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) || ( MailingStreet = &quot;&quot; &amp;&amp; MailingCity = &quot;&quot; &amp;&amp; MailingState = &quot;&quot; ), HouseholdGreeting__c , FirstName )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Primary Address Household Greeting</label>
         <required>false</required>
@@ -927,7 +927,7 @@ NOTE: This does not take into account any past overrides or formerly-checked che
         <fullName>Primary_Address_Household_Name__c</fullName>
         <description>Equals Household Name if effective primary address is Home</description>
         <externalId>false</externalId>
-        <formula>IF ( OR(ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ), AND ( MailingStreet = &quot;&quot; , MailingCity = &quot;&quot; , MailingState = &quot;&quot; )),  HouseholdName__c  , TRIM(FirstName &amp; &quot; &quot; &amp; LastName))</formula>
+        <formula>IF ( ISPICKVAL ( Primary_Address__c, &quot;Home&quot; ) || ( MailingStreet = &quot;&quot; &amp;&amp; MailingCity = &quot;&quot; &amp;&amp; MailingState = &quot;&quot; ),  HouseholdName__c  , TRIM(FirstName &amp; &quot; &quot; &amp; LastName))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Primary Address Household Name</label>
         <required>false</required>
