@@ -545,7 +545,6 @@ gwManageHH.saveHousehold = function () {
      			
      			//j$('.gwNotifications').gwNotify('Changes saved.', {type:'success'});
      			if (!newHH) {
-     				alert(newHH);
 	     			j$('input[id$="gwControls-StdSave"]').click();
 	     		} else {
 	     			window.location = '/'+gwManageHH.state.hh.Id;
@@ -1427,8 +1426,7 @@ text-align: center;
 <div class="gwControls">
 <div class="gwSection-content">
 	
-	<button class="gwPreventUI btn gwControls-save">Save</button>
-	
+	<input class="gwPreventUI btn gwControls-save" name="bottomSave" value="Save" type="submit" />
 	<apex:commandButton styleClass="gwHidden" id="gwControls-StdSave" action="{!save}" value="Save" />
 	<apex:commandButton rendered="{!hh.id != null}" styleClass="gwPreventUI" action="{!deleteHH}" value="Delete" />
 	<apex:commandButton styleClass="gwPreventUI" action="{!cancel}" value="Cancel" />
