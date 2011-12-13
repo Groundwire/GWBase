@@ -589,9 +589,22 @@ public with sharing class GW_EXT_ManageHousehold {
     	ONEN_Household__c tempHH = new ONEN_Household__c();
         ApexPages.StandardController sc = new ApexPages.standardController(tempHH);
         
+        // Test a bogus hhid
         ApexPages.currentPage().getParameters().put('hhid', 'sdf');
         
         GW_EXT_ManageHousehold ext = new GW_EXT_ManageHousehold(sc);
+        
+        //Make sure we are creating a new HH
+        system.assertEquals(null, ext.hh.id);
+        
+        sc = new ApexPages.standardController(tempHH);
+        
+        // Test a good hhid
+        ApexPages.currentPage().getParameters().put('hhid', hh.Id);
+        ext = new GW_EXT_ManageHousehold(sc);
+        
+        // Make sure we correctly got the right HH
+        system.assertEquals(hh.Id, ext.hh.Id);
         
         //system.assertEquals(false, ext.hhMembers.isEmpty());
         
@@ -775,8 +788,10 @@ public with sharing class GW_EXT_ManageHousehold {
         string hhGreeting = ext.getHHGreeting();
         
         //test the name
-        system.assertEquals('Mike TEST Monkey abc and Cheryl ABC TEST Monkey', hhName);
-        system.assertEquals('Mike and Cheryl', hhGreeting);
+        system.assertEquals(true, hhName.contains('Mike'));
+        system.assertEquals(true, hhName.contains('Cheryl'));
+        system.assertEquals(true, hhGreeting.contains('Mike'));
+        system.assertEquals(true, hhGreeting.contains('Cheryl'));
         
         // verify that the contact was added
         system.assertEquals(2, ext.activeContacts.size());
@@ -799,8 +814,13 @@ public with sharing class GW_EXT_ManageHousehold {
         //verify that we found two valid addresses even though the matches aren't exactly the same
         system.AssertEquals(2, ext.viableAddresses.size());
         
+        
+        String jsSt = JSON.serialize(ext);
+        
         // now test adding a contact with its existing household members
-        ext.addContactWithHousehold(conWithHH.id);
+        String nwSt = GW_EXT_ManageHousehold.remoteAddMember(conWithHH.id, true, jsSt);
+        
+        ext = GW_EXT_ManageHousehold.unpackState(nwSt);
         
         // We should now have 5 total hh members displayed
         system.assertEquals(5, ext.activeContacts.size());
@@ -808,6 +828,83 @@ public with sharing class GW_EXT_ManageHousehold {
         // We should also check that the correct contact got added
         system.assertEquals(true, ext.activeContacts.containsKey(conWithHH2.id));
         system.assertEquals(conWithHH2.id, ext.activeContacts.get(conWithHH2.id).id);
+        
+        // now add a contact without a hh
+        jsSt = JSON.serialize(ext);
+        nwSt = GW_EXT_ManageHousehold.remoteAddMember(con5.id, false, jsSt);
+        ext = GW_EXT_ManageHousehold.unpackState(nwSt);
+        
+        // Add another for good measure (will use later)
+        jsSt = JSON.serialize(ext);
+        nwSt = GW_EXT_ManageHousehold.remoteAddMember(con4.id, false, jsSt);
+        ext = GW_EXT_ManageHousehold.unpackState(nwSt);
+        
+        // Check that the contacts got added
+        system.assertEquals(true, ext.activeContacts.containsKey(con5.id));
+        system.assertEquals(true, ext.activeContacts.containsKey(con4.id));
+        
+        // Now let us remove a contact
+        jsSt = JSON.serialize(ext);
+        nwSt = GW_EXT_ManageHousehold.remoteRemoveMember(con5.id, jsSt);
+        ext = GW_EXT_ManageHousehold.unpackState(nwSt);
+        
+        // Test that it was removed
+        system.assertEquals(false, ext.activeContacts.containsKey(con5.id));
+        
+        // Test changing name
+        jsSt = JSON.serialize(ext);
+        nwSt = GW_EXT_ManageHousehold.remoteSetNaming(false, 'The Test123Awesomes', false, 'TestZZ1234', jsSt);
+        ext = GW_EXT_ManageHousehold.unpackState(nwSt);
+        
+        // Verify that name and greeting were set
+        system.assertEquals('The Test123Awesomes', ext.hhName);
+        system.assertEquals('TestZZ1234', ext.hhGreeting);
+        
+        // Save
+        jsSt = JSON.serialize(ext);
+        nwSt = GW_EXT_ManageHousehold.remoteSave(jsSt);
+        ext = GW_EXT_ManageHousehold.unpackState(nwSt);
+        
+        // query for a contact and make sure it got the correct fields set
+        Contact con4q = [SELECT Id, ONEN_Household__c, OtherStreet FROM Contact WHERE Id = :con4.id];
+        
+        system.assertEquals(ext.hh.id, con4q.ONEN_Household__c);
+        
+        // Set the address to the new contact
+        ext.setActiveAddress(con4.id);
+        
+        // Now remove another member, save, and make sure the lookup field is set to null
+        jsSt = JSON.serialize(ext);
+        nwSt = GW_EXT_ManageHousehold.remoteRemoveMember(con4.id, jsSt);
+        ext = GW_EXT_ManageHousehold.unpackState(nwSt);
+        // Save
+        jsSt = JSON.serialize(ext);
+        nwSt = GW_EXT_ManageHousehold.remoteSave(jsSt);
+        ext = GW_EXT_ManageHousehold.unpackState(nwSt);
+        
+        con4q = [SELECT Id, ONEN_Household__c, OtherStreet FROM Contact WHERE Id = :con4.id];
+        
+        system.assertNotEquals(ext.hh.id, con4q.ONEN_Household__c);
+        
+        // Now add a completely new contact and save
+        ext.insertContacts.add(new Contact(FirstName = 'Lefty', LastName = 'TestFunky123'));
+        
+        // Save
+        jsSt = JSON.serialize(ext);
+        nwSt = GW_EXT_ManageHousehold.remoteSave(jsSt);
+        ext = GW_EXT_ManageHousehold.unpackState(nwSt);
+        
+        // Query for our new contact
+        Contact newCon = [SELECT Id, ONEN_Household__c, Name FROM Contact WHERE Name = 'Lefty TestFunky123'];
+        system.assertEquals(ext.hh.id, newCon.ONEN_Household__c);
+        
+        Id fHHid = ext.hh.id;
+        
+        // Cover the "standard" save
+        ext.save();
+        
+        // Now, test delete
+        ext.deleteHH();
         
         Test.stopTest();
     	
