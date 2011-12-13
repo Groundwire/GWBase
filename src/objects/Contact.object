@@ -1299,6 +1299,17 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
         <label>New This Week</label>
     </listViews>
     <webLinks>
+        <fullName>Household</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Household</masterLabel>
+        <openType>sidebar</openType>
+        <protected>false</protected>
+        <url>/apex/managehousehold?cid={!Contact.Id}&amp;hhid={!IF(ISNULL(Contact.ONEN_HouseholdId__c), null, Contact.ONEN_HouseholdId__c)}</url>
+    </webLinks>
+    <webLinks>
         <fullName>Job_Change</fullName>
         <availability>online</availability>
         <description>This button brings up a page to choose a new organization for a particular contact.  When saved, a former employment Organization to Contact relationship is created with a job end date.</description>
