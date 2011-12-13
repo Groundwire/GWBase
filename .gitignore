@@ -85,3 +85,6 @@ src/documents/SharedDocuments/partner_portal_test_footer.txt-meta.xml
 src/documents/SharedDocuments/partner_portal_test_logo.png
 src/documents/SharedDocuments/partner_portal_test_logo.png-meta.xml
 src/documents/SharedDocuments-meta.xml
+src/layouts/SocialPost-Social Post Layout.layout
+src/objects/SocialPost.object
+src/workflows/Question.workflow
