@@ -555,6 +555,7 @@ public with sharing class GW_EXT_ManageHousehold {
 		if (nHH != null) {
 			hh.Auto_HHGreeting__c = nHH.Auto_HHGreeting__c;
 			hh.Auto_HHName__c = nHH.Auto_HHName__c;
+			update hh;
 		}
 		
 		return sv;
