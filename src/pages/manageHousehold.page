@@ -107,8 +107,10 @@ j$(function () {
     // Controls
     j$('.gwControls-save').click(function () {
     	gwManageHH.saveHousehold();
+    	gwManageHH.renderControls(false);
     	return false;
     });
+    
     
     // Cards
     j$('.hhCard').live('mouseenter mouseleave', function (event) {
@@ -667,8 +669,16 @@ gwManageHH.renderNaming = function () {
 	}
 }
 
-gwManageHH.renderControls = function () {
-
+gwManageHH.renderControls = function (enabled) {
+	inpts = j$('.gwControls input[type="submit"]').not('.gwHidden');
+	if (enabled) {
+		inpts.removeAttr('disabled');
+		inpts.css('opacity','1');
+	} else {
+		inpts.attr('disabled','disabled');
+		inpts.css('opacity','0.5');
+		inpts.val('Saving ...');
+	}
 }
 
 gwManageHH.getHHMembers = function() {
