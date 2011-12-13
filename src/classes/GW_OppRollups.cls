@@ -240,7 +240,7 @@ public class GW_OppRollups {
                 // ( Fiscal_Year(closeDate) = null OR Fiscal_Year(closeDate) >= : startYear ) AND
                 accountId != null ];
                     
-            // invokes code to get the currency of npo02__CombinedRollupFieldset__c oppty
+            // invokes code to get the currency of GWBase__CombinedRollupFieldset__c oppty
             opptyCurrencies = (isMultiCurrency() ? rcfFindCurrency(objectList) : null);
             
             for (sobject r : objectList ) {
