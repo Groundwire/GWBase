@@ -292,8 +292,13 @@ global with sharing virtual class ONEN_CTRL_NewOppWizard {
             }
         }
         
+        // Create a list to sort the names
+        list<string> sortedTypes = new list<string>();
+        sortedTypes.addAll(rtidMap.keySet());
+        sortedTypes.sort();
+        
         //loop through the record types for Opportunity
-        for ( string thisRecordType : rtidMap.keySet()) {
+        for ( string thisRecordType : sortedTypes) {
             //if we're creating a Contact Opp, get all the right record types
             if(oppApplicant == 'Contact') {
                 if (!opprtExcludeContact.contains(thisRecordType)) {
