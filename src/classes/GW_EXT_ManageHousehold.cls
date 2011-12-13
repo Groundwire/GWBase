@@ -522,9 +522,7 @@ public with sharing class GW_EXT_ManageHousehold {
 			update contactsToRemove;
 		}
 		
-		//Rollup household
-		GW_OppRollups rg = new GW_OppRollups();
-		rg.rollupHousehold(hh.id);
+		
 	}
 	
 	/*******************************************************************************************************
@@ -541,8 +539,25 @@ public with sharing class GW_EXT_ManageHousehold {
 	* @return PageReference.
     ********************************************************************************************************/
 	public PageReference save() {
+		
+		ONEN_Household__c nHH;
+		if (hh.id != null) {
+			nHH = getHH(hh.id);
+		}
+		
 		ApexPages.StandardController sc = new ApexPages.standardController(hh);
-		return sc.save();
+		PageReference sv = sc.save();
+		
+		//Rollup household
+		GW_OppRollups rg = new GW_OppRollups();
+		rg.rollupHousehold(hh.id);
+		
+		if (nHH != null) {
+			hh.Auto_HHGreeting__c = nHH.Auto_HHGreeting__c;
+			hh.Auto_HHName__c = nHH.Auto_HHName__c;
+		}
+		
+		return sv;
 	}
 	
 	// TEST METHOD
