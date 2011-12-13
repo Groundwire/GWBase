@@ -5,10 +5,10 @@
 <!-- We also need jQuery UI --> 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" />
 <!-- We also need JSON2 -->
-<script src="{!URLFOR($Resource.jQueryFiles, 'js/json2.js')}"/>
+<script src="{!URLFOR($Resource.jquery, 'js/json2.js')}"/>
 
 <!-- get our jQuery UI theme -->
-<apex:stylesheet value="{!URLFOR($Resource.jQueryFiles, 'css/smoothness/jquery-ui-1.8.16.custom.css')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.jquery, 'css/smoothness/jquery-ui-1.8.16.custom.css')}"/>
 
 <script type="text/javascript">
     
@@ -1428,7 +1428,7 @@ text-align: center;
 <div class="gwSection-content">
 	
 	<button class="gwPreventUI btn gwControls-save">Save</button>
-	<apex:outputText value="{!conId}" />
+	
 	<apex:commandButton styleClass="gwHidden" id="gwControls-StdSave" action="{!save}" value="Save" />
 	<apex:commandButton rendered="{!hh.id != null}" styleClass="gwPreventUI" action="{!deleteHH}" value="Delete" />
 	<apex:commandButton styleClass="gwPreventUI" action="{!cancel}" value="Cancel" />
