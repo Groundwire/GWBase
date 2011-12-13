@@ -2,7 +2,7 @@
 
 	<apex:stylesheet value="{!$Resource.PyramidChartCSS}"/>
 
-	<apex:includeScript value="{!$Resource.jquery}"/>
+	<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js" />
 	<apex:includeScript value="{!$Resource.RaphaelJSLib}"/>
 	<apex:includeScript value="{!$Resource.PyramidChartJSLib}"/>
 
