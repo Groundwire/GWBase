@@ -545,7 +545,6 @@ gwManageHH.saveHousehold = function () {
      			
      			//j$('.gwNotifications').gwNotify('Changes saved.', {type:'success'});
      			if (!newHH) {
-     				alert(newHH);
 	     			j$('input[id$="gwControls-StdSave"]').click();
 	     		} else {
 	     			window.location = '/'+gwManageHH.state.hh.Id;
