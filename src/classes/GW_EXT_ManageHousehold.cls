@@ -12,6 +12,7 @@
 public with sharing class GW_EXT_ManageHousehold {
 
 	public ONEN_Household__c hh{get; set;}
+	public Boolean inGWBase = GW_Utilities.InManagedPackage;
 	public Boolean autoName {
 		get {
 			if (hh.Id == null && hh.Name == null) {
@@ -66,7 +67,7 @@ public with sharing class GW_EXT_ManageHousehold {
 	public string activeState;
 	public string activeCountry;
 	 
-	public static string conSelect = 'SELECT Id, FirstName, LastName, Salutation, Name, Not_in_HH_Name__c, ONEN_Household__c, OtherStreet, OtherCity, OtherState, OtherPostalCode, OtherCountry FROM Contact ';
+	public static string conSelect = GW_Utilities.StrAllNSPrefix('SELECT Id, FirstName, LastName, Salutation, Name, Not_in_HH_Name__c, ONEN_Household__c, OtherStreet, OtherCity, OtherState, OtherPostalCode, OtherCountry FROM Contact ');
 	
 	
     public GW_EXT_ManageHousehold(ApexPages.StandardController controller) {
@@ -155,7 +156,8 @@ public with sharing class GW_EXT_ManageHousehold {
 		}
 		
 		String whereClause = 'WHERE Name LIKE \'%'+subString+'%\' '+excludeIds+' LIMIT 20';
-		return database.query(conSelect + whereClause);
+		String q = GW_Utilities.StrAllNSPrefix(conSelect + whereClause);
+		return database.query(q);
 	}
 	
 	/*******************************************************************************************************
@@ -272,7 +274,8 @@ public with sharing class GW_EXT_ManageHousehold {
 			i += 1;
 		}
 		hhq += ' FROM ONEN_Household__c WHERE Id = \''+hhId+'\'';
-		ONEN_Household__c houseHold = database.query(hhq);
+		String q = GW_Utilities.StrAllNSPrefix(hhq);
+		ONEN_Household__c houseHold = database.query(q);
 		return houseHold;
 	}
 	
@@ -284,7 +287,8 @@ public with sharing class GW_EXT_ManageHousehold {
 	public boolean addContact(Id cid) {
 		
 		String whereClause = 'WHERE Id = \''+cid+'\'';
-		list<Contact> con = Database.query(conSelect + whereClause);
+		String q = GW_Utilities.StrAllNSPrefix(conSelect + whereClause);
+		list<Contact> con = Database.query(q);
 		if (!con.isEmpty()) {
         	activeContacts.put(con[0].id, con[0]);
         	
@@ -333,14 +337,16 @@ public with sharing class GW_EXT_ManageHousehold {
 	public boolean addContactWithHousehold(Id cid) {
 		
 		String whereClause = 'WHERE Id = \''+cid+'\'';
-		list<Contact> con = Database.query(conSelect + whereClause);
+		String q = GW_Utilities.StrAllNSPrefix(conSelect + whereClause);
+		list<Contact> con = Database.query(q);
 		if (!con.isEmpty()) {
         	activeContacts.put(con[0].id, con[0]);
         	
         	// check for household then find and add contacts
         	if (con[0].ONEN_Household__c != null) {
         		whereClause = 'WHERE ONEN_Household__c = \''+con[0].ONEN_Household__c+'\'';
-        		list<Contact> hhcons = Database.query(conSelect + whereClause);
+        		q = GW_Utilities.StrAllNSPrefix(conSelect + whereClause);
+        		list<Contact> hhcons = Database.query(q);
         		if (!hhcons.isEmpty()) {
         			for (Contact hhcon : hhcons) {
         				
@@ -382,8 +388,8 @@ public with sharing class GW_EXT_ManageHousehold {
 		
 		list<Id> activeConIds = new list<Id>();
 		activeConIds.addAll(activeContacts.keySet());
-		
-		list<Contact> cons = Database.query(conSelect + 'WHERE id IN :activeConIds');
+		String q = GW_Utilities.StrAllNSPrefix(conSelect + 'WHERE id IN :activeConIds');
+		list<Contact> cons = Database.query(q);
 		
 		for (Contact con : cons) {
 			if (con.OtherStreet != null || con.OtherCity != null || con.OtherState != null || con.OtherPostalCode != null || con.OtherCountry != null) {
@@ -469,8 +475,8 @@ public with sharing class GW_EXT_ManageHousehold {
 		if (conId != null) q += ' Id=\''+conId+'\'';
 		if (conId != null && hh.id != null) q += ' or';
 		if (hh.id != null) q += ' ONEN_HouseHold__c = \''+hh.id+'\'';
-		
-		return Database.query(q);
+		String qry = GW_Utilities.StrAllNSPrefix(q);
+		return Database.query(qry);
 	}
 	
 	/*******************************************************************************************************
