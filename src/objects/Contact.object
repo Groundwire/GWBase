@@ -1307,7 +1307,7 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
         <masterLabel>Household</masterLabel>
         <openType>sidebar</openType>
         <protected>false</protected>
-        <url>/apex/managehousehold?cid={!Contact.Id}&amp;hhid={!IF(ISNULL(Contact.ONEN_HouseholdId__c), null, Contact.ONEN_HouseholdId__c)}</url>
+        <url>/apex/managehousehold?cid={!Contact.Id}&amp;hhid={!IF(ISNULL(Contact.ONEN_HouseholdId__c), null, Contact.ONEN_HouseholdId__c)}&amp;retURL={!URLFOR($Action.Contact.View, Contact.Id)}</url>
     </webLinks>
     <webLinks>
         <fullName>Job_Change</fullName>
