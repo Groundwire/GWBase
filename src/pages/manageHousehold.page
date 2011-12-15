@@ -13,8 +13,19 @@
 <script type="text/javascript">
     
 var j$ = jQuery.noConflict();
-
-
+var pgController
+var fldPfx;
+// Set the controller for APEX Remoting methods
+try {
+	pgController = GWBase.GW_EXT_ManageHousehold;
+	fldPfx = 'GWBase__';
+} catch (err) {
+	pgController = GW_EXT_ManageHousehold;
+	fldPfx = '';
+}
+function fldNm (str) {
+	return fldPfx+str;
+}
 
 j$(function () {
     
@@ -23,7 +34,7 @@ j$(function () {
     	position: { my: "right top", at: "right bottom", collision: "none" },
     	source: function(request, response) {
     		var searchStr = request.term.toLowerCase();      			
-			GW_EXT_ManageHousehold.findContacts(searchStr,gwManageHH.jsonState, function(result, event) {       								
+			pgController.findContacts(searchStr,gwManageHH.jsonState, function(result, event) {       								
 	        		if (event.type == 'exception') {
 	        			alert(event.message);
 	        		} else {
@@ -45,7 +56,7 @@ j$(function () {
     	var linode = j$( '<li class="hhSearch-item"></li>' ).data( "item.autocomplete", item ).append( '<span class="hhSearch-item-name">' + item.label + '</span><span class="hhSearch-item-address">'+address+'</span>' );
     	
     	// If the contact is in a household add a visual indicator
-    	if (item.contact.ONEN_Household__c != null) {
+    	if (item.contact[fldNm('ONEN_Household__c')] != null) {
     		linode.find('.hhSearch-item-address').after('<span class="hhSearch-item-hh">Existing household</span>');
     	}
     	
@@ -97,7 +108,7 @@ j$(function () {
     		gwManageHH.setNameExclusion(cid, j$(this).is(':checked'));
     	} else {
     		var contact = card.data('contact');
-    		contact.Not_in_HH_Name__c = j$(this).is(':checked');
+    		contact[fldNm('Not_in_HH_Name__c')] = j$(this).is(':checked');
     		card.data('contact',contact);
     		gwManageHH.setInsertContacts();
     		gwManageHH.setNaming();
@@ -165,6 +176,8 @@ var gwManageHH = new Object();
 gwManageHH.state = {!jsonState};
 gwManageHH.jsonState = JSON.stringify(gwManageHH.state);
 gwManageHH.originalState = JSON.stringify({!originalState});
+
+
 gwManageHH.cardPrototype = '<div class="hhCard"><div class="hhCard-icon">Contact</div><div class="hhCard-details"><span class="hhCard-details-name"></span><span class="hhCard-details-address"></span><span class="hh-name-exclude"><input class="gwPreventUI hh-name-exclude-input" type="checkbox" /><label>Exclude from name</label></span></div></div>';
 gwManageHH.renderCard = function(contact) {
 	
@@ -183,7 +196,7 @@ gwManageHH.renderCard = function(contact) {
 	nm.find('input').attr('id','hhex'+contact.Id).attr('name','hhex'+contact.Id);
 	nm.find('label').attr('for','hhex'+contact.Id);
 	
-	if (contact.Not_in_HH_Name__c) {
+	if (contact[fldNm('Not_in_HH_Name__c')]) {
 		nm.find('input').attr('checked','checked');
 	} else {
 		nm.find('input').removeAttr('checked');
@@ -225,7 +238,7 @@ gwManageHH.updateCard = function (contact) {
 	}
 	
 	var nm = card.find('.hh-name-exclude');
-	if (contact.Not_in_HH_Name__c) {
+	if (contact[fldNm('Not_in_HH_Name__c')]) {
 		nm.find('input').attr('checked','checked');
 	} else {
 		nm.find('input').removeAttr('checked');
@@ -264,7 +277,9 @@ gwManageHH.addNewContact = function () {
     del.hide();
 	card.append(del);
 	
-	card.data('contact',{"FirstName": "", "LastName": "","Not_in_HH_Name__c": false});
+	var cntct = {"FirstName": "", "LastName": ""};
+	cntct[fldNm('Not_in_HH_Name__c')] = false;
+	card.data('contact',cntct);
 	
 	firstN.focus(function () {
 		var obj = j$(this);
@@ -307,12 +322,15 @@ gwManageHH.updateState = function (state) {
 	
 	// Setup the naming fields
 	gwManageHH.renderNaming();
+	
+	// Controls
+	gwManageHH.renderControls(true);
 }
 gwManageHH.dialogAddMember = function(event) {
 	var linode = j$(this).closest('.hhSearch-item');
 	var contact = linode.data('item.autocomplete').contact;
 	
-	if (contact.ONEN_Household__c != null) {
+	if (contact[fldNm('ONEN_Household__c')] != null) {
 		var dialog = j$('#dialog-addmember');
 		dialog.data('contact',contact);
 		
@@ -446,7 +464,7 @@ gwManageHH.addMember = function (cid, wHH) {
 	
 	j$('.gwPreventUI').gwsetui('disable');
 	
-	GW_EXT_ManageHousehold.remoteAddMember(cid, wHH, gwManageHH.jsonState, function(result, event) {       								
+	pgController.remoteAddMember(cid, wHH, gwManageHH.jsonState, function(result, event) {       								
      	if (event.type == 'exception') {
      		j$('.gwNotifications').gwNotify(event.message, {type:'alert'});
      	} else {
@@ -480,7 +498,7 @@ gwManageHH.removeMember = function (cid) {
 	
 	j$('.gwPreventUI').gwsetui('disable');
 	
-	GW_EXT_ManageHousehold.remoteRemoveMember(cid, gwManageHH.jsonState, function(result, event) {
+	pgController.remoteRemoveMember(cid, gwManageHH.jsonState, function(result, event) {
 		       								
      	if (event.type == 'exception') {
      		j$('.gwNotifications').gwNotify(event.message, {type:'alert'});
@@ -497,7 +515,7 @@ gwManageHH.removeMember = function (cid) {
 
 gwManageHH.setNameExclusion = function (cid, ex) {
 	
-	gwManageHH.state.activeContacts[cid].Not_in_HH_Name__c = ex;
+	gwManageHH.state.activeContacts[cid][fldNm('Not_in_HH_Name__c')] = ex;
 	
 	gwManageHH.jsonState = JSON.stringify(gwManageHH.state);
 	
@@ -516,7 +534,7 @@ gwManageHH.setNaming = function () {
 	
 	j$('.gwPreventUI').gwsetui('disable');
 	
-	GW_EXT_ManageHousehold.remoteSetNaming(aN, nN, aG, nG, gwManageHH.jsonState, function(result, event) {
+	pgController.remoteSetNaming(aN, nN, aG, nG, gwManageHH.jsonState, function(result, event) {
 		if (event.type == 'exception') {
      		j$('.gwNotifications').gwNotify(event.message, {type:'alert'});
      	} else {
@@ -537,7 +555,7 @@ gwManageHH.saveHousehold = function () {
 	
 	var newHH = gwManageHH.state.hh.Id == null;
 	
-	GW_EXT_ManageHousehold.remoteSave(gwManageHH.jsonState, function(result, event) {
+	pgController.remoteSave(gwManageHH.jsonState, function(result, event) {
 		if (event.type == 'exception') {
      		j$('.gwNotifications').gwNotify(event.message, {type:'alert'});
      	} else {
@@ -670,10 +688,18 @@ gwManageHH.renderNaming = function () {
 }
 
 gwManageHH.renderControls = function (enabled) {
-	inpts = j$('.gwControls input[type="submit"]').not('.gwHidden');
+	var hasContacts = j$('.hhCard').length > 0;
+	var inpts = j$('.gwControls input[type="submit"]').not('.gwHidden');
 	if (enabled) {
 		inpts.removeAttr('disabled');
 		inpts.css('opacity','1');
+		if (!hasContacts) {
+			j$('.gwControls-save').addClass('gwHidden');
+			j$('input[id$="gwControls-StdSave"]').attr('disabled','disabled');
+		} else {
+			j$('.gwControls-save').removeClass('gwHidden');
+			j$('input[id$="gwControls-StdSave"]').removeAttr('disabled','disabled');
+		}
 	} else {
 		inpts.attr('disabled','disabled');
 		inpts.css('opacity','0.5');

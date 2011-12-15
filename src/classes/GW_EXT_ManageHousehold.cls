@@ -12,7 +12,11 @@
 public with sharing class GW_EXT_ManageHousehold {
 
 	public ONEN_Household__c hh{get; set;}
-	public Boolean inGWBase = GW_Utilities.InManagedPackage;
+	public String ctrlName {
+		get {
+			return GW_Utilities.InManagedPackage == true ? 'GWBase__GW_EXT_ManageHousehold' : 'GW_EXT_ManageHousehold';
+		}
+	}
 	public Boolean autoName {
 		get {
 			if (hh.Id == null && hh.Name == null) {
@@ -489,6 +493,15 @@ public with sharing class GW_EXT_ManageHousehold {
 		// Insert Household
 		upsert hh;
 		
+		// Insert new contacts.
+		// This MUST happen before updating contacts
+		if (!insertContacts.isEmpty()) {
+			for (Contact con : insertContacts) {
+				con.ONEN_Household__c = hh.id;
+			}
+			insert insertContacts;
+		}
+		
 		// Update our included contacts
 		if (!activeContacts.isEmpty()) {
 			
@@ -508,14 +521,6 @@ public with sharing class GW_EXT_ManageHousehold {
 				
 				update con;
 			}
-		}
-		
-		// Insert new contacts
-		if (!insertContacts.isEmpty()) {
-			for (Contact con : insertContacts) {
-				con.ONEN_Household__c = hh.id;
-			}
-			insert insertContacts;
 		}
 		
 		// Remove contacts from household
