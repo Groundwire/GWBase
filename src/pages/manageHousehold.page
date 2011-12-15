@@ -178,7 +178,7 @@ gwManageHH.jsonState = JSON.stringify(gwManageHH.state);
 gwManageHH.originalState = JSON.stringify({!originalState});
 
 
-gwManageHH.cardPrototype = '<div class="hhCard"><div class="hhCard-icon">Contact</div><div class="hhCard-details"><span class="hhCard-details-name"></span><span class="hhCard-details-address"></span><span class="hh-name-exclude"><input class="gwPreventUI hh-name-exclude-input" type="checkbox" /><label>Exclude from name</label></span></div></div>';
+gwManageHH.cardPrototype = '<div class="hhCard"><div class="hhCard-icon">Contact</div><div class="hhCard-details"><span class="hhCard-details-name"></span><span class="hhCard-details-address"></span><span class="hh-name-exclude"><input class="gwPreventUI hh-name-exclude-input" type="checkbox" /><label>Exclude from household name</label></span></div></div>';
 gwManageHH.renderCard = function(contact) {
 	
 	var card = j$(gwManageHH.cardPrototype);
@@ -1247,9 +1247,15 @@ button.hhCard-delete {
 	right: 0;
 	top: 0;
 }
-.hh-name-exclude {
+..hh-name-exclude {
 	margin-top: 0.4em;
 	display:block;
+	font-size: 0.9em;
+	padding-left: 1.4em;
+	line-height: 1.1em;
+}
+.hh-name-exclude input {
+	margin-left: -1.4em;
 }
 
 .gwField {
