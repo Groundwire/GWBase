@@ -12,7 +12,11 @@
 public with sharing class GW_EXT_ManageHousehold {
 
 	public ONEN_Household__c hh{get; set;}
-	public Boolean inGWBase = GW_Utilities.InManagedPackage;
+	public String ctrlName {
+		get {
+			return GW_Utilities.InManagedPackage == true ? 'GWBase__GW_EXT_ManageHousehold' : 'GW_EXT_ManageHousehold';
+		}
+	}
 	public Boolean autoName {
 		get {
 			if (hh.Id == null && hh.Name == null) {
