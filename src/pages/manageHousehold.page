@@ -1115,6 +1115,8 @@ j$.fn.gwsetui = function (options) {
 	font-size: 1.1em;
 	font-weight: bold;
 	display:block;
+	word-wrap: break-word;
+	width: 130px;
 }
 .hhCard-details-address {
 
