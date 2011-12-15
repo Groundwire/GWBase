@@ -9,92 +9,92 @@
 * to set the address on the household.
 *
 */
-public with sharing class GW_EXT_ManageHousehold {
+global with sharing class GW_EXT_ManageHousehold {
 
-	public ONEN_Household__c hh{get; set;}
-	public String ctrlName {
-		get {
-			return GW_Utilities.InManagedPackage == true ? 'GWBase__GW_EXT_ManageHousehold' : 'GW_EXT_ManageHousehold';
-		}
-	}
-	public Boolean autoName {
-		get {
-			if (hh.Id == null && hh.Name == null) {
-				return true;
-			}
-			return hh.Auto_HHName__c;
-		}
-	}
-	public Boolean autoGreeting {
-		get {
-			if (hh.Id == null && hh.Greeting__c == null) {
-				return true;
-			}
-			return hh.Auto_HHGreeting__c;
-		}
-	}
-	public String hhName {
-		get {
-			if (autoName) {
-				return getHHName();
-			}
-			return hh.Name;
-		}
-		set;
-	}
-	public String hhGreeting {
-		get {
-			if (autoGreeting) {
-				return getHHGreeting();
-			}
-			return hh.Greeting__c;
-		}
-		set;
-	}
-	
-	public Id conId;
-	public Contact con;
-	public map<Id, Contact> activeContacts;
-	public set<Contact> removeContacts;
-	public list<Contact> insertContacts;
-	
-	public String jsonState {get;set;}
-	public String originalState {get;set;}
-	public String redirectTo {get;set;}
-	
-	public map<String, Id> viableAddresses;
-	public boolean useAddress;
-	public Id activeAddressConId;
-	public string activeStreet;
-	public string activeCity;
-	public string activePostalCode;
-	public string activeState;
-	public string activeCountry;
-	 
-	public static string conSelect = GW_Utilities.StrAllNSPrefix('SELECT Id, FirstName, LastName, Salutation, Name, Not_in_HH_Name__c, ONEN_Household__c, OtherStreet, OtherCity, OtherState, OtherPostalCode, OtherCountry FROM Contact ');
-	
-	
+    public ONEN_Household__c hh{get; set;}
+    public String ctrlName {
+        get {
+            return GW_Utilities.InManagedPackage == true ? 'GWBase__GW_EXT_ManageHousehold' : 'GW_EXT_ManageHousehold';
+        }
+    }
+    public Boolean autoName {
+        get {
+            if (hh.Id == null && hh.Name == null) {
+                return true;
+            }
+            return hh.Auto_HHName__c;
+        }
+    }
+    public Boolean autoGreeting {
+        get {
+            if (hh.Id == null && hh.Greeting__c == null) {
+                return true;
+            }
+            return hh.Auto_HHGreeting__c;
+        }
+    }
+    public String hhName {
+        get {
+            if (autoName) {
+                return getHHName();
+            }
+            return hh.Name;
+        }
+        set;
+    }
+    public String hhGreeting {
+        get {
+            if (autoGreeting) {
+                return getHHGreeting();
+            }
+            return hh.Greeting__c;
+        }
+        set;
+    }
+    
+    public Id conId;
+    public Contact con;
+    public map<Id, Contact> activeContacts;
+    public set<Contact> removeContacts;
+    public list<Contact> insertContacts;
+    
+    public String jsonState {get;set;}
+    public String originalState {get;set;}
+    public String redirectTo {get;set;}
+    
+    public map<String, Id> viableAddresses;
+    public boolean useAddress;
+    public Id activeAddressConId;
+    public string activeStreet;
+    public string activeCity;
+    public string activePostalCode;
+    public string activeState;
+    public string activeCountry;
+     
+    public static string conSelect = 'SELECT Id, FirstName, LastName, Salutation, Name, Not_in_HH_Name__c, ONEN_Household__c, OtherStreet, OtherCity, OtherState, OtherPostalCode, OtherCountry FROM Contact ';
+    
+    
     public GW_EXT_ManageHousehold(ApexPages.StandardController controller) {
-    	
-    	activeContacts = new map<Id, Contact>();
-    	removeContacts = new set<Contact>();
-    	viableAddresses = new map<String, Id>();
-    	insertContacts = new list<Contact>();
-    	
-    	Id tempHHid;
+        
+        activeContacts = new map<Id, Contact>();
+        removeContacts = new set<Contact>();
+        viableAddresses = new map<String, Id>();
+        insertContacts = new list<Contact>();
+        
+        Id tempHHid;
         ONEN_Household__c thh = (ONEN_Household__c)controller.getRecord();
         if (thh.Id == null) {
-        	String paramHhId = ApexPages.currentPage().getParameters().get('hhid');
-        	try {
-        		tempHHid = paramHhId;
-        	} catch (Exception e) {
-        		tempHHid = null;
-        	}
+            String paramHhId = ApexPages.currentPage().getParameters().get('hhid');
+            try {
+                tempHHid = paramHhId;
+            } catch (Exception e) {
+                tempHHid = null;
+            }
         } else {
-        	tempHHid = thh.Id;
+            tempHHid = thh.Id;
         }
         hh = tempHHid != Null ? getHH(tempHHid) : thh;
-		
+        
         //Get the contact id from the query if present
         conId = ApexPages.currentPage().getParameters().get('cid');
         
@@ -102,28 +102,27 @@ public with sharing class GW_EXT_ManageHousehold {
         
         //if we are an existing household, get the members
         if (hh.Id != Null || conId != null) {
-        	
-        	if (!hhMembers.isEmpty()) {
-        		activeContacts.putAll(hhMembers);
-        		
-        	}
+            
+            if (!hhMembers.isEmpty()) {
+                activeContacts.putAll(hhMembers);    
+            }
         }
         
         // Set the active address
-		if (!activeContacts.isEmpty()) {
-			list<Id> aCids = new list<Id>();
-			aCids.addAll(activeContacts.keySet());
-			if (!aCids.isEmpty()) setActiveAddress(aCids[0]);
-		}
+        if (!activeContacts.isEmpty()) {
+            list<Id> aCids = new list<Id>();
+            aCids.addAll(activeContacts.keySet());
+            if (!aCids.isEmpty()) setActiveAddress(aCids[0]);
+        }
         
         getViableAddresses();
         
         if (activeAddressConId == null && !viableAddresses.isEmpty()) {
-        	setActiveAddress(viableAddresses.values()[0]);
+            setActiveAddress(viableAddresses.values()[0]);
         }
         
         if (activeAddressConId != null) {
-        	useAddress = false;
+            useAddress = false;
         }
         
         jsonState = JSON.serialize(this);
@@ -132,484 +131,484 @@ public with sharing class GW_EXT_ManageHousehold {
         originalState = (hh.Id == Null) ? jsonState : '';
     }
     
-   	
     
-	
-	/*******************************************************************************************************
-	* @description Method to return up to 20 contacts with names similar to a passed in string. Filters out
-	* contacts that have already been added to the household.
-	* @param subString the substring to filter by 
+    
+    
+    /*******************************************************************************************************
+    * @description Method to return up to 20 contacts with names similar to a passed in string. Filters out
+    * contacts that have already been added to the household.
+    * @param subString the substring to filter by 
     * @return list<Contact>
     ********************************************************************************************************/
     @RemoteAction
-	public static list<Contact> findContacts(string subString, String state) {
-		GW_EXT_ManageHousehold gwMH = unpackState(state);
-		
-		string excludeIds = '';
-		list<Id> activeConIds = new list<Id>();
-		activeConIds.addAll(gwMH.activeContacts.keySet());
-		if (!activeConIds.isEmpty()) {
-			excludeIds =  'AND Id NOT IN (';
-			integer i = 1;
-			for (Id conId : activeConIds) {
-				excludeIds += '\''+conId+'\'';
-				if (i != activeConIds.size()) excludeIds += ',';
-				i += 1;
-			}
-			excludeIds += ')';
-		}
-		
-		String whereClause = 'WHERE Name LIKE \'%'+subString+'%\' '+excludeIds+' LIMIT 20';
-		String q = GW_Utilities.StrAllNSPrefix(conSelect + whereClause);
-		return database.query(q);
-	}
-	
-	/*******************************************************************************************************
-	* @description Takes a JSON string and attempts to instantiate GW_EXT_ManageHousehold using the 
-	* deserialized object.
-	* @param String state - A serialized copy of the page controller state. 
+    global static list<Contact> findContacts(string subString, String state) {
+        GW_EXT_ManageHousehold gwMH = unpackState(state);
+        
+        string excludeIds = '';
+        list<Id> activeConIds = new list<Id>();
+        activeConIds.addAll(gwMH.activeContacts.keySet());
+        if (!activeConIds.isEmpty()) {
+            excludeIds =  'AND Id NOT IN (';
+            integer i = 1;
+            for (Id conId : activeConIds) {
+                excludeIds += '\''+conId+'\'';
+                if (i != activeConIds.size()) excludeIds += ',';
+                i += 1;
+            }
+            excludeIds += ')';
+        }
+        
+        String whereClause = 'WHERE Name LIKE \'%'+subString+'%\' '+excludeIds+' LIMIT 20';
+        String q = GW_Utilities.StrAllNSPrefix(conSelect + whereClause);
+        return database.query(q);
+    }
+    
+    /*******************************************************************************************************
+    * @description Takes a JSON string and attempts to instantiate GW_EXT_ManageHousehold using the 
+    * deserialized object.
+    * @param String state - A serialized copy of the page controller state. 
     * @return GW_EXT_ManageHousehold
     ********************************************************************************************************/
-	private static GW_EXT_ManageHousehold unpackState(String state) {
-		// There is a "bug" where not all of the classes have been loaded by apex when it attempts
-		// to JSON.deserialize. The method below makes sure that the type is properly loaded when it attempts to
-		// instantiate the object.
-		String strState = state;
-		JSONParser parser = JSON.createParser(state);
-		Type wrapperType = Type.forName('GW_EXT_ManageHousehold'); 
-		GW_EXT_ManageHousehold gwMH = (GW_EXT_ManageHousehold) parser.readValueAs(wrapperType);
-		
-    	return gwMH;
-	}
-	/*******************************************************************************************************
-	* @description Accepcts a GW_EXT_ManageHousehold and serializes it into JSON
-	* @param GW_EXT_ManageHousehold state - A copy of the page controller state. 
+    private static GW_EXT_ManageHousehold unpackState(String state) {
+        // There is a "bug" where not all of the classes have been loaded by apex when it attempts
+        // to JSON.deserialize. The method below makes sure that the type is properly loaded when it attempts to
+        // instantiate the object.
+        String strState = state;
+        JSONParser parser = JSON.createParser(state);
+        Type wrapperType = Type.forName('GW_EXT_ManageHousehold'); 
+        GW_EXT_ManageHousehold gwMH = (GW_EXT_ManageHousehold) parser.readValueAs(wrapperType);
+        
+        return gwMH;
+    }
+    /*******************************************************************************************************
+    * @description Accepcts a GW_EXT_ManageHousehold and serializes it into JSON
+    * @param GW_EXT_ManageHousehold state - A copy of the page controller state. 
     * @return String
     ********************************************************************************************************/
-	private static string packState(GW_EXT_ManageHousehold state) {
-		return JSON.serialize(state);
-	}
-	
-	/*******************************************************************************************************
-	* @Remote add a Contact to HH by Id, optionally include Contact's HH.
-	* @return JSON State.
+    private static string packState(GW_EXT_ManageHousehold state) {
+        return JSON.serialize(state);
+    }
+    
+    /*******************************************************************************************************
+    * @Remote add a Contact to HH by Id, optionally include Contact's HH.
+    * @return JSON State.
     ********************************************************************************************************/
-	@RemoteAction
-	public static string remoteAddMember(Id cid, Boolean includeHH, String state) {
-		GW_EXT_ManageHousehold gwMH = unpackState(state);
-		Boolean status = false;
-		
-		if (!includeHH) {
-			// If we should not include household members
-			status = gwMH.addContact(cid);
-		} else {
-			// If we should include household members
-			status = gwMH.addContactWithHousehold(cid);
-		}
-		
-		// Update viable addresses
-		gwMH.getViableAddresses();
-		
-		// If we don't have an address attempt to select one
-		if (gwMH.useAddress == false && !gwMH.viableAddresses.isEmpty() && gwMH.isAddressNull()) {
-			gwMH.setActiveAddress(gwMH.viableAddresses.values()[0]);
-		}
-		
-		return packState(gwMH);
-	}
-	
-	/*******************************************************************************************************
-	* @Remote method to remove a contact by Id
-	* @return JSON state.
+    @RemoteAction
+    global static string remoteAddMember(Id cid, Boolean includeHH, String state) {
+        GW_EXT_ManageHousehold gwMH = unpackState(state);
+        Boolean status = false;
+        
+        if (!includeHH) {
+            // If we should not include household members
+            status = gwMH.addContact(cid);
+        } else {
+            // If we should include household members
+            status = gwMH.addContactWithHousehold(cid);
+        }
+        
+        // Update viable addresses
+        gwMH.getViableAddresses();
+        
+        // If we don't have an address attempt to select one
+        if (gwMH.useAddress == false && !gwMH.viableAddresses.isEmpty() && gwMH.isAddressNull()) {
+            gwMH.setActiveAddress(gwMH.viableAddresses.values()[0]);
+        }
+        
+        return packState(gwMH);
+    }
+    
+    /*******************************************************************************************************
+    * @Remote method to remove a contact by Id
+    * @return JSON state.
     ********************************************************************************************************/
-	@RemoteAction
-	public static string remoteRemoveMember(Id cid, String state) {
-		GW_EXT_ManageHousehold gwMH = unpackState(state);
-		
-		gwMH.removeContact(cid);
-		
-		return packState(gwMH);
-	}
-	
-	/*******************************************************************************************************
-	* @Sets the naming related fields on the Household and gets the name.
-	* @return JSON.
+    @RemoteAction
+    global static string remoteRemoveMember(Id cid, String state) {
+        GW_EXT_ManageHousehold gwMH = unpackState(state);
+        
+        gwMH.removeContact(cid);
+        
+        return packState(gwMH);
+    }
+    
+    /*******************************************************************************************************
+    * @Sets the naming related fields on the Household and gets the name.
+    * @return JSON.
     ********************************************************************************************************/
-	@RemoteAction
-	public static string remoteSetNaming(Boolean aN, String nN, Boolean aG, String nG, String state) {
-		GW_EXT_ManageHousehold gwMH = unpackState(state);
-		
-		gwMH.hh.Auto_HHName__c = aN;
-		if (!aN) gwMH.hh.Name = nN;
-		
-		gwMH.hh.Auto_HHGreeting__c = aG;
-		if (!aG) gwMH.hh.Greeting__c = nG;
-		
-		gwMH.hhName = gwMH.getHHName();
-		
-		return packState(gwMH);
-	}
-	
-	/*******************************************************************************************************
-	* @Remote method to save HH.
-	* @return JSON.
+    @RemoteAction
+    global static string remoteSetNaming(Boolean aN, String nN, Boolean aG, String nG, String state) {
+        GW_EXT_ManageHousehold gwMH = unpackState(state);
+        
+        gwMH.hh.Auto_HHName__c = aN;
+        if (!aN) gwMH.hh.Name = nN;
+        
+        gwMH.hh.Auto_HHGreeting__c = aG;
+        if (!aG) gwMH.hh.Greeting__c = nG;
+        
+        gwMH.hhName = gwMH.getHHName();
+        
+        return packState(gwMH);
+    }
+    
+    /*******************************************************************************************************
+    * @Remote method to save HH.
+    * @return JSON.
     ********************************************************************************************************/
-	@RemoteAction
-	public static string remoteSave(String state) {
-		GW_EXT_ManageHousehold gwMH = unpackState(state);
-		gwMH.saveHH();
-		return packState(gwMH);
-	}
-	
-	/*******************************************************************************************************
-	* @Describes ONEN_Household__c to get all of the fields, then runs a SOQL to get the household record by
-	* Id with all of the fields.
-	* @return ONEN_Household__c.
+    @RemoteAction
+    global static string remoteSave(String state) {
+        GW_EXT_ManageHousehold gwMH = unpackState(state);
+        gwMH.saveHH();
+        return packState(gwMH);
+    }
+    
+    /*******************************************************************************************************
+    * @Describes ONEN_Household__c to get all of the fields, then runs a SOQL to get the household record by
+    * Id with all of the fields.
+    * @return ONEN_Household__c.
     ********************************************************************************************************/
-	public ONEN_Household__c getHH(Id hhId) {
-		Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.ONEN_Household__c.fields.getMap();
-		list<String> fields = new list<String>();
-		fields.addAll(fieldMap.keySet());
-		String hhq = 'SELECT ';
-		Integer i = 1;
-		for (String fld : fields) {
-			hhq += fld;
-			if (i != fields.size()) hhq += ', ';
-			i += 1;
-		}
-		hhq += ' FROM ONEN_Household__c WHERE Id = \''+hhId+'\'';
-		String q = GW_Utilities.StrAllNSPrefix(hhq);
-		ONEN_Household__c houseHold = database.query(q);
-		return houseHold;
-	}
-	
-	/*******************************************************************************************************
-	* @description add a contact to the household by id.
-	* @param Id cid the id to add. 
+    public ONEN_Household__c getHH(Id hhId) {
+        Map<String, Schema.SObjectField> fieldMap = Schema.SObjectType.ONEN_Household__c.fields.getMap();
+        list<String> fields = new list<String>();
+        fields.addAll(fieldMap.keySet());
+        String hhq = 'SELECT ';
+        Integer i = 1;
+        for (String fld : fields) {
+            hhq += fld;
+            if (i != fields.size()) hhq += ', ';
+            i += 1;
+        }
+        hhq += ' FROM ONEN_Household__c WHERE Id = \''+hhId+'\'';
+        String q = GW_Utilities.StrAllNSPrefix(hhq);
+        ONEN_Household__c houseHold = database.query(q);
+        return houseHold;
+    }
+    
+    /*******************************************************************************************************
+    * @description add a contact to the household by id.
+    * @param Id cid the id to add. 
     * @return Boolean
     ********************************************************************************************************/
-	public boolean addContact(Id cid) {
-		
-		String whereClause = 'WHERE Id = \''+cid+'\'';
-		String q = GW_Utilities.StrAllNSPrefix(conSelect + whereClause);
-		list<Contact> con = Database.query(q);
-		if (!con.isEmpty()) {
-        	activeContacts.put(con[0].id, con[0]);
-        	
-        	return true;
-		}
-		return false;
-		
-	}
-	
-	/*******************************************************************************************************
-	* @Remove a contact by Id from the active set.  Also resets the viableAddresses and activeAddress
-	* @return boolean.
+    public boolean addContact(Id cid) {
+        
+        String whereClause = 'WHERE Id = \''+cid+'\'';
+        String q = GW_Utilities.StrAllNSPrefix(conSelect + whereClause);
+        list<Contact> con = Database.query(q);
+        if (!con.isEmpty()) {
+            activeContacts.put(con[0].id, con[0]);
+            
+            return true;
+        }
+        return false;
+        
+    }
+    
+    /*******************************************************************************************************
+    * @Remove a contact by Id from the active set.  Also resets the viableAddresses and activeAddress
+    * @return boolean.
     ********************************************************************************************************/
-	public boolean removeContact(Id cid) {
-		
-		Contact con = activeContacts.containsKey(cid) ? activeContacts.get(cid) : null;
-		
-		if (con == null) return false;
-		
-		// If this is an existing HH and the contact was a member, add the contact to list of removes
-		if (hh.Id != null && con.ONEN_Household__c == hh.Id) {
-			con.ONEN_Household__c = null;
-			removeContacts.add(con);
-		}
-		
-		// remove the contact from the active set
-		activeContacts.remove(cid);
-		
-		if (cid == conId) conid = null;
-		if (cid == activeAddressConId) {
-			activeAddressConId = null;
-			getViableAddresses();
-			if (!viableAddresses.isEmpty()) setActiveAddress(viableAddresses.values()[0]);
-		}
-		
-		return true;
-		
-	}
-	
-	/*******************************************************************************************************
-	* @description add a contact to the household by id along with all of the contacts in the same
-	* household.
-	* @param Id cid the id to add. 
+    public boolean removeContact(Id cid) {
+        
+        Contact con = activeContacts.containsKey(cid) ? activeContacts.get(cid) : null;
+        
+        if (con == null) return false;
+        
+        // If this is an existing HH and the contact was a member, add the contact to list of removes
+        if (hh.Id != null && con.ONEN_Household__c == hh.Id) {
+            con.ONEN_Household__c = null;
+            removeContacts.add(con);
+        }
+        
+        // remove the contact from the active set
+        activeContacts.remove(cid);
+        
+        if (cid == conId) conid = null;
+        if (cid == activeAddressConId) {
+            activeAddressConId = null;
+            getViableAddresses();
+            if (!viableAddresses.isEmpty()) setActiveAddress(viableAddresses.values()[0]);
+        }
+        
+        return true;
+        
+    }
+    
+    /*******************************************************************************************************
+    * @description add a contact to the household by id along with all of the contacts in the same
+    * household.
+    * @param Id cid the id to add. 
     * @return Boolean
     ********************************************************************************************************/
-	public boolean addContactWithHousehold(Id cid) {
-		
-		String whereClause = 'WHERE Id = \''+cid+'\'';
-		String q = GW_Utilities.StrAllNSPrefix(conSelect + whereClause);
-		list<Contact> con = Database.query(q);
-		if (!con.isEmpty()) {
-        	activeContacts.put(con[0].id, con[0]);
-        	
-        	// check for household then find and add contacts
-        	if (con[0].ONEN_Household__c != null) {
-        		whereClause = 'WHERE ONEN_Household__c = \''+con[0].ONEN_Household__c+'\'';
-        		q = GW_Utilities.StrAllNSPrefix(conSelect + whereClause);
-        		list<Contact> hhcons = Database.query(q);
-        		if (!hhcons.isEmpty()) {
-        			for (Contact hhcon : hhcons) {
-        				
-        				activeContacts.put(hhcon.id, hhcon);
-        			}
-        		}
-        	}
-        	
-        	return true;
-		}
-		return false;
-		
-	}
-	
-	/*******************************************************************************************************
-	* @description set the active address from the address fields on a contact.
-	* @param Id cid the id of the contact to select the address from. 
+    public boolean addContactWithHousehold(Id cid) {
+        
+        String whereClause = 'WHERE Id = \''+cid+'\'';
+        String q = GW_Utilities.StrAllNSPrefix(conSelect + whereClause);
+        list<Contact> con = Database.query(q);
+        if (!con.isEmpty()) {
+            activeContacts.put(con[0].id, con[0]);
+            
+            // check for household then find and add contacts
+            if (con[0].ONEN_Household__c != null) {
+                whereClause = 'WHERE ONEN_Household__c = \''+con[0].ONEN_Household__c+'\'';
+                q = GW_Utilities.StrAllNSPrefix(conSelect + whereClause);
+                list<Contact> hhcons = Database.query(q);
+                if (!hhcons.isEmpty()) {
+                    for (Contact hhcon : hhcons) {
+                        
+                        activeContacts.put(hhcon.id, hhcon);
+                    }
+                }
+            }
+            
+            return true;
+        }
+        return false;
+        
+    }
+    
+    /*******************************************************************************************************
+    * @description set the active address from the address fields on a contact.
+    * @param Id cid the id of the contact to select the address from. 
     * @return Boolean
     ********************************************************************************************************/
-	public boolean setActiveAddress(Id cid) {
-		Contact con = (activeContacts.containsKey(cid)) ? activeContacts.get(cid) : null;
-		if (con == null) return false;
-		activeAddressConId = con.id;
-		activeStreet = con.OtherStreet;
-		activeCity = con.OtherCity;
-		activeState = con.OtherState;
-		activePostalCode = con.OtherPostalCode;
-		activeCountry = con.OtherCountry;
-		
-		return true;
-	}
-	
-	public boolean isAddressNull() {
-		if ((activeStreet != null && activeStreet != '') ||
-			(activeCity != null && activeCity != '') ||
-			(activeState != null && activeState != '') ||
-			(activePostalCode != null && activePostalCode != '') ||
-			(activeCountry != null && activeCountry != '')) {
-			return false;
-		}
-		return true;
-	}
-	
-	/*******************************************************************************************************
-	* @description iterate over the active contacts and find all good addresses
-	* @return list<Contact> list of contacts with viable addresses
+    public boolean setActiveAddress(Id cid) {
+        Contact con = (activeContacts.containsKey(cid)) ? activeContacts.get(cid) : null;
+        if (con == null) return false;
+        activeAddressConId = con.id;
+        activeStreet = con.OtherStreet;
+        activeCity = con.OtherCity;
+        activeState = con.OtherState;
+        activePostalCode = con.OtherPostalCode;
+        activeCountry = con.OtherCountry;
+        
+        return true;
+    }
+    
+    public boolean isAddressNull() {
+        if ((activeStreet != null && activeStreet != '') ||
+            (activeCity != null && activeCity != '') ||
+            (activeState != null && activeState != '') ||
+            (activePostalCode != null && activePostalCode != '') ||
+            (activeCountry != null && activeCountry != '')) {
+            return false;
+        }
+        return true;
+    }
+    
+    /*******************************************************************************************************
+    * @description iterate over the active contacts and find all good addresses
+    * @return list<Contact> list of contacts with viable addresses
     ********************************************************************************************************/
-	public list<Contact> getViableAddresses() {
-		list<Contact> retCons = new list<contact>();
-		if (activeContacts.isEmpty()) return retCons;
-		
-		list<Id> activeConIds = new list<Id>();
-		activeConIds.addAll(activeContacts.keySet());
-		String q = GW_Utilities.StrAllNSPrefix(conSelect + 'WHERE id IN :activeConIds');
-		list<Contact> cons = Database.query(q);
-		
-		for (Contact con : cons) {
-			if (con.OtherStreet != null || con.OtherCity != null || con.OtherState != null || con.OtherPostalCode != null || con.OtherCountry != null) {
-				
-				string addressString = con.OtherStreet + con.OtherCity + con.OtherState + con.OtherPostalCode + con.OtherCountry;
-				
-				// regex pattern for getting all white space 
-				pattern whtspc = pattern.compile('[\\s]');
-				
-				//find whitespace
-				matcher matchWhtSpc = whtspc.matcher(addressString);
-				
-				//replace whitespace
-				addressString = matchWhtSpc.replaceAll('');
-				
-				if (!viableAddresses.containsKey(addressString)) retCons.add(con);
-				viableAddresses.put(addressString, con.id);
-				
-			}
-		}
-		return retCons;
-	}
-	
-	/*******************************************************************************************************
-	* @description Returns a formulated string based on the contacts in the household
-	* @return String The name of the household based on the contacts used.
+    public list<Contact> getViableAddresses() {
+        list<Contact> retCons = new list<contact>();
+        if (activeContacts.isEmpty()) return retCons;
+        
+        list<Id> activeConIds = new list<Id>();
+        activeConIds.addAll(activeContacts.keySet());
+        String q = GW_Utilities.StrAllNSPrefix(conSelect + 'WHERE id IN :activeConIds');
+        list<Contact> cons = Database.query(q);
+        
+        for (Contact con : cons) {
+            if (con.OtherStreet != null || con.OtherCity != null || con.OtherState != null || con.OtherPostalCode != null || con.OtherCountry != null) {
+                
+                string addressString = con.OtherStreet + con.OtherCity + con.OtherState + con.OtherPostalCode + con.OtherCountry;
+                
+                // regex pattern for getting all white space 
+                pattern whtspc = pattern.compile('[\\s]');
+                
+                //find whitespace
+                matcher matchWhtSpc = whtspc.matcher(addressString);
+                
+                //replace whitespace
+                addressString = matchWhtSpc.replaceAll('');
+                
+                if (!viableAddresses.containsKey(addressString)) retCons.add(con);
+                viableAddresses.put(addressString, con.id);
+                
+            }
+        }
+        return retCons;
+    }
+    
+    /*******************************************************************************************************
+    * @description Returns a formulated string based on the contacts in the household
+    * @return String The name of the household based on the contacts used.
     ********************************************************************************************************/
     public string getHHName() {
-    	GW_Householding gwhh = new GW_Householding();
-    	String name;
-    	if (!activeContacts.isEmpty()) {
-    		list<Contact> sorted = sortingList();
-    		sorted.addAll(insertContacts);
-    		name = gwhh.getHHName(sorted);
-    	}
-    	return name;
+        GW_Householding gwhh = new GW_Householding();
+        String name;
+        if (!activeContacts.isEmpty()) {
+            list<Contact> sorted = sortingList();
+            sorted.addAll(insertContacts);
+            name = gwhh.getHHName(sorted);
+        }
+        return name;
     }
     
     /*******************************************************************************************************
-	* @description Returns a formulated string based on the contacts in the household (there is a method
-	* because eventually it will be a javascript remoting method)
-	* @return String The name of the household based on the contacts used.
+    * @description Returns a formulated string based on the contacts in the household (there is a method
+    * because eventually it will be a javascript remoting method)
+    * @return String The name of the household based on the contacts used.
     ********************************************************************************************************/
     public string getHHGreeting() {
-    	GW_Householding gwhh = new GW_Householding();
-    	String name;
-    	if (!activeContacts.isEmpty()) {
-    		list<Contact> sorted = sortingList();
-    		sorted.addAll(insertContacts);
-    		name = gwhh.getHHGreeting(sorted);
-    	}
-    	return name;
+        GW_Householding gwhh = new GW_Householding();
+        String name;
+        if (!activeContacts.isEmpty()) {
+            list<Contact> sorted = sortingList();
+            sorted.addAll(insertContacts);
+            name = gwhh.getHHGreeting(sorted);
+        }
+        return name;
     }
     
     /*******************************************************************************************************
-	* @description Simply queries the list of activeContact ids so that the default sorting is used. This 
-	* is to make it consistant with the sorting of the names that the trigger uses.
-	* @return list<Contact> A sort list of contacts.
+    * @description Simply queries the list of activeContact ids so that the default sorting is used. This 
+    * is to make it consistant with the sorting of the names that the trigger uses.
+    * @return list<Contact> A sort list of contacts.
     ********************************************************************************************************/
-	private list<Contact> sortingList() {
-		list<Contact> cons = new list<contact>();
-		list<Id> sortOrder = new list<Id>();
-		if (!activeContacts.isEmpty()) {
-			sortOrder.addAll(activeContacts.keySet());
-			sortOrder.sort();
-			for (Id cid : sortOrder) {
-				cons.add(activeContacts.get(cid));
-			}
-		}
-		return cons;
-	}
-	
-	
-	/*******************************************************************************************************
-	* @description Retrieves household members. If this is a new hh, retrieves fields for the passed in 
-	* contact id.
-	* @return list<Contact> A sort list of contacts.
+    private list<Contact> sortingList() {
+        list<Contact> cons = new list<contact>();
+        list<Id> sortOrder = new list<Id>();
+        if (!activeContacts.isEmpty()) {
+            sortOrder.addAll(activeContacts.keySet());
+            sortOrder.sort();
+            for (Id cid : sortOrder) {
+                cons.add(activeContacts.get(cid));
+            }
+        }
+        return cons;
+    }
+    
+    
+    /*******************************************************************************************************
+    * @description Retrieves household members. If this is a new hh, retrieves fields for the passed in 
+    * contact id.
+    * @return list<Contact> A sort list of contacts.
     ********************************************************************************************************/
-	public list<Contact> getHHMembers() {
-		String q = conSelect;
-		
-		if (conId != null || hh.id != null) q += ' WHERE';
-		if (conId != null) q += ' Id=\''+conId+'\'';
-		if (conId != null && hh.id != null) q += ' or';
-		if (hh.id != null) q += ' ONEN_HouseHold__c = \''+hh.id+'\'';
-		String qry = GW_Utilities.StrAllNSPrefix(q);
-		return Database.query(qry);
-	}
-	
-	/*******************************************************************************************************
-	* @This method is called by the remoteSave RemoteAction. This most of the work to save the
-	* state of the custom interface.
-	* @return void.
+    public list<Contact> getHHMembers() {
+        String q = conSelect;
+        
+        if (conId != null || hh.id != null) q += ' WHERE';
+        if (conId != null) q += ' Id=\''+conId+'\'';
+        if (conId != null && hh.id != null) q += ' or';
+        if (hh.id != null) q += ' ONEN_HouseHold__c = \''+hh.id+'\'';
+        String qry = GW_Utilities.StrAllNSPrefix(q);
+        return Database.query(qry);
+    }
+    
+    /*******************************************************************************************************
+    * @This method is called by the remoteSave RemoteAction. This most of the work to save the
+    * state of the custom interface.
+    * @return void.
     ********************************************************************************************************/
-	public void saveHH() {
-		
-		// Insert Household
-		upsert hh;
-		
-		// Insert new contacts.
-		// This MUST happen before updating contacts
-		if (!insertContacts.isEmpty()) {
-			for (Contact con : insertContacts) {
-				con.ONEN_Household__c = hh.id;
-			}
-			insert insertContacts;
-		}
-		
-		// Update our included contacts
-		if (!activeContacts.isEmpty()) {
-			
-			for (Contact con : activeContacts.values()) {
-				
-				// Set Addresses on Contacts
-				if (useAddress == true || activeAddressConId != null) {
-					con.OtherStreet = activeStreet;
-					con.OtherCity = activeCity;
-					con.OtherState = activeState;
-					con.OtherPostalCode = activePostalCode;
-					con.OtherCountry = activeCountry;
-				}
-				
-				// Set household on contacts
-				con.ONEN_Household__c = hh.id;
-				
-				update con;
-			}
-		}
-		
-		// Remove contacts from household
-		if (!removeContacts.isEmpty()) {
-			list<Contact> contactsToRemove = new list<Contact>();
-			for (Contact con : removeContacts) {
-				con.ONEN_Household__c = null;
-				contactsToRemove.add(con);
-			}
-			update contactsToRemove;
-		}
-		
-		
-	}
-	
-	/*******************************************************************************************************
-	* @Simply calls delete, on the correct hh, using the standard controller
-	* @return PageReference.
+    public void saveHH() {
+        
+        // Insert Household
+        upsert hh;
+        
+        // Insert new contacts.
+        // This MUST happen before updating contacts
+        if (!insertContacts.isEmpty()) {
+            for (Contact con : insertContacts) {
+                con.ONEN_Household__c = hh.id;
+            }
+            insert insertContacts;
+        }
+        
+        // Update our included contacts
+        if (!activeContacts.isEmpty()) {
+            
+            for (Contact con : activeContacts.values()) {
+                
+                // Set Addresses on Contacts
+                if (useAddress == true || activeAddressConId != null) {
+                    con.OtherStreet = activeStreet;
+                    con.OtherCity = activeCity;
+                    con.OtherState = activeState;
+                    con.OtherPostalCode = activePostalCode;
+                    con.OtherCountry = activeCountry;
+                }
+                
+                // Set household on contacts
+                con.ONEN_Household__c = hh.id;
+                
+                update con;
+            }
+        }
+        
+        // Remove contacts from household
+        if (!removeContacts.isEmpty()) {
+            list<Contact> contactsToRemove = new list<Contact>();
+            for (Contact con : removeContacts) {
+                con.ONEN_Household__c = null;
+                contactsToRemove.add(con);
+            }
+            update contactsToRemove;
+        }
+        
+        
+    }
+    
+    /*******************************************************************************************************
+    * @Simply calls delete, on the correct hh, using the standard controller
+    * @return PageReference.
     ********************************************************************************************************/
-	public PageReference deleteHH() {
-		ApexPages.StandardController sc = new ApexPages.standardController(hh);
-		return sc.delete();
-	}
-	
-	/*******************************************************************************************************
-	* @Simply calls save, on the correct hh, using the standard controller
-	* @return PageReference.
+    public PageReference deleteHH() {
+        ApexPages.StandardController sc = new ApexPages.standardController(hh);
+        return sc.delete();
+    }
+    
+    /*******************************************************************************************************
+    * @Simply calls save, on the correct hh, using the standard controller
+    * @return PageReference.
     ********************************************************************************************************/
-	public PageReference save() {
-		
-		ONEN_Household__c nHH;
-		if (hh.id != null) {
-			nHH = getHH(hh.id);
-		}
-		
-		ApexPages.StandardController sc = new ApexPages.standardController(hh);
-		PageReference sv = sc.save();
-		
-		//Rollup household
-		GW_OppRollups rg = new GW_OppRollups();
-		rg.rollupHousehold(hh.id);
-		
-		if (nHH != null) {
-			hh.Auto_HHGreeting__c = nHH.Auto_HHGreeting__c;
-			hh.Auto_HHName__c = nHH.Auto_HHName__c;
-			update hh;
-		}
-		
-		return sv;
-	}
-	
-	// TEST METHOD
+    public PageReference save() {
+        
+        ONEN_Household__c nHH;
+        if (hh.id != null) {
+            nHH = getHH(hh.id);
+        }
+        
+        ApexPages.StandardController sc = new ApexPages.standardController(hh);
+        PageReference sv = sc.save();
+        
+        //Rollup household
+        GW_OppRollups rg = new GW_OppRollups();
+        rg.rollupHousehold(hh.id);
+        
+        if (nHH != null) {
+            hh.Auto_HHGreeting__c = nHH.Auto_HHGreeting__c;
+            hh.Auto_HHName__c = nHH.Auto_HHName__c;
+            update hh;
+        }
+        
+        return sv;
+    }
+    
+    // TEST METHOD
     public static testMethod void testExistingHH() {
-    	
-    	ONEN_Household__c hh = new ONEN_Household__c(
-    		Name = 'test_hh',
-    		Auto_HHName__c = false,
-    		Auto_HHGreeting__c = false
-    		);
-    	insert hh;
-    	
-    	Contact con = new Contact(
-    		FirstName = 'David',
-    		LastName = 'TestContactASDF',
-    		email = 'testemail@groundwiretest.org',
-    		ONEN_Household__c = hh.id,
-    		OtherStreet = '1234 Testing Drive Suite 1000',
-    		OtherCity = 'Seattle',
-    		OtherState = 'WA',
-    		OtherPostalCode = '98101',
-    		OtherCountry = 'USA'
-    		);
-    	insert con;
-    	
-    	Test.startTest();
-    	
-    	ONEN_Household__c tempHH = new ONEN_Household__c();
+        
+        ONEN_Household__c hh = new ONEN_Household__c(
+            Name = 'test_hh',
+            Auto_HHName__c = false,
+            Auto_HHGreeting__c = false
+            );
+        insert hh;
+        
+        Contact con = new Contact(
+            FirstName = 'David',
+            LastName = 'TestContactASDF',
+            email = 'testemail@groundwiretest.org',
+            ONEN_Household__c = hh.id,
+            OtherStreet = '1234 Testing Drive Suite 1000',
+            OtherCity = 'Seattle',
+            OtherState = 'WA',
+            OtherPostalCode = '98101',
+            OtherCountry = 'USA'
+            );
+        insert con;
+        
+        Test.startTest();
+        
+        ONEN_Household__c tempHH = new ONEN_Household__c();
         ApexPages.StandardController sc = new ApexPages.standardController(tempHH);
         
         // Test a bogus hhid
@@ -648,35 +647,35 @@ public with sharing class GW_EXT_ManageHousehold {
     }
     
     public static testMethod void testNewHH() {
-    	
-    	ONEN_Household__c hh = new ONEN_Household__c(
-    		Name = 'test_hh'
-    		);
-    	
-    	
-    	Contact con = new Contact(
-    		LastName = 'TestContactASDF',
-    		email = 'testemail@groundwiretest.org',
-    		OtherStreet = '1234 Testing Drive Suite 1000',
-    		OtherCity = 'Seattle',
-    		OtherState = 'WA',
-    		OtherPostalCode = '98101',
-    		OtherCountry = 'USA'
-    		);
-    	insert con;
-    	
-    	Contact con2 = new Contact(
-    		LastName = 'TestContact2 ',
-    		email = 'testemail2@groundwiretest.org',
-    		OtherStreet = 'Drastically Different',
-    		OtherCity = 's',
-    		OtherState = 'd',
-    		OtherPostalCode = '1',
-    		OtherCountry = 'b'
-    		);
-    	insert con2;
-    	
-    	Test.startTest();
+        
+        ONEN_Household__c hh = new ONEN_Household__c(
+            Name = 'test_hh'
+            );
+        
+        
+        Contact con = new Contact(
+            LastName = 'TestContactASDF',
+            email = 'testemail@groundwiretest.org',
+            OtherStreet = '1234 Testing Drive Suite 1000',
+            OtherCity = 'Seattle',
+            OtherState = 'WA',
+            OtherPostalCode = '98101',
+            OtherCountry = 'USA'
+            );
+        insert con;
+        
+        Contact con2 = new Contact(
+            LastName = 'TestContact2 ',
+            email = 'testemail2@groundwiretest.org',
+            OtherStreet = 'Drastically Different',
+            OtherCity = 's',
+            OtherState = 'd',
+            OtherPostalCode = '1',
+            OtherCountry = 'b'
+            );
+        insert con2;
+        
+        Test.startTest();
         ApexPages.StandardController sc = new ApexPages.standardController(hh);
         
         ApexPages.currentPage().getParameters().put('cid', con.id);
@@ -716,80 +715,80 @@ public with sharing class GW_EXT_ManageHousehold {
     }
     
     public static testMethod void testFindAndAdd() {
-    	
-    	ONEN_Household__c hh = new ONEN_Household__c();
-    	
-    	ONEN_Household__c existingHH = new ONEN_Household__c (
-    		Name = 'existing hh'
-    		);
-    	insert existingHH;
-    	
-    	Contact con = new Contact(
-    		FirstName = 'John',
-    		LastName = 'TEST abc Monkey',
-    		email = 'testemail@groundwiretest.org',
-    		OtherStreet = '1234 Testing Drive Suite 1000',
-    		OtherCity = 'Seattle',
-    		OtherState = 'WA',
-    		OtherPostalCode = '98101',
-    		OtherCountry = 'USA'
-    		);
-    	insert con;
-    	
-    	Contact con2 = new Contact(
-    		FirstName = 'Mike',
-    		LastName = 'TEST Monkey abc',
-    		email = 'testemail@groundwiretest.org',
-    		OtherStreet = '1234 Testing Drive Suite  1000',
-    		OtherCity = 'Seattle ',
-    		OtherState = ' WA',
-    		OtherPostalCode = '98101',
-    		OtherCountry = 'USA '
-    		);
-    	insert con2;
-    	
-    	Contact con3 = new Contact(
-    		FirstName = 'Cheryl',
-    		LastName = 'ABC TEST Monkey',
-    		email = 'testemail@groundwiretest.org',
-    		OtherStreet = '54321 Anderson',
-    		OtherCity = 'Kirkland',
-    		OtherState = 'WA',
-    		OtherPostalCode = '98034'
-    		);
-    	insert con3;
-    	
-    	Contact con4 = new Contact(
-    		FirstName = 'Toivo',
-    		LastName = 'abc TEST Monkey',
-    		email = 'testemail@groundwiretest.org'
-    		);
-    	insert con4;
-    	
-    	Contact con5 = new Contact(
-    		FirstName = 'Kelley',
-    		LastName = 'adc TEST Monkey',
-    		email = 'testemail@groundwiretest.org'
-    		);
-    	insert con5;
-    	
-    	Contact conWithHH = new Contact (
-    		FirstName = 'Andy',
-    		LastName = 'David WithHousehold',
-    		email = 'testEmail@groundwiretest2.org',
-    		ONEN_Household__c = existingHH.id
-    		);
-    	insert conWithHH;
-    	
-    	Contact conWithHH2 = new Contact (
-    		FirstName = 'Cheryl',
-    		LastName = 'WithHousehold',
-    		email = 'testEmail@groundwiretest3.org',
-    		ONEN_Household__c = existingHH.id
-    		);
-    	insert conWithHH2;
-    	
-    	Test.startTest();
+        
+        ONEN_Household__c hh = new ONEN_Household__c();
+        
+        ONEN_Household__c existingHH = new ONEN_Household__c (
+            Name = 'existing hh'
+            );
+        insert existingHH;
+        
+        Contact con = new Contact(
+            FirstName = 'John',
+            LastName = 'TEST abc Monkey',
+            email = 'testemail@groundwiretest.org',
+            OtherStreet = '1234 Testing Drive Suite 1000',
+            OtherCity = 'Seattle',
+            OtherState = 'WA',
+            OtherPostalCode = '98101',
+            OtherCountry = 'USA'
+            );
+        insert con;
+        
+        Contact con2 = new Contact(
+            FirstName = 'Mike',
+            LastName = 'TEST Monkey abc',
+            email = 'testemail@groundwiretest.org',
+            OtherStreet = '1234 Testing Drive Suite  1000',
+            OtherCity = 'Seattle ',
+            OtherState = ' WA',
+            OtherPostalCode = '98101',
+            OtherCountry = 'USA '
+            );
+        insert con2;
+        
+        Contact con3 = new Contact(
+            FirstName = 'Cheryl',
+            LastName = 'ABC TEST Monkey',
+            email = 'testemail@groundwiretest.org',
+            OtherStreet = '54321 Anderson',
+            OtherCity = 'Kirkland',
+            OtherState = 'WA',
+            OtherPostalCode = '98034'
+            );
+        insert con3;
+        
+        Contact con4 = new Contact(
+            FirstName = 'Toivo',
+            LastName = 'abc TEST Monkey',
+            email = 'testemail@groundwiretest.org'
+            );
+        insert con4;
+        
+        Contact con5 = new Contact(
+            FirstName = 'Kelley',
+            LastName = 'adc TEST Monkey',
+            email = 'testemail@groundwiretest.org'
+            );
+        insert con5;
+        
+        Contact conWithHH = new Contact (
+            FirstName = 'Andy',
+            LastName = 'David WithHousehold',
+            email = 'testEmail@groundwiretest2.org',
+            ONEN_Household__c = existingHH.id
+            );
+        insert conWithHH;
+        
+        Contact conWithHH2 = new Contact (
+            FirstName = 'Cheryl',
+            LastName = 'WithHousehold',
+            email = 'testEmail@groundwiretest3.org',
+            ONEN_Household__c = existingHH.id
+            );
+        insert conWithHH2;
+        
+        Test.startTest();
         ApexPages.StandardController sc = new ApexPages.standardController(new ONEN_Household__c());
         
         ApexPages.currentPage().getParameters().put('cid', con2.id);
@@ -930,8 +929,8 @@ public with sharing class GW_EXT_ManageHousehold {
         ext.deleteHH();
         
         Test.stopTest();
-    	
+        
     }
     
-	
+    
 }
