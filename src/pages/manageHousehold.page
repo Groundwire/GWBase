@@ -1167,6 +1167,7 @@ button.hhCard-delete {
 	margin: 0 0 0.5em 0;
 	position: relative;
 	font-size: 0.9em;
+	min-height: 2em;
 }
 
 #hhExistingAddress li {
