@@ -211,7 +211,7 @@ public with sharing class GW_EXT_ManageHousehold {
 		gwMH.getViableAddresses();
 		
 		// If we don't have an address attempt to select one
-		if (gwMH.useAddress == null && !gwMH.viableAddresses.isEmpty()) {
+		if (gwMH.useAddress == false && !gwMH.viableAddresses.isEmpty() && gwMH.isAddressNull()) {
 			gwMH.setActiveAddress(gwMH.viableAddresses.values()[0]);
 		}
 		
@@ -379,6 +379,18 @@ public with sharing class GW_EXT_ManageHousehold {
 		activeState = con.OtherState;
 		activePostalCode = con.OtherPostalCode;
 		activeCountry = con.OtherCountry;
+		
+		return true;
+	}
+	
+	public boolean isAddressNull() {
+		if ((activeStreet != null && activeStreet != '') ||
+			(activeCity != null && activeCity != '') ||
+			(activeState != null && activeState != '') ||
+			(activePostalCode != null && activePostalCode != '') ||
+			(activeCountry != null && activeCountry != '')) {
+			return false;
+		}
 		return true;
 	}
 	
