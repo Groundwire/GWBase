@@ -493,6 +493,15 @@ public with sharing class GW_EXT_ManageHousehold {
 		// Insert Household
 		upsert hh;
 		
+		// Insert new contacts.
+		// This MUST happen before updating contacts
+		if (!insertContacts.isEmpty()) {
+			for (Contact con : insertContacts) {
+				con.ONEN_Household__c = hh.id;
+			}
+			insert insertContacts;
+		}
+		
 		// Update our included contacts
 		if (!activeContacts.isEmpty()) {
 			
@@ -512,14 +521,6 @@ public with sharing class GW_EXT_ManageHousehold {
 				
 				update con;
 			}
-		}
-		
-		// Insert new contacts
-		if (!insertContacts.isEmpty()) {
-			for (Contact con : insertContacts) {
-				con.ONEN_Household__c = hh.id;
-			}
-			insert insertContacts;
 		}
 		
 		// Remove contacts from household

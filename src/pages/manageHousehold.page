@@ -322,6 +322,9 @@ gwManageHH.updateState = function (state) {
 	
 	// Setup the naming fields
 	gwManageHH.renderNaming();
+	
+	// Controls
+	gwManageHH.renderControls(true);
 }
 gwManageHH.dialogAddMember = function(event) {
 	var linode = j$(this).closest('.hhSearch-item');
@@ -685,10 +688,18 @@ gwManageHH.renderNaming = function () {
 }
 
 gwManageHH.renderControls = function (enabled) {
-	inpts = j$('.gwControls input[type="submit"]').not('.gwHidden');
+	var hasContacts = j$('.hhCard').length > 0;
+	var inpts = j$('.gwControls input[type="submit"]').not('.gwHidden');
 	if (enabled) {
 		inpts.removeAttr('disabled');
 		inpts.css('opacity','1');
+		if (!hasContacts) {
+			j$('.gwControls-save').addClass('gwHidden');
+			j$('input[id$="gwControls-StdSave"]').attr('disabled','disabled');
+		} else {
+			j$('.gwControls-save').removeClass('gwHidden');
+			j$('input[id$="gwControls-StdSave"]').removeAttr('disabled','disabled');
+		}
 	} else {
 		inpts.attr('disabled','disabled');
 		inpts.css('opacity','0.5');
