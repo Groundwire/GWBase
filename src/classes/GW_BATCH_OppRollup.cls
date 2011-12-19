@@ -40,7 +40,7 @@ global class GW_BATCH_OppRollup implements Database.Batchable<SObject>, Schedula
 
     /*******************************************************************************************************
     * @description standard batch execute method. Instantiates GW_OppRollups and calls RollupAccounts() and 
-    * RollupHouseholds()
+    * RollupHouseholds() and RollupContacts()
     * @param bc NULL_PARAMETER
     * @param result NULL_PARAMETER
     * @return NULL_RETURN
@@ -52,8 +52,9 @@ global class GW_BATCH_OppRollup implements Database.Batchable<SObject>, Schedula
         
         if (result[0].getSObjectType() == Account.sObjectType) { 
             rg.RollupAccounts((list<account>)result);
-        } else {
+        } else if (result[0].getSObjectType() == onen_household__c.sObjectType) {
             rg.RollupHouseholds((list<onen_household__c>)result);
+        } else {
             rg.RollupContacts((list<contact>)result); 
             //also reconcile any Opportunity Contact Roles that got out of sync with the Primary Contact on Opp
             ONEN_OpportunityContactRoles ocr = new ONEN_OpportunityContactRoles();
