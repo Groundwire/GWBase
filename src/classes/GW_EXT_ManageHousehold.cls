@@ -276,8 +276,8 @@ global with sharing class GW_EXT_ManageHousehold {
             if (i != fields.size()) hhq += ', ';
             i += 1;
         }
-        hhq += ' FROM ONEN_Household__c WHERE Id = \''+hhId+'\'';
-        String q = GW_Utilities.StrAllNSPrefix(hhq);
+        hhq += GW_Utilities.StrAllNSPrefix(' FROM ONEN_Household__c WHERE Id = \''+hhId+'\'');
+        String q = hhq;
         ONEN_Household__c houseHold = database.query(q);
         return houseHold;
     }

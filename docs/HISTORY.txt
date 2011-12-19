@@ -1,0 +1,8 @@
+Changelog
+=========
+
+1.82 - unreleased
+-------------------
+
+* changed dynamic query to not add prefixes to hh fields after dynamic describe - potential fix for #48
+  [dextermilo]
