@@ -1,8 +1,14 @@
 Changelog
 =========
 
-1.82 - unreleased
+1.82 - released
 -------------------
 
 * changed dynamic query to not add prefixes to hh fields after dynamic describe - potential fix for #48
   [dextermilo]
+  
+1.83 - released
+-------------------
+
+* small fix to batch rollup class to seperate out rolling up HH's from contacts, from accounts, which are all sObjects lists from batch queries.
+  
