@@ -9,19 +9,23 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
+                <fullName>Household Soft Credit</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Donor - Corporate Match</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Decision Maker</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
                 <fullName>Grant Officer</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Grant Team Member</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Household Soft Credit</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Organizational Donor</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
