@@ -151,7 +151,7 @@
     </fields>
     <fields>
         <fullName>Opp_Gift_Role_Org_Donor__c</fullName>
-        <defaultValue>&quot;Organizational Donor&quot;</defaultValue>
+        <defaultValue>&quot;Decision Maker&quot;</defaultValue>
         <externalId>false</externalId>
         <inlineHelpText>Default primary Contact Role for Organization Opportunities.</inlineHelpText>
         <label>Opp Gift Role Org Donor</label>

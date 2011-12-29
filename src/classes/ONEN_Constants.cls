@@ -167,23 +167,23 @@ global class ONEN_Constants {
 	/*******************************************************************************************************
 	* @description Returns the custom setting Opp_Gift_Role_Org_Donor__c, a donor role for the primary contact 
 	* for an Organization donation.
-	* Defaults to 'Organizational Donor'.
+	* Defaults to 'Decision Maker'.
 	*/
 	global static string OPP_ORG_GIFT_DONOR_ROLE {
 		get {
 	        OppRollupSettings__c oppSettings = OppRollupSettings__c.getInstance();
-			return (oppSettings == null) ? 'Organizational Donor' : oppSettings.Opp_Gift_Role_Org_Donor__c;
+			return (oppSettings == null) ? 'Decision Maker' : oppSettings.Opp_Gift_Role_Org_Donor__c;
 		}
 	}
 	
 	/*******************************************************************************************************
 	* @description Returns the custom setting Opp_Gift_Role_Org_Donor__c, a donor role for the primary contact 
 	* for an Organization donation.
-	* Defaults to 'Organizational Donor'.
+	* Defaults to 'Decision Maker'.
 	*/
 	global static string OPP_ORG_GIFT_DONOR_ROLE(string recordTypeName) {
 		OrgConRole_Settings__c crSettings = OrgConRole_Settings__c.getInstance(recordTypeName);
-		return (crSettings == null) ? 'Organizational Donor' : crSettings.Primary_Contact_Role__c;
+		return (crSettings == null) ? 'Decision Maker' : crSettings.Primary_Contact_Role__c;
 	}		
 
 	/*******************************************************************************************************
