@@ -789,8 +789,6 @@ global with sharing class GW_EXT_ManageHousehold {
         
         list<Contact> cQ = GW_EXT_ManageHousehold.findContacts('abctest', ext.jsonState);
         
-        
-        
         // make sure we only got three
         system.assertEquals(3, cQ.size());
         
@@ -801,8 +799,8 @@ global with sharing class GW_EXT_ManageHousehold {
         string hhGreeting = ext.getHHGreeting();
         
         //test the name
-        system.assertEquals(true, hhName.contains(con2.firstName));
-        system.assertEquals(true, hhName.contains(cQ[1].firstName));
+        system.assertEquals(true, hhName.contains(con2.lastName));
+        system.assertEquals(true, hhName.contains(cQ[1].lastName));
         system.assertEquals(true, hhGreeting.contains(con2.firstName));
         system.assertEquals(true, hhGreeting.contains(cQ[1].firstName));
         
