@@ -707,6 +707,7 @@ global with sharing class GW_EXT_ManageHousehold {
     public static testMethod void testFindAndAdd() {
         
         ONEN_Household__c hh = new ONEN_Household__c();
+        insert hh;
         
         ONEN_Household__c existingHH = new ONEN_Household__c (
             Name = 'existing hh'
@@ -788,7 +789,7 @@ global with sharing class GW_EXT_ManageHousehold {
         
         list<Contact> cQ = GW_EXT_ManageHousehold.findContacts('abctest', ext.jsonState);
         
-        Contact ca = [SELECT Id, OtherStreet FROM Contact WHERE id = :con2.id];
+        
         
         // make sure we only got three
         system.assertEquals(3, cQ.size());
@@ -800,10 +801,10 @@ global with sharing class GW_EXT_ManageHousehold {
         string hhGreeting = ext.getHHGreeting();
         
         //test the name
-        system.assertEquals(true, hhName.contains('Mike'));
-        system.assertEquals(true, hhName.contains('Cheryl'));
-        system.assertEquals(true, hhGreeting.contains('Mike'));
-        system.assertEquals(true, hhGreeting.contains('Cheryl'));
+        system.assertEquals(true, hhName.contains(con2.firstName));
+        system.assertEquals(true, hhName.contains(cQ[1].firstName));
+        system.assertEquals(true, hhGreeting.contains(con2.firstName));
+        system.assertEquals(true, hhGreeting.contains(cQ[1].firstName));
         
         // verify that the contact was added
         system.assertEquals(2, ext.activeContacts.size());
