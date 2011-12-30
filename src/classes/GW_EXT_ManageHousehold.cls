@@ -611,9 +611,6 @@ global with sharing class GW_EXT_ManageHousehold {
         ONEN_Household__c tempHH = new ONEN_Household__c();
         ApexPages.StandardController sc = new ApexPages.standardController(tempHH);
         
-        // Test a bogus hhid
-        ApexPages.currentPage().getParameters().put('hhid', 'sdf');
-        
         GW_EXT_ManageHousehold ext = new GW_EXT_ManageHousehold(sc);
         
         //Make sure we are creating a new HH
@@ -737,7 +734,7 @@ global with sharing class GW_EXT_ManageHousehold {
         
         Contact con2 = new Contact(
             FirstName = 'Mike',
-            LastName = 'TEST Monkey abc',
+            LastName = 'TEST Monkey a_b_c',
             email = 'testemail@groundwiretest.org',
             OtherStreet = '1234 Testing Drive Suite  1000',
             OtherCity = 'Seattle ',
@@ -749,7 +746,7 @@ global with sharing class GW_EXT_ManageHousehold {
         
         Contact con3 = new Contact(
             FirstName = 'Cheryl',
-            LastName = 'ABC TEST Monkey',
+            LastName = 'A_B_C TEST Monkey',
             email = 'testemail@groundwiretest.org',
             OtherStreet = '54321 Anderson',
             OtherCity = 'Kirkland',
@@ -760,14 +757,14 @@ global with sharing class GW_EXT_ManageHousehold {
         
         Contact con4 = new Contact(
             FirstName = 'Toivo',
-            LastName = 'abc TEST Monkey',
+            LastName = 'a_b_c TEST Monkey',
             email = 'testemail@groundwiretest.org'
             );
         insert con4;
         
         Contact con5 = new Contact(
             FirstName = 'Kelley',
-            LastName = 'adc TEST Monkey',
+            LastName = 'a_d_c TEST Monkey',
             email = 'testemail@groundwiretest.org'
             );
         insert con5;
@@ -796,7 +793,7 @@ global with sharing class GW_EXT_ManageHousehold {
         
         GW_EXT_ManageHousehold ext = new GW_EXT_ManageHousehold(sc);
         
-        list<Contact> cQ = GW_EXT_ManageHousehold.findContacts('abc', ext.jsonState);
+        list<Contact> cQ = GW_EXT_ManageHousehold.findContacts('a_b_c', ext.jsonState);
         
         Contact ca = [SELECT Id, OtherStreet FROM Contact WHERE id = :con2.id];
         
