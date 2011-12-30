@@ -722,7 +722,7 @@ global with sharing class GW_EXT_ManageHousehold {
         
         Contact con = new Contact(
             FirstName = 'John',
-            LastName = 'TEST abc Monkey',
+            LastName = 'TEST a_b_c Monkey',
             email = 'testemail@groundwiretest.org',
             OtherStreet = '1234 Testing Drive Suite 1000',
             OtherCity = 'Seattle',
