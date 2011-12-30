@@ -5,6 +5,7 @@ Changelog
 ------------------
 
 * potential fix for bad name verification test in GW_EXT_ManageHousehold
+  [dextermilo]
 
 2.0.0 - released
 -------------------
