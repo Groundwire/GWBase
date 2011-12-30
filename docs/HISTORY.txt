@@ -11,4 +11,9 @@ Changelog
 -------------------
 
 * small fix to batch rollup class to seperate out rolling up HH's from contacts, from accounts, which are all sObjects lists from batch queries.
-  
+
+2.0.0 - released
+-------------------
+* revving to new versioning convention and sequence
+* removed Organizational Donor contact role and changed Decision Maker to the org default
+* fixed HH button to add namespace prefix
