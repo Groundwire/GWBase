@@ -611,16 +611,9 @@ global with sharing class GW_EXT_ManageHousehold {
         ONEN_Household__c tempHH = new ONEN_Household__c();
         ApexPages.StandardController sc = new ApexPages.standardController(tempHH);
         
-        GW_EXT_ManageHousehold ext = new GW_EXT_ManageHousehold(sc);
-        
-        //Make sure we are creating a new HH
-        system.assertEquals(null, ext.hh.id);
-        
-        sc = new ApexPages.standardController(tempHH);
-        
         // Test a good hhid
         ApexPages.currentPage().getParameters().put('hhid', hh.Id);
-        ext = new GW_EXT_ManageHousehold(sc);
+        GW_EXT_ManageHousehold ext = new GW_EXT_ManageHousehold(sc);
         
         // Make sure we correctly got the right HH
         system.assertEquals(hh.Id, ext.hh.Id);
@@ -722,7 +715,7 @@ global with sharing class GW_EXT_ManageHousehold {
         
         Contact con = new Contact(
             FirstName = 'John',
-            LastName = 'TEST a_b_c Monkey',
+            LastName = 'TEST abcTeST Monkey',
             email = 'testemail@groundwiretest.org',
             OtherStreet = '1234 Testing Drive Suite 1000',
             OtherCity = 'Seattle',
@@ -734,7 +727,7 @@ global with sharing class GW_EXT_ManageHousehold {
         
         Contact con2 = new Contact(
             FirstName = 'Mike',
-            LastName = 'TEST Monkey a_b_c',
+            LastName = 'TEST Monkey abcTEST',
             email = 'testemail@groundwiretest.org',
             OtherStreet = '1234 Testing Drive Suite  1000',
             OtherCity = 'Seattle ',
@@ -746,7 +739,7 @@ global with sharing class GW_EXT_ManageHousehold {
         
         Contact con3 = new Contact(
             FirstName = 'Cheryl',
-            LastName = 'A_B_C TEST Monkey',
+            LastName = 'ABCTest TEST Monkey',
             email = 'testemail@groundwiretest.org',
             OtherStreet = '54321 Anderson',
             OtherCity = 'Kirkland',
@@ -757,7 +750,7 @@ global with sharing class GW_EXT_ManageHousehold {
         
         Contact con4 = new Contact(
             FirstName = 'Toivo',
-            LastName = 'a_b_c TEST Monkey',
+            LastName = 'abcTEST TEST Monkey',
             email = 'testemail@groundwiretest.org'
             );
         insert con4;
@@ -793,7 +786,7 @@ global with sharing class GW_EXT_ManageHousehold {
         
         GW_EXT_ManageHousehold ext = new GW_EXT_ManageHousehold(sc);
         
-        list<Contact> cQ = GW_EXT_ManageHousehold.findContacts('a_b_c', ext.jsonState);
+        list<Contact> cQ = GW_EXT_ManageHousehold.findContacts('abctest', ext.jsonState);
         
         Contact ca = [SELECT Id, OtherStreet FROM Contact WHERE id = :con2.id];
         
