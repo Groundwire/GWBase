@@ -1,19 +1,25 @@
 Changelog
 =========
 
-1.82 - released
--------------------
+2.0.x - unreleased
+------------------
 
-* changed dynamic query to not add prefixes to hh fields after dynamic describe - potential fix for #48
-  [dextermilo]
-  
-1.83 - released
--------------------
-
-* small fix to batch rollup class to seperate out rolling up HH's from contacts, from accounts, which are all sObjects lists from batch queries.
+* potential fix for bad name verification test in GW_EXT_ManageHousehold
 
 2.0.0 - released
 -------------------
 * revving to new versioning convention and sequence
 * removed Organizational Donor contact role and changed Decision Maker to the org default
 * fixed HH button to add namespace prefix
+
+1.83 - released
+-------------------
+
+* small fix to batch rollup class to seperate out rolling up HH's from contacts, from accounts, which are all sObjects lists from batch queries.
+
+1.82 - released
+-------------------
+
+* changed dynamic query to not add prefixes to hh fields after dynamic describe - potential fix for #48
+  [dextermilo]
+
