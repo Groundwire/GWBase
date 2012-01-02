@@ -1,11 +1,11 @@
 Changelog
 =========
 
-2.0.x - unreleased
+2.0.1 - 2.0.4 - released
 ------------------
 
-* potential fix for bad name verification test in GW_EXT_ManageHousehold
-  [dextermilo]
+* fix for bad name verification test in GW_EXT_ManageHousehold
+  [dextermilo] & [greenstork]
 
 2.0.0 - released
 -------------------
