@@ -1,6 +1,12 @@
 Changelog
 =========
 
+2.0.5 - released
+------------------
+
+* made checking for managed package method in GW_Utilities more robust, to aid development outside the managed package for the team
+ [greenstork]
+
 2.0.1 - 2.0.4 - released
 ------------------
 
