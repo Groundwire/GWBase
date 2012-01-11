@@ -16,10 +16,31 @@ global class GW_Utilities {
 	global static boolean InManagedPackage {
 		get {
 			if (!fCheckedForManagedPackage) {
-				Schema.SObjectType token = Schema.getGlobalDescribe().get('ONEN_Household__c');				
-				// if we are running in managed scope, the local name won't have the prefix, but the name will.
-				InManagedPackage = (token != null);
-				fCheckedForManagedPackage = true;				
+				// first try to look up a GW object using pkg namespace - this should only work in an installed (i.e. client) instance
+				Schema.SObjectType token = Schema.getGlobalDescribe().get('GWBase__ONEN_Household__c');
+				if (token != null) {				
+					InManagedPackage = true;
+					fCheckedForManagedPackage = true;
+				} else {
+					// if this doesn't work, we are either in the GWBase instance itself, or in an unmanaged developer instance (git clone)
+					// the former still needs to include the prefixes, while the latter needs to not include them
+					// in order to tell the difference, try a dynamic query w/ the prefix and see if we get an err
+					string soql = 'SELECT Id FROM GWBase__ONEN_Household__c LIMIT 1';
+					try {
+						SObject[] recs = database.query(soql); 
+					} catch (exception e) {
+						string msg = e.getMessage();
+						if (msg.contains('sObject type') && msg.contains('is not supported')) {
+							InManagedPackage = false;
+							fCheckedForManagedPackage = true;
+						}
+					} finally {
+						if (!fCheckedForManagedPackage) {
+							InManagedPackage = true;
+							fCheckedForManagedPackage = true;
+						}
+					}
+				}				
 			}
 			return InManagedPackage;			
 		}
