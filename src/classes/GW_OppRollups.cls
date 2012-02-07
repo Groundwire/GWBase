@@ -9,6 +9,7 @@ public class GW_OppRollups {
     // settings
     boolean triggerRollupEnabled = true; 
     boolean defaultAcctRollupEnabled = false; 
+    boolean useFiscalYear = false;
     set<id> recordTypesToExcludeAccts = new set<id>();
     set<id> recordTypesToExcludeCons = new set<id>();
     set<id> mbrRecordTypes = new set<id>(); 
@@ -94,15 +95,20 @@ public class GW_OppRollups {
                 triggerRollupEnabled = false;
             if (rollupSettings.Roll_Up_Opps_for_Default_Account__c == true)
                 defaultAcctRollupEnabled = true;
+            useFiscalYear = !rollupSettings.assume_fiscal_year_starts_january__c; 
+            
         }
 
         thisYear = system.today().year();
         // the "current" year might actually be named for last year
         // first check if we can short-circuit this based on the setting
-        if (rollupSettings == null || rollupSettings.assume_fiscal_year_starts_january__c == false) { 
+        if (useFiscalYear) { 
+            
             organization o = [select fiscalYearStartMonth from organization limit 1];
             if (o.FiscalYearStartMonth > system.today().month())
                 thisYear--;
+            
+            
         }
     }           
 
@@ -168,19 +174,31 @@ public class GW_OppRollups {
         // copy all the rollups from each result row into the account objects
         integer startYear = thisYear - 2;
         
-        list<sobject> objectList = [SELECT accountId, Fiscal_Year(CloseDate) CalendarYr, 
-            SUM(Amount) TotalOppAmount, AVG(Amount) AverageAmount, MIN(Amount) SmallestAmount,
-            MAX(Amount) LargestAmount, MIN(CloseDate) FirstCloseDate, MAX(CloseDate) LastCloseDate, 
-            COUNT_DISTINCT(Id) NumberOfClosedOpps, MAX(CombinedRollupFieldset__c) RollupFieldset 
-            FROM Opportunity
-            WHERE isWon=true 
-            AND (Amount != 0 AND Amount != null) 
-            AND RecordTypeId NOT IN : recordTypesToExcludeAccts
-            AND Type NOT IN : oppTypesToExcludeAccts
-            AND accountId IN : allAccts
-            GROUP BY ROLLUP (accountId, Fiscal_Year(closeDate))
-            HAVING ( Fiscal_Year(closeDate) = null OR Fiscal_Year(closeDate) >= : startYear )
-            AND accountId != null ];
+        string soqlQuery = '';
+        if (useFiscalYear) {
+        	soqlQuery += 'SELECT accountId, Fiscal_Year(CloseDate) CalendarYr,'; 
+        } else {
+        	soqlQuery += 'SELECT accountId, Calendar_Year(CloseDate) CalendarYr,';
+        }
+        soqlQuery += 'SUM(Amount) TotalOppAmount, AVG(Amount) AverageAmount, MIN(Amount) SmallestAmount,';
+        soqlQuery += 'MAX(Amount) LargestAmount, MIN(CloseDate) FirstCloseDate, MAX(CloseDate) LastCloseDate,';
+        soqlQuery += 'COUNT_DISTINCT(Id) NumberOfClosedOpps, MAX(CombinedRollupFieldset__c) RollupFieldset ';
+        soqlQuery += 'FROM Opportunity ';
+        soqlQuery += 'WHERE isWon=true ';
+        soqlQuery += 'AND (Amount != 0 AND Amount != null) ';
+        soqlQuery += 'AND RecordTypeId NOT IN : recordTypesToExcludeAccts ';
+        soqlQuery += 'AND Type NOT IN : oppTypesToExcludeAccts ';
+        soqlQuery += 'AND accountId IN : allAccts ';
+        if (useFiscalYear) {
+        	soqlQuery += 'GROUP BY ROLLUP (accountId, Fiscal_Year(closeDate)) ';
+        	soqlQuery += 'HAVING ( Fiscal_Year(closeDate) = null OR Fiscal_Year(closeDate) >= : startYear ) ';
+        } else {
+        	soqlQuery += 'GROUP BY ROLLUP (accountId, Calendar_Year(closeDate)) ';
+        	soqlQuery += 'HAVING ( Calendar_Year(closeDate) = null OR Calendar_Year(closeDate) >= : startYear ) ';
+        }
+        soqlQuery += 'AND accountId != null';
+        
+        list<sobject> objectList = Database.query(soqlQuery);
         // invokes code to get the currency of associated opportunities
         opptyCurrencies = (isMultiCurrency() ? rcfFindCurrency(objectList) : null);
                 
@@ -220,25 +238,35 @@ public class GW_OppRollups {
             // also roll up memberships
             // uncomment if you are doing annual membership totals
             
+            soqlQuery = 'SELECT accountId,';
+            if (useFiscalYear) {
+            	//soqlQuery +=  'Fiscal_Year(CloseDate) CalendarYr,';
+            } else {
+            	//soqlQuery +=  'Calendar_Year(CloseDate) CalendarYr,';
+            }
+            soqlQuery += 'SUM(Amount) TotalOppAmount,'; 
+            //soqlQuery += 'MAX(Amount) LargestAmount,'; 
+            //soqlQuery += 'AVG(Amount) AverageAmount, MIN(Amount) SmallestAmount,';
+            soqlQuery += 'MAX(CloseDate) LastCloseDate,';
+            soqlQuery += 'MIN(membership_start_date__c) FirstStartDate, MAX(membership_end_date__c) LastEndDate,'; 
+            soqlQuery += 'COUNT_DISTINCT(Id) NumberOfClosedOpps, MAX(CombinedRollupFieldset__c) RollupFieldset ';
+            soqlQuery += 'FROM Opportunity ';
+            soqlQuery += 'WHERE isWon=true ';
+            //soqlQuery += 'AND (Amount > 0 OR Amount < 0) ';
+            soqlQuery += 'AND RecordTypeId IN : mbrRecordTypes ';
+            soqlQuery += 'AND Type NOT IN : oppTypesToExcludeAccts ';
+            soqlQuery += 'AND accountId IN : allAccts ';
+            soqlQuery += 'GROUP BY ROLLUP (accountId, Fiscal_Year(closeDate)) ';
+            soqlQuery += 'HAVING ';
+            if (useFiscalYear) {
+            	//soqlQuery += '( Fiscal_Year(closeDate) = null OR Fiscal_Year(closeDate) >= : startYear ) AND';
+            } else {
+            	//soqlQuery += '( Calendar_Year(closeDate) = null OR Calendar_Year(closeDate) >= : startYear ) AND';
+            }
+            soqlQuery += 'accountId != null';
+            
             objectList.clear();
-        	objectList = [SELECT accountId, 
-                //Fiscal_Year(CloseDate) CalendarYr, 
-                SUM(Amount) TotalOppAmount, 
-                //MAX(Amount) LargestAmount, 
-                //AVG(Amount) AverageAmount, MIN(Amount) SmallestAmount,
-                MAX(CloseDate) LastCloseDate, 
-                MIN(membership_start_date__c) FirstStartDate, MAX(membership_end_date__c) LastEndDate, 
-                COUNT_DISTINCT(Id) NumberOfClosedOpps, MAX(CombinedRollupFieldset__c) RollupFieldset 
-                FROM Opportunity
-                WHERE isWon=true 
-                // AND (Amount > 0 OR Amount < 0) 
-                AND RecordTypeId IN : mbrRecordTypes
-                AND Type NOT IN : oppTypesToExcludeAccts
-                AND accountId IN : allAccts
-                GROUP BY ROLLUP (accountId, Fiscal_Year(closeDate))
-                HAVING 
-                // ( Fiscal_Year(closeDate) = null OR Fiscal_Year(closeDate) >= : startYear ) AND
-                accountId != null ];
+        	objectList = Database.query(soqlQuery);
                     
             // invokes code to get the currency of GWBase__CombinedRollupFieldset__c oppty
             opptyCurrencies = (isMultiCurrency() ? rcfFindCurrency(objectList) : null);
@@ -326,23 +354,36 @@ public class GW_OppRollups {
                 householdsToUpdate.get(hhid).put(cfHousehold,hhmap.get(hhid).get(cfHousehold));
         }
         
-        list<sobject> objectList = [SELECT contact.ONEN_household__c hhid,  
-            Fiscal_Year(Opportunity.CloseDate) CalendarYr, SUM(Opportunity.Amount) TotalOppAmount, 
-            AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,
-            MAX(Opportunity.Amount) LargestAmount, MIN(Opportunity.CloseDate) FirstCloseDate, 
-            MAX(Opportunity.CloseDate) LastCloseDate, COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps,
-            MAX(Opportunity.CombinedRollupFieldset__c) RollupFieldset
-            FROM OpportunityContactRole 
-            WHERE isPrimary=true AND opportunity.isWon=true 
-            AND (Opportunity.Amount != 0 AND Opportunity.Amount != null) 
-            AND Opportunity.RecordTypeId NOT IN : recordTypesToExcludeCons
-            AND Opportunity.Type NOT IN : oppTypesToExcludeCons
-            AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null)  
-            AND contact.ONEN_household__c IN : hhIds
-            GROUP BY ROLLUP(contact.ONEN_household__c, Fiscal_Year(opportunity.closeDate))
-            HAVING // (Fiscal_Year(opportunity.closeDate) = null 
-            // OR Fiscal_Year(opportunity.closeDate) >= : startYear ) AND  
-            contact.ONEN_household__c != null ];
+        string soqlQuery = '';
+        soqlQuery += 'SELECT contact.ONEN_household__c hhid,';
+        if (useFiscalYear) {
+        	soqlQuery += 'Fiscal_Year(Opportunity.CloseDate) CalendarYr, SUM(Opportunity.Amount) TotalOppAmount,';
+        } else {
+        	soqlQuery += 'Calendar_Year(Opportunity.CloseDate) CalendarYr, SUM(Opportunity.Amount) TotalOppAmount,';
+        }
+        soqlQuery += 'AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,';
+        soqlQuery += 'MAX(Opportunity.Amount) LargestAmount, MIN(Opportunity.CloseDate) FirstCloseDate,';
+        soqlQuery += 'MAX(Opportunity.CloseDate) LastCloseDate, COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps,';
+        soqlQuery += 'MAX(Opportunity.CombinedRollupFieldset__c) RollupFieldset ';
+        soqlQuery += 'FROM OpportunityContactRole ';
+        soqlQuery += 'WHERE isPrimary=true AND opportunity.isWon=true ';
+        soqlQuery += 'AND (Opportunity.Amount != 0 AND Opportunity.Amount != null) ';
+        soqlQuery += 'AND Opportunity.RecordTypeId NOT IN : recordTypesToExcludeCons ';
+        soqlQuery += 'AND Opportunity.Type NOT IN : oppTypesToExcludeCons ';
+        soqlQuery += 'AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null) ';
+        soqlQuery += 'AND contact.ONEN_household__c IN : hhIds ';
+        if (useFiscalYear) {
+        	soqlQuery += 'GROUP BY ROLLUP(contact.ONEN_household__c, Fiscal_Year(opportunity.closeDate)) ';
+        } else {
+        	soqlQuery += 'GROUP BY ROLLUP(contact.ONEN_household__c, Calendar_Year(opportunity.closeDate)) ';
+        }
+        soqlQuery += 'HAVING ';
+        // soqlQuery += '(Fiscal_Year(opportunity.closeDate) = null ';
+        // soqlQuery += 'OR Fiscal_Year(opportunity.closeDate) >= : startYear ) AND '; 
+        soqlQuery += 'contact.ONEN_household__c != null';
+        
+        list<sobject> objectList = Database.query(soqlQuery);
+        
         // invokes code to get the currency of associated opportunities
         opptyCurrencies = (isMultiCurrency() ? rcfFindCurrency(objectList) : null);
 
@@ -399,29 +440,41 @@ public class GW_OppRollups {
         if (!mbrRecordTypes.isEmpty()) {
             // also roll up memberships
             // uncomment if you are doing annual membership totals
+            
+            soqlQuery = 'SELECT contact.ONEN_household__c hhid,';
+            soqlQuery += 'SUM(Opportunity.Amount) TotalOppAmount,'; 
+            soqlQuery += 'MAX(Opportunity.CloseDate) LastCloseDate,';
+            //soqlQuery += 'AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,';
+            //soqlQuery += 'MAX(Opportunity.Amount) LargestAmount,';
+            soqlQuery += 'MIN(Opportunity.Membership_Start_Date__c) FirstStartDate,'; 
+            soqlQuery += 'MAX(Opportunity.Membership_End_Date__c) LastEndDate,'; 
+            soqlQuery += 'COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps,';
+            soqlQuery += 'MAX(Opportunity.CombinedRollupFieldset__c) RollupFieldset ';
+            soqlQuery += 'FROM OpportunityContactRole ';
+            soqlQuery += 'WHERE isPrimary=true AND opportunity.isWon=true '; 
+            //soqlQuery += ' AND (Opportunity.Amount > 0 OR Opportunity.Amount < 0) '; 
+            soqlQuery += 'AND Opportunity.RecordTypeId IN : mbrRecordTypes ';
+            soqlQuery += 'AND Opportunity.Type NOT IN : oppTypesToExcludeCons ';
+            soqlQuery += 'AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null) ';  
+            soqlQuery += 'AND contact.ONEN_household__c IN : hhIds ';
+            soqlQuery += 'GROUP BY contact.ONEN_household__c ';
+            if (useFiscalYear) {
+            	//soqlQuery += ', Fiscal_Year(opportunity.closeDate) ';
+            } else {
+            	//soqlQuery += ', Calendar_Year(opportunity.closeDate) ';
+            }
+            soqlQuery += 'HAVING '; 
+            if (useFiscalYear) {
+	            //soqlQuery += '(Fiscal_Year(opportunity.closeDate) = null '; 
+	            //soqlQuery += 'OR Fiscal_Year(opportunity.closeDate) >= : startYear ) AND '; 
+            } else {
+            	//soqlQuery += '(Calendar_Year(opportunity.closeDate) = null '; 
+	            //soqlQuery += 'OR Calendar_Year(opportunity.closeDate) >= : startYear ) AND '; 
+            }
+            soqlQuery += 'contact.ONEN_household__c != null';
+            
             objectList.clear();
-        	objectList = [SELECT contact.ONEN_household__c hhid, 
-                SUM(Opportunity.Amount) TotalOppAmount, 
-                MAX(Opportunity.CloseDate) LastCloseDate, 
-                //AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,
-                //MAX(Opportunity.Amount) LargestAmount, 
-                MIN(Opportunity.Membership_Start_Date__c) FirstStartDate, 
-                MAX(Opportunity.Membership_End_Date__c) LastEndDate, 
-                COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps,
-                MAX(Opportunity.CombinedRollupFieldset__c) RollupFieldset
-                FROM OpportunityContactRole 
-                WHERE isPrimary=true AND opportunity.isWon=true 
-                // AND (Opportunity.Amount > 0 OR Opportunity.Amount < 0) 
-                AND Opportunity.RecordTypeId IN : mbrRecordTypes
-                AND Opportunity.Type NOT IN : oppTypesToExcludeCons
-                AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null)  
-                AND contact.ONEN_household__c IN : hhIds
-                GROUP BY contact.ONEN_household__c
-                //, Fiscal_Year(opportunity.closeDate)
-                HAVING 
-                //(Fiscal_Year(opportunity.closeDate) = null 
-                //OR Fiscal_Year(opportunity.closeDate) >= : startYear ) AND 
-                contact.ONEN_household__c != null ];
+        	objectList = Database.query(soqlQuery);
                 
             // invokes code to get the currency of associated opportunities
         	opptyCurrencies = (isMultiCurrency() ? rcfFindCurrency(objectList) : null);
@@ -525,21 +578,32 @@ public class GW_OppRollups {
         // copy all the rollups from each result row into the contact objects
         integer startYear = thisYear - 2;
         
-        list<sobject> objectList = [SELECT contactId, 
-	        Fiscal_Year(Opportunity.CloseDate) CalendarYr, SUM(Opportunity.Amount) TotalOppAmount, 
-	        AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,
-	        MAX(Opportunity.Amount) LargestAmount, MIN(Opportunity.CloseDate) FirstCloseDate, 
-	        MAX(Opportunity.CloseDate) LastCloseDate, COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps,
-	        MAX(Opportunity.CombinedRollupFieldset__c) RollupFieldset
-	        FROM OpportunityContactRole 
-	        WHERE isPrimary=true AND opportunity.isWon=true 
-	        AND (Opportunity.Amount != 0 AND Opportunity.Amount != null) 
-	        AND Opportunity.RecordTypeId NOT IN : recordTypesToExcludeCons
-	        AND Opportunity.Type NOT IN : oppTypesToExcludeCons
-	        AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null)  
-	        AND contactId IN : conIds
-	        GROUP BY ROLLUP(contactId, Fiscal_Year(opportunity.closeDate))
-	        ];
+        string soqlQuery = '';
+        
+        soqlQuery += 'SELECT contactId,'; 
+        if (useFiscalYear) {
+        	soqlQuery += 'Fiscal_Year(Opportunity.CloseDate) CalendarYr, SUM(Opportunity.Amount) TotalOppAmount,';
+        } else {
+        	soqlQuery += 'Calendar_Year(Opportunity.CloseDate) CalendarYr, SUM(Opportunity.Amount) TotalOppAmount,';
+        } 
+        soqlQuery += 'AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,';
+        soqlQuery += 'MAX(Opportunity.Amount) LargestAmount, MIN(Opportunity.CloseDate) FirstCloseDate,';
+        soqlQuery += 'MAX(Opportunity.CloseDate) LastCloseDate, COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps,';
+        soqlQuery += 'MAX(Opportunity.CombinedRollupFieldset__c) RollupFieldset ';
+        soqlQuery += 'FROM OpportunityContactRole '; 
+        soqlQuery += 'WHERE isPrimary=true AND opportunity.isWon=true ';
+        soqlQuery += 'AND (Opportunity.Amount != 0 AND Opportunity.Amount != null) '; 
+        soqlQuery += 'AND Opportunity.RecordTypeId NOT IN : recordTypesToExcludeCons ';
+        soqlQuery += 'AND Opportunity.Type NOT IN : oppTypesToExcludeCons ';
+        soqlQuery += 'AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null) ';  
+        soqlQuery += 'AND contactId IN : conIds ';
+        if (useFiscalYear) {
+        	soqlQuery += 'GROUP BY ROLLUP(contactId, Fiscal_Year(opportunity.closeDate))';
+        } else {
+        	soqlQuery += 'GROUP BY ROLLUP(contactId, Calendar_Year(opportunity.closeDate))';
+        }
+        
+        list<sobject> objectList = Database.query(soqlQuery);
         // invokes code to get the currency of associated opportunities
         opptyCurrencies = (isMultiCurrency() ? rcfFindCurrency(objectList) : null);
         
@@ -600,27 +664,36 @@ public class GW_OppRollups {
             // also do rollups for membership
             // if you need annual rollups for membership, uncomment the commented bits
             
+            soqlQuery = 'SELECT contactId,';
+            if (useFiscalYear) {
+            	//soqlQuery += 'Fiscal_Year(Opportunity.CloseDate) CalendarYr,';
+            } else {
+            	//soqlQuery += 'Calendar_Year(Opportunity.CloseDate) CalendarYr,';
+            }
+            soqlQuery += 'SUM(Opportunity.Amount) TotalOppAmount,'; 
+            soqlQuery += 'MAX(Opportunity.CloseDate) LastCloseDate,'; 
+            //soqlQuery += 'AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,';
+            //soqlQuery += 'MAX(Opportunity.Amount) LargestAmount,'; 
+            soqlQuery += 'MIN(Opportunity.Membership_Start_Date__c) FirstStartDate,'; 
+            soqlQuery += 'MAX(Opportunity.Membership_End_Date__c) LastEndDate,'; 
+            soqlQuery += 'COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps,';
+            soqlQuery += 'MAX(Opportunity.CombinedRollupFieldset__c) RollupFieldset ';
+            soqlQuery += 'FROM OpportunityContactRole ';
+            soqlQuery += 'WHERE isPrimary=true AND opportunity.isWon=true ';
+            //soqlQuery += ' AND (Opportunity.Amount > 0 OR Opportunity.Amount < 0)';
+            soqlQuery += 'AND Opportunity.RecordTypeId IN : mbrRecordTypes ';
+            soqlQuery += 'AND Opportunity.Type NOT IN : oppTypesToExcludeCons ';
+            soqlQuery += 'AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null) ';
+            soqlQuery += 'AND contactid IN : conIds ';
+            soqlQuery += 'GROUP BY ROLLUP(contactId)';
+            if (useFiscalYear) {
+            	//soqlQuery += ', Fiscal_Year(opportunity.closeDate)'; 
+            } else {
+            	//soqlQuery += ', Calendar_Year(opportunity.closeDate)'; 
+            }          
+            
             objectList.clear();
-        	objectList = [SELECT contactId, 
-                //Fiscal_Year(Opportunity.CloseDate) CalendarYr, 
-                SUM(Opportunity.Amount) TotalOppAmount, 
-                MAX(Opportunity.CloseDate) LastCloseDate, 
-                //AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,
-                //MAX(Opportunity.Amount) LargestAmount, 
-                MIN(Opportunity.Membership_Start_Date__c) FirstStartDate, 
-                MAX(Opportunity.Membership_End_Date__c) LastEndDate, 
-                COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps,
-                MAX(Opportunity.CombinedRollupFieldset__c) RollupFieldset
-                FROM OpportunityContactRole 
-                WHERE isPrimary=true AND opportunity.isWon=true 
-                // AND (Opportunity.Amount > 0 OR Opportunity.Amount < 0) 
-                AND Opportunity.RecordTypeId IN : mbrRecordTypes
-                AND Opportunity.Type NOT IN : oppTypesToExcludeCons
-                AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null)  
-                AND contactid IN : conIds
-                GROUP BY ROLLUP(contactId 
-                //, Fiscal_Year(opportunity.closeDate)
-                ) ];
+        	objectList = Database.query(soqlQuery);
                 
             // invokes code to get the currency of associated opportunities
         	opptyCurrencies = (isMultiCurrency() ? rcfFindCurrency(objectList) : null);

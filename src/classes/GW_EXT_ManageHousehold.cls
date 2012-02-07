@@ -704,6 +704,7 @@ global with sharing class GW_EXT_ManageHousehold {
         Test.stopTest();
     }
     
+    
     public static testMethod void testFindAndAdd() {
         
         ONEN_Household__c hh = new ONEN_Household__c();
@@ -918,6 +919,7 @@ global with sharing class GW_EXT_ManageHousehold {
         ext.deleteHH();
         
         Test.stopTest();
+        
         
     }
     
