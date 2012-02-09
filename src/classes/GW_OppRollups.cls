@@ -46,18 +46,18 @@ public class GW_OppRollups {
         + 'NumberOfClosedOpps__c,OppAmountThisYear__c,OppsClosedThisYear__c,OppAmountLastYear__c,OppsClosedLastYear__c,OppsClosed2YearsAgo__c,OppAmount2YearsAgo__c,'
         + 'OppsClosedLastNDays__c,OppAmountLastNDays__c,TotalMembershipOppAmount__c,NumberOfMembershipOpps__c,LastMembershipDate__c,LastMembershipAmount__c,'
         + 'LastMembershipLevel__c,LastMembershipOrigin__c,MembershipJoinDate__c,MembershipEndDate__c,LastOppAmount__c'
-        + (isMultiCurrency() ? ',CurrencyIsoCode ' : ''); 
+        + (isMultiCurrency() ? ',CurrencyIsoCode' : ''); 
     private final static string CON_ROLLUP_FIELDS = 'TotalOppAmount__c,AverageAmount__c,SmallestAmount__c,LargestAmount__c,FirstCloseDate__c,LastCloseDate__c,NumberOfClosedOpps__c,'
         + 'OppAmountThisYear__c,OppsClosedThisYear__c,OppAmountLastYear__c,OppsClosedLastYear__c,OppsClosed2YearsAgo__c,OppAmount2YearsAgo__c,OppsClosedLastNDays__c,'
         + 'OppAmountLastNDays__c,TotalMembershipOppAmount__c,NumberOfMembershipOpps__c,LastMembershipDate__c,LastMembershipAmount__c,LastMembershipLevel__c,LastMembershipOrigin__c,'
         + 'MembershipJoinDate__c,MembershipEndDate__c,LastOppAmount__c,Best_Gift_Year__c,Best_Gift_Year_Total__c'
-        + (isMultiCurrency() ? ',CurrencyIsoCode ' : '');
+        + (isMultiCurrency() ? ',CurrencyIsoCode' : '');
     private final static string CON_ROLLUP_FIELDS_FROM_CONROLE = 'Contact.' + CON_ROLLUP_FIELDS.replace(',' , ',Contact.');    // add relationship name to field list so can use in conrole query
     private final static string HH_ROLLUP_FIELDS = 'TotalOppAmount__c,AverageAmount__c,SmallestAmount__c,LargestAmount__c,FirstCloseDate__c,LastCloseDate__c,NumberOfClosedOpps__c,'
         + 'OppAmountThisYear__c,OppsClosedThisYear__c,OppAmountLastYear__c,OppsClosedLastYear__c,OppsClosed2YearsAgo__c,OppAmount2YearsAgo__c,OppsClosedLastNDays__c,'
         + 'OppAmountLastNDays__c,TotalMembershipOppAmount__c,NumberOfMembershipOpps__c,LastMembershipDate__c,LastMembershipAmount__c,LastMembershipLevel__c,LastMembershipOrigin__c,'
         + 'MembershipJoinDate__c,MembershipEndDate__c,LastOppAmount__c,Best_Gift_Year__c,Best_Gift_Year_Total__c'
-        + (isMultiCurrency() ? ',CurrencyIsoCode ' : '');  
+        + (isMultiCurrency() ? ',CurrencyIsoCode' : '');  
     private final static string HH_ROLLUP_FIELDS_FROM_CON = 'ONEN_Household__r.' + HH_ROLLUP_FIELDS.replace(',' , ',ONEN_Household__r.');
     private final static string HH_ROLLUP_FIELDS_FROM_CONROLE = 'Contact.ONEN_Household__r.' + HH_ROLLUP_FIELDS.replace(',' , ',Contact.ONEN_Household__r.');
     private static map<string,string> ConFieldtypeMap;
