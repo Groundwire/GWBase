@@ -1,10 +1,10 @@
 Changelog
 =========
 
-2.XX Unreleased
+2.0.9 - released
 ------------------
 
-* removed hardcoded record type reference in lead converter controller test, replaced with constant
+* made a query in installment code selective, to eliminate errors of having more than 100K payments and non-selective SOQL error
  [greenstork]
 
 2.0.7 - 2.0.8 released
