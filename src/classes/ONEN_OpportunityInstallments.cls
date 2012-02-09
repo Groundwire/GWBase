@@ -101,8 +101,9 @@ public class ONEN_OpportunityInstallments {
 		
 			
 		string closedStage = ONEN_Constants.OPP_DEFAULT_CLOSED_WON_STAGE;
+		//go through the opps in this list except the ones that have unpaid payments
 		for (opportunity o : [select id, stageName from opportunity where id in :changedPmtStateOpps and 
-			id not in (select opportunity__c from oppPayment__c where paid__c = false and written_off__c = false)
+			id not in (select opportunity__c from oppPayment__c where opportunity__c in :changedPmtStateOpps and paid__c = false and written_off__c = false)
 			and stageName != : closedStage]) {
 			
 			if (oppsToUpdate.containsKey(o.id)) {
