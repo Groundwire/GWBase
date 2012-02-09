@@ -629,7 +629,7 @@ global with sharing virtual class ONEN_CTRL_LeadConverter {
         system.assertEquals(cvns[0].accountid, a1.id);
         system.assertEquals(cvns[0].accounturl, '/'  + a1.id); 
         system.assertEquals(cvns[0].accountName, 'Rats R Us');      
-        system.assertEquals(cvns[0].oppName, 'Peter Prongs_for_tests ' + system.today().year() + ' Gift'); 
+        system.assertEquals(cvns[0].oppName, 'Peter Prongs_for_tests ' + system.today().year() + ' ' + ONEN_Constants.OPP_DEFAULT_RECTYPE_FORTESTS); 
         system.assertEquals(cvns[0].oppid, newopp.id);
         system.assertEquals(cvns[0].oppurl, '/' + newOpp.id);
         test.stoptest();
@@ -692,7 +692,7 @@ global with sharing virtual class ONEN_CTRL_LeadConverter {
         system.assert(cvns != null && !cvns.isEmpty());
         system.assertEquals(cvns[0].contactName, 'Peter Prongs_for_tests');         
         system.assertEquals(cvns[0].accountName, 'Rats R Us');      
-        system.assertEquals(cvns[0].oppName, 'Peter Prongs_for_tests ' + system.today().year() + ' Gift'); 
+        system.assertEquals(cvns[0].oppName, 'Peter Prongs_for_tests ' + system.today().year() + ' ' + ONEN_Constants.OPP_DEFAULT_RECTYPE_FORTESTS); 
     }
 
     static testMethod void TestPageMax() {
