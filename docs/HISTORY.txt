@@ -1,6 +1,12 @@
 Changelog
 =========
 
+2.0.7 - released
+------------------
+
+* removed space that was causing field aliasing issue in multi-currency orgs.
+ [greenstork]
+
 2.0.6 - released
 ------------------
 
