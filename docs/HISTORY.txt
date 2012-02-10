@@ -1,6 +1,12 @@
 Changelog
 =========
 
+2.0.10 - released
+------------------
+
+* changed query to actual lookup field value instead of __r.id, to eliminate errors of having more than 100K payments and non-selective SOQL error
+ [greenstork]
+
 2.0.9 - released
 ------------------
 
