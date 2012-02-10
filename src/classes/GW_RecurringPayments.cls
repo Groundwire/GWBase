@@ -48,11 +48,11 @@ global class GW_RecurringPayments {
 		// find all the Opportunties for these recurring payments profiles		
 		// and close those opportunties, whose date is after the new EndDate
 		list<Opportunity> listOppToUpdate = new list<Opportunity>();
-		for (list<Opportunity> listOpp : [select Id, CloseDate, StageName, Recurring_Payment_Profile__r.Id from Opportunity where 
-				Recurring_Payment_Profile__r.Id in :mapRppIdEndDate.keySet() and
+		for (list<Opportunity> listOpp : [select Id, CloseDate, StageName, Recurring_Payment_Profile__c from Opportunity where 
+				Recurring_Payment_Profile__c in :mapRppIdEndDate.keySet() and
 				StageName = :ONEN_Constants.OPP_DEFAULT_RECURRING_STAGE]) {
 			for (Opportunity opp : listOpp) {
-				if (opp.CloseDate >= mapRppIdEndDate.get(opp.Recurring_Payment_Profile__r.Id)) {
+				if (opp.CloseDate >= mapRppIdEndDate.get(opp.Recurring_Payment_Profile__c)) {
 					opp.StageName = ONEN_Constants.OPP_DEFAULT_CLOSED_LOST_STAGE;
 					listOppToUpdate.add(opp);
 				}
