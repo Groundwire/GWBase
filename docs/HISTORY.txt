@@ -1,6 +1,13 @@
 Changelog
 =========
 
+2.0.11 - released
+------------------
+
+* Added ability to force Visualforce pagelet rollups to use calendar year, based on setting - changed all relevant rollup SOQLs to dynamic, added boolean to check for fiscal years.  
+  This will not prevent code failure if custom fiscal years are enabled, but you will have to adjust the setting.  We designed this way to prevent an extra SOQL to FiscalYearSettings table.
+ [greenstork]
+
 2.0.10 - released
 ------------------
 
