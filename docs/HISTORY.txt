@@ -1,6 +1,12 @@
 Changelog
 =========
 
+2.0.13 - released
+------------------
+
+* Another final fix to DaveM's fiscal year changes
+ [groundwired]
+
 2.0.12 - released
 ------------------
 
