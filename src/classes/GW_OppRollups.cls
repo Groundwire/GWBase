@@ -189,7 +189,8 @@ public class GW_OppRollups {
     	soqlQuery += 'HAVING ( Fiscal_Year(closeDate) = null OR Fiscal_Year(closeDate) >= : startYear ) ';
         soqlQuery += 'AND accountId != null';
 
-		if (!useFiscalYear) soqlQuery.replace('Fiscal_Year','Calendar_Year');
+		if (!useFiscalYear) 
+			soqlQuery = soqlQuery.replace('Fiscal_Year','Calendar_Year');
         
         list<sobject> objectList = Database.query(soqlQuery);
         // invokes code to get the currency of associated opportunities
@@ -250,7 +251,8 @@ public class GW_OppRollups {
             //soqlQuery += '( Fiscal_Year(closeDate) = null OR Fiscal_Year(closeDate) >= : startYear ) AND';
             soqlQuery += 'accountId != null';
 
-            if (!useFiscalYear) soqlQuery.replace('Fiscal_Year','Calendar_Year');
+			if (!useFiscalYear) 
+				soqlQuery = soqlQuery.replace('Fiscal_Year','Calendar_Year');
             
             objectList.clear();
         	objectList = Database.query(soqlQuery);
@@ -361,7 +363,8 @@ public class GW_OppRollups {
         // soqlQuery += 'OR Fiscal_Year(opportunity.closeDate) >= : startYear ) AND '; 
         soqlQuery += 'contact.ONEN_household__c != null';
 
-        if (!useFiscalYear) soqlQuery.replace('Fiscal_Year','Calendar_Year');
+		if (!useFiscalYear) 
+			soqlQuery = soqlQuery.replace('Fiscal_Year','Calendar_Year');
         
         list<sobject> objectList = Database.query(soqlQuery);
         
@@ -445,7 +448,8 @@ public class GW_OppRollups {
             //soqlQuery += 'OR Fiscal_Year(opportunity.closeDate) >= : startYear ) AND '; 
             soqlQuery += 'contact.ONEN_household__c != null';
             
-            if (!useFiscalYear) soqlQuery.replace('Fiscal_Year','Calendar_Year');
+			if (!useFiscalYear) 
+				soqlQuery = soqlQuery.replace('Fiscal_Year','Calendar_Year');
 
             objectList.clear();
         	objectList = Database.query(soqlQuery);
@@ -569,7 +573,8 @@ public class GW_OppRollups {
         soqlQuery += 'AND contactId IN : conIds ';
         soqlQuery += 'GROUP BY ROLLUP(contactId, Fiscal_Year(opportunity.closeDate))';
         
-        if (!useFiscalYear) soqlQuery.replace('Fiscal_Year','Calendar_Year');
+		if (!useFiscalYear) 
+			soqlQuery = soqlQuery.replace('Fiscal_Year','Calendar_Year');
 
         list<sobject> objectList = Database.query(soqlQuery);
         // invokes code to get the currency of associated opportunities
@@ -633,11 +638,7 @@ public class GW_OppRollups {
             // if you need annual rollups for membership, uncomment the commented bits
             
             soqlQuery = 'SELECT contactId,';
-            if (useFiscalYear) {
-            	//soqlQuery += 'Fiscal_Year(Opportunity.CloseDate) CalendarYr,';
-            } else {
-            	//soqlQuery += 'Calendar_Year(Opportunity.CloseDate) CalendarYr,';
-            }
+            //soqlQuery += 'Fiscal_Year(Opportunity.CloseDate) CalendarYr,';
             soqlQuery += 'SUM(Opportunity.Amount) TotalOppAmount,'; 
             soqlQuery += 'MAX(Opportunity.CloseDate) LastCloseDate,'; 
             //soqlQuery += 'AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,';
@@ -654,12 +655,11 @@ public class GW_OppRollups {
             soqlQuery += 'AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null) ';
             soqlQuery += 'AND contactid IN : conIds ';
             soqlQuery += 'GROUP BY ROLLUP(contactId)';
-            if (useFiscalYear) {
-            	//soqlQuery += ', Fiscal_Year(opportunity.closeDate)'; 
-            } else {
-            	//soqlQuery += ', Calendar_Year(opportunity.closeDate)'; 
-            }          
+            //soqlQuery += ', Fiscal_Year(opportunity.closeDate)'; 
             
+			if (!useFiscalYear) 
+				soqlQuery = soqlQuery.replace('Fiscal_Year','Calendar_Year');
+
             objectList.clear();
         	objectList = Database.query(soqlQuery);
                 
