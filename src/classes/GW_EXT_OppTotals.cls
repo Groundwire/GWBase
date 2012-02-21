@@ -108,7 +108,7 @@ public class GW_EXT_OppTotals {
                 soqlQuery += 'ORDER BY Fiscal_Year(Opportunity.CloseDate) DESC ';
             }
             
-            if (useFiscalYear) soqlQuery.replace('Fiscal_Year','Calendar_Year');
+            if (!useFiscalYear) soqlQuery.replace('Fiscal_Year','Calendar_Year');
             
             // store the results here
             list<sObject> rollups = Database.query(soqlQuery);
