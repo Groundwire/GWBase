@@ -175,11 +175,7 @@ public class GW_OppRollups {
         integer startYear = thisYear - 2;
         
         string soqlQuery = '';
-        if (useFiscalYear) {
-        	soqlQuery += 'SELECT accountId, Fiscal_Year(CloseDate) CalendarYr,'; 
-        } else {
-        	soqlQuery += 'SELECT accountId, Calendar_Year(CloseDate) CalendarYr,';
-        }
+        soqlQuery += 'SELECT accountId, Fiscal_Year(CloseDate) CalendarYr,'; 
         soqlQuery += 'SUM(Amount) TotalOppAmount, AVG(Amount) AverageAmount, MIN(Amount) SmallestAmount,';
         soqlQuery += 'MAX(Amount) LargestAmount, MIN(CloseDate) FirstCloseDate, MAX(CloseDate) LastCloseDate,';
         soqlQuery += 'COUNT_DISTINCT(Id) NumberOfClosedOpps, MAX(CombinedRollupFieldset__c) RollupFieldset ';
@@ -189,14 +185,11 @@ public class GW_OppRollups {
         soqlQuery += 'AND RecordTypeId NOT IN : recordTypesToExcludeAccts ';
         soqlQuery += 'AND Type NOT IN : oppTypesToExcludeAccts ';
         soqlQuery += 'AND accountId IN : allAccts ';
-        if (useFiscalYear) {
-        	soqlQuery += 'GROUP BY ROLLUP (accountId, Fiscal_Year(closeDate)) ';
-        	soqlQuery += 'HAVING ( Fiscal_Year(closeDate) = null OR Fiscal_Year(closeDate) >= : startYear ) ';
-        } else {
-        	soqlQuery += 'GROUP BY ROLLUP (accountId, Calendar_Year(closeDate)) ';
-        	soqlQuery += 'HAVING ( Calendar_Year(closeDate) = null OR Calendar_Year(closeDate) >= : startYear ) ';
-        }
+    	soqlQuery += 'GROUP BY ROLLUP (accountId, Fiscal_Year(closeDate)) ';
+    	soqlQuery += 'HAVING ( Fiscal_Year(closeDate) = null OR Fiscal_Year(closeDate) >= : startYear ) ';
         soqlQuery += 'AND accountId != null';
+
+		if (!useFiscalYear) soqlQuery.replace('Fiscal_Year','Calendar_Year');
         
         list<sobject> objectList = Database.query(soqlQuery);
         // invokes code to get the currency of associated opportunities
@@ -239,11 +232,7 @@ public class GW_OppRollups {
             // uncomment if you are doing annual membership totals
             
             soqlQuery = 'SELECT accountId,';
-            if (useFiscalYear) {
-            	//soqlQuery +=  'Fiscal_Year(CloseDate) CalendarYr,';
-            } else {
-            	//soqlQuery +=  'Calendar_Year(CloseDate) CalendarYr,';
-            }
+            //soqlQuery +=  'Fiscal_Year(CloseDate) CalendarYr,';
             soqlQuery += 'SUM(Amount) TotalOppAmount,'; 
             //soqlQuery += 'MAX(Amount) LargestAmount,'; 
             //soqlQuery += 'AVG(Amount) AverageAmount, MIN(Amount) SmallestAmount,';
@@ -258,12 +247,10 @@ public class GW_OppRollups {
             soqlQuery += 'AND accountId IN : allAccts ';
             soqlQuery += 'GROUP BY ROLLUP (accountId, Fiscal_Year(closeDate)) ';
             soqlQuery += 'HAVING ';
-            if (useFiscalYear) {
-            	//soqlQuery += '( Fiscal_Year(closeDate) = null OR Fiscal_Year(closeDate) >= : startYear ) AND';
-            } else {
-            	//soqlQuery += '( Calendar_Year(closeDate) = null OR Calendar_Year(closeDate) >= : startYear ) AND';
-            }
+            //soqlQuery += '( Fiscal_Year(closeDate) = null OR Fiscal_Year(closeDate) >= : startYear ) AND';
             soqlQuery += 'accountId != null';
+
+            if (!useFiscalYear) soqlQuery.replace('Fiscal_Year','Calendar_Year');
             
             objectList.clear();
         	objectList = Database.query(soqlQuery);
@@ -356,11 +343,7 @@ public class GW_OppRollups {
         
         string soqlQuery = '';
         soqlQuery += 'SELECT contact.ONEN_household__c hhid,';
-        if (useFiscalYear) {
-        	soqlQuery += 'Fiscal_Year(Opportunity.CloseDate) CalendarYr, SUM(Opportunity.Amount) TotalOppAmount,';
-        } else {
-        	soqlQuery += 'Calendar_Year(Opportunity.CloseDate) CalendarYr, SUM(Opportunity.Amount) TotalOppAmount,';
-        }
+        soqlQuery += 'Fiscal_Year(Opportunity.CloseDate) CalendarYr, SUM(Opportunity.Amount) TotalOppAmount,';
         soqlQuery += 'AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,';
         soqlQuery += 'MAX(Opportunity.Amount) LargestAmount, MIN(Opportunity.CloseDate) FirstCloseDate,';
         soqlQuery += 'MAX(Opportunity.CloseDate) LastCloseDate, COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps,';
@@ -372,15 +355,13 @@ public class GW_OppRollups {
         soqlQuery += 'AND Opportunity.Type NOT IN : oppTypesToExcludeCons ';
         soqlQuery += 'AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null) ';
         soqlQuery += 'AND contact.ONEN_household__c IN : hhIds ';
-        if (useFiscalYear) {
-        	soqlQuery += 'GROUP BY ROLLUP(contact.ONEN_household__c, Fiscal_Year(opportunity.closeDate)) ';
-        } else {
-        	soqlQuery += 'GROUP BY ROLLUP(contact.ONEN_household__c, Calendar_Year(opportunity.closeDate)) ';
-        }
+        soqlQuery += 'GROUP BY ROLLUP(contact.ONEN_household__c, Fiscal_Year(opportunity.closeDate)) ';
         soqlQuery += 'HAVING ';
         // soqlQuery += '(Fiscal_Year(opportunity.closeDate) = null ';
         // soqlQuery += 'OR Fiscal_Year(opportunity.closeDate) >= : startYear ) AND '; 
         soqlQuery += 'contact.ONEN_household__c != null';
+
+        if (!useFiscalYear) soqlQuery.replace('Fiscal_Year','Calendar_Year');
         
         list<sobject> objectList = Database.query(soqlQuery);
         
@@ -458,21 +439,14 @@ public class GW_OppRollups {
             soqlQuery += 'AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null) ';  
             soqlQuery += 'AND contact.ONEN_household__c IN : hhIds ';
             soqlQuery += 'GROUP BY contact.ONEN_household__c ';
-            if (useFiscalYear) {
-            	//soqlQuery += ', Fiscal_Year(opportunity.closeDate) ';
-            } else {
-            	//soqlQuery += ', Calendar_Year(opportunity.closeDate) ';
-            }
+            //soqlQuery += ', Fiscal_Year(opportunity.closeDate) ';
             soqlQuery += 'HAVING '; 
-            if (useFiscalYear) {
-	            //soqlQuery += '(Fiscal_Year(opportunity.closeDate) = null '; 
-	            //soqlQuery += 'OR Fiscal_Year(opportunity.closeDate) >= : startYear ) AND '; 
-            } else {
-            	//soqlQuery += '(Calendar_Year(opportunity.closeDate) = null '; 
-	            //soqlQuery += 'OR Calendar_Year(opportunity.closeDate) >= : startYear ) AND '; 
-            }
+            //soqlQuery += '(Fiscal_Year(opportunity.closeDate) = null '; 
+            //soqlQuery += 'OR Fiscal_Year(opportunity.closeDate) >= : startYear ) AND '; 
             soqlQuery += 'contact.ONEN_household__c != null';
             
+            if (!useFiscalYear) soqlQuery.replace('Fiscal_Year','Calendar_Year');
+
             objectList.clear();
         	objectList = Database.query(soqlQuery);
                 
@@ -581,11 +555,7 @@ public class GW_OppRollups {
         string soqlQuery = '';
         
         soqlQuery += 'SELECT contactId,'; 
-        if (useFiscalYear) {
-        	soqlQuery += 'Fiscal_Year(Opportunity.CloseDate) CalendarYr, SUM(Opportunity.Amount) TotalOppAmount,';
-        } else {
-        	soqlQuery += 'Calendar_Year(Opportunity.CloseDate) CalendarYr, SUM(Opportunity.Amount) TotalOppAmount,';
-        } 
+        soqlQuery += 'Fiscal_Year(Opportunity.CloseDate) CalendarYr, SUM(Opportunity.Amount) TotalOppAmount,';
         soqlQuery += 'AVG(Opportunity.Amount) AverageAmount, MIN(Opportunity.Amount) SmallestAmount,';
         soqlQuery += 'MAX(Opportunity.Amount) LargestAmount, MIN(Opportunity.CloseDate) FirstCloseDate,';
         soqlQuery += 'MAX(Opportunity.CloseDate) LastCloseDate, COUNT_DISTINCT(Opportunity.Id) NumberOfClosedOpps,';
@@ -597,12 +567,10 @@ public class GW_OppRollups {
         soqlQuery += 'AND Opportunity.Type NOT IN : oppTypesToExcludeCons ';
         soqlQuery += 'AND (opportunity.accountid = : defaultAccountId OR opportunity.accountid = null) ';  
         soqlQuery += 'AND contactId IN : conIds ';
-        if (useFiscalYear) {
-        	soqlQuery += 'GROUP BY ROLLUP(contactId, Fiscal_Year(opportunity.closeDate))';
-        } else {
-        	soqlQuery += 'GROUP BY ROLLUP(contactId, Calendar_Year(opportunity.closeDate))';
-        }
+        soqlQuery += 'GROUP BY ROLLUP(contactId, Fiscal_Year(opportunity.closeDate))';
         
+        if (!useFiscalYear) soqlQuery.replace('Fiscal_Year','Calendar_Year');
+
         list<sobject> objectList = Database.query(soqlQuery);
         // invokes code to get the currency of associated opportunities
         opptyCurrencies = (isMultiCurrency() ? rcfFindCurrency(objectList) : null);
