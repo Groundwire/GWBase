@@ -1,6 +1,13 @@
 Changelog
 =========
 
+2.0.14 - released
+------------------
+
+* Minor fix to installments to support online payment refund update
+* Most classes are now WITHOUT SHARING, addressing a bug where limited permission users were unable to roll up
+ [groundwired]
+
 2.0.13 - released
 ------------------
 
