@@ -1,4 +1,4 @@
-public class ONEN_CTRL_MatchingGiftWizard {
+public with sharing class ONEN_CTRL_MatchingGiftWizard {
 // Written by Steve Andersen, copyright (c) 2008 Groundwire
 // This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
 

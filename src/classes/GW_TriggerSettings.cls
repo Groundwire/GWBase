@@ -12,7 +12,7 @@
 * GWBase.
 */
 
-global class GW_TriggerSettings {
+global without sharing class GW_TriggerSettings {
 	
 	private static void SetTriggerSettingDefaults(TriggerSettings__c ts) {
 		// must explicitly set the default values.  (doing new Obj doesn't use defaults!)

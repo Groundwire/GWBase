@@ -3,7 +3,7 @@
 * @date 1/1/2010
 * @description Class to manage household names and addresses syncing
 */
-public class GW_Householding {
+public without sharing class GW_Householding {
 // Written by Evan Callahan, copyright (c) 2007 NPower Seattle
 // Portions written by Steve Andersen, (c) 2008 Groundwire
 // Modifications by Evan Callahan, copyright (c) 2010 Groundwire

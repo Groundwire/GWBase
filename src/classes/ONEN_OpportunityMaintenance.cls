@@ -1,4 +1,4 @@
-Global virtual class ONEN_OpportunityMaintenance {
+Global without sharing virtual class ONEN_OpportunityMaintenance {
 // Written by Steve Andersen, copyright (c) 2008 ONE/Northwest
 // This program is released under the GNU Affero General global License, Version 3. http://www.gnu.org/licenses/
 

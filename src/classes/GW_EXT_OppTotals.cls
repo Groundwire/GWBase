@@ -1,4 +1,4 @@
-public class GW_EXT_OppTotals {
+public without sharing class GW_EXT_OppTotals {
 /*-----------------------------------------------------------------------------------------------
 * Written by Evan Callahan, copyright (c) 2010 Groundwire
 * This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/

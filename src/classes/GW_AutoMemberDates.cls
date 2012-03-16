@@ -5,7 +5,7 @@
 * previous membership expiration.
 */
 
-public class GW_AutoMemberDates {
+public without sharing class GW_AutoMemberDates {
 
 	private OppRollupSettings__c ors;
 	

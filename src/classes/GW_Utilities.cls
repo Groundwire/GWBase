@@ -7,7 +7,7 @@
 * @description Class which holds static methods for common utilities, 
 * such as detecting whether we are in a managed package, and some string helpers.
 ********************************************************************************************************/
-global class GW_Utilities { 
+global without sharing class GW_Utilities { 
 	
 	/******************************************************************************************************
 	* @description boolean property which tracks whether we are running in our managed packaged, or unmanaged code.

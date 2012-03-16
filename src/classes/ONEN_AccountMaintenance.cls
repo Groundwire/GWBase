@@ -6,7 +6,7 @@
 * @date 01/01/2011
 * @description This class contains helper methods for maintaining accounts.
 */
-global virtual class ONEN_AccountMaintenance {
+global without sharing virtual class ONEN_AccountMaintenance {
 
 	private static boolean firstRun = true;
 

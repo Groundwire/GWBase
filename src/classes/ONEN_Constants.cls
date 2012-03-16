@@ -9,7 +9,7 @@
 * miscellaneous base settings and Opportunity rollup options.
 */
 
-global class ONEN_Constants {
+global without sharing class ONEN_Constants {
 
 //--- MISCELLANEOUS BASE SETTINGS options ---
 	

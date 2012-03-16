@@ -7,7 +7,7 @@
 * @description Helper class of useful utility methods for handling the Recurring Payment Profile object.
 * Currently, none are globally exposed, due to lack of a use case.
 */
-global class GW_RecurringPayments {
+global without sharing class GW_RecurringPayments {
 	
 	//------------------------------------------------------------------------------
 	// return a RecurringPaymentProfile name given its information.	

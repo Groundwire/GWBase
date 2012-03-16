@@ -7,7 +7,7 @@
 * for all Contacts that aren't associated with any other Account.
 */
 
-global virtual class ONEN_DefaultAccount {
+global without sharing virtual class ONEN_DefaultAccount {
 
     private static Id individualAccountId; 
     private static Id individualAcctForTests;

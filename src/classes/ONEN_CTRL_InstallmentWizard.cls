@@ -1,4 +1,4 @@
-public class ONEN_CTRL_InstallmentWizard {
+public with sharing class ONEN_CTRL_InstallmentWizard {
 // Written by Matthew Scholtz, copyright (c) 2008 Groundwire
 // This program is released under the GNU Affero General Public License, Version 3. http://www.gnu.org/licenses/
 	
