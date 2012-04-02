@@ -3,6 +3,11 @@
 
 trigger GW_OpportunityTriggerBefore on Opportunity (before insert, before update) {
     
+    // handle the user specifying the primary contact through the lookup field, not the ID field.
+    if (Trigger.IsInsert) {
+    	ONEN_OpportunityMaintenance.CheckPrimaryContactLookup(trigger.New);
+    }
+    
     // create a name for any opps without.
     if (Trigger.IsInsert && GW_TriggerSettings.ts.Enable_Opportunity_AutoName__c) {
         ONEN_OpportunityMaintenance.OpportunityAutoName(trigger.New);
