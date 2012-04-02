@@ -111,7 +111,6 @@
             <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
             <maxValuesDisplayed>15</maxValuesDisplayed>
             <report>Engagement_Reports/New_High_Level_Activists</report>
-            <showPicturesOnTables>true</showPicturesOnTables>
             <sortBy>RowLabelAscending</sortBy>
             <title>New High-Level Activists</title>
         </components>
@@ -133,7 +132,7 @@
             <useReportChart>true</useReportChart>
         </components>
     </rightSection>
-    <runningUser>matthew@onenw_dev.org</runningUser>
+    <runningUser>davidhabibmygwbase@groundwire.org</runningUser>
     <textColor>#000000</textColor>
     <title>Engagement</title>
     <titleColor>#000000</titleColor>

@@ -8,15 +8,15 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Required</behavior>
-                <field>Name</field>
+                <field>ParentId</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Required</behavior>
                 <field>Provider</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>ParentId</field>
+                <behavior>Required</behavior>
+                <field>Name</field>
             </layoutItems>
         </layoutColumns>
         <style>OneColumn</style>

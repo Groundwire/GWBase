@@ -37,7 +37,6 @@
             <indicatorLowColor>#C25454</indicatorLowColor>
             <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
             <report>User_Adoption_Reports/SampleReportLoginLeaderboard</report>
-            <showPicturesOnTables>true</showPicturesOnTables>
             <sortBy>RowValueDescending</sortBy>
             <title>Last 7 Days</title>
         </components>
@@ -50,7 +49,6 @@
             <indicatorLowColor>#C25454</indicatorLowColor>
             <indicatorMiddleColor>#C25454</indicatorMiddleColor>
             <report>User_Adoption_Reports/SampleReportLoginWallofShame</report>
-            <showPicturesOnTables>true</showPicturesOnTables>
             <sortBy>RowLabelAscending</sortBy>
             <title>Last 7 Days</title>
         </components>
@@ -65,7 +63,6 @@
             <indicatorLowColor>#C25454</indicatorLowColor>
             <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
             <report>User_Adoption_Reports/SampleReportCompletedActivities</report>
-            <showPicturesOnTables>true</showPicturesOnTables>
             <sortBy>RowValueDescending</sortBy>
             <title>Last 30 Days</title>
         </components>
@@ -77,7 +74,6 @@
             <indicatorLowColor>#C25454</indicatorLowColor>
             <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
             <report>User_Adoption_Reports/SampleReportofOpenTasks</report>
-            <showPicturesOnTables>true</showPicturesOnTables>
             <sortBy>RowValueDescending</sortBy>
         </components>
         <components>
@@ -88,7 +84,6 @@
             <indicatorLowColor>#C25454</indicatorLowColor>
             <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
             <report>User_Adoption_Reports/SampleReportCustomReportsbyUser</report>
-            <showPicturesOnTables>true</showPicturesOnTables>
             <sortBy>RowValueDescending</sortBy>
             <title>Last 30 Days</title>
         </components>
@@ -100,7 +95,6 @@
             <indicatorLowColor>#C25454</indicatorLowColor>
             <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
             <report>User_Adoption_Reports/SampleReportLastModifiedBy</report>
-            <showPicturesOnTables>true</showPicturesOnTables>
             <sortBy>RowLabelDescending</sortBy>
             <title>Last 30 Days</title>
         </components>
@@ -253,7 +247,7 @@
             <useReportChart>false</useReportChart>
         </components>
     </rightSection>
-    <runningUser>davem+1dev@groundwire.org</runningUser>
+    <runningUser>davidhabibmygwbase@groundwire.org</runningUser>
     <textColor>#000000</textColor>
     <title>Adoption Dashboard</title>
     <titleColor>#000099</titleColor>
