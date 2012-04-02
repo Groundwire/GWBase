@@ -293,7 +293,16 @@ Global without sharing virtual class ONEN_OpportunityMaintenance {
 		    }
 		}
 	}    
-    
+
+    // If primary contact is specified thru lookup, update ID field.  called from the Opportunity Before trigger.
+	global static void CheckPrimaryContactLookup(list<Opportunity> listOpps) {
+		for (Opportunity opp : listOpps) {
+			if (opp.ContactId__c != null && opp.CR_Contact_Id__c == null) {
+				opp.CR_Contact_Id__c = opp.ContactId__c;
+			}
+		}
+	}
+	    
 //////////////////////////////////////////////////////////////////////////////////////////
 // TEST CODE
 //////////////////////////////////////////////////////////////////////////////////////////
