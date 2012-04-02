@@ -60,6 +60,7 @@
             <default>false</default>
         </values>
     </businessProcesses>
+    <enableFeeds>true</enableFeeds>
     <fields>
         <fullName>Amount_Requested__c</fullName>
         <externalId>false</externalId>
@@ -496,62 +497,6 @@
                 <probability>0</probability>
                 <won>false</won>
             </picklistValues>
-            <picklistValues>
-                <fullName>Qualification</fullName>
-                <closed>false</closed>
-                <default>false</default>
-                <forecastCategory>Pipeline</forecastCategory>
-                <probability>10</probability>
-                <won>false</won>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Needs Analysis</fullName>
-                <closed>false</closed>
-                <default>false</default>
-                <forecastCategory>Pipeline</forecastCategory>
-                <probability>20</probability>
-                <won>false</won>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Value Proposition</fullName>
-                <closed>false</closed>
-                <default>false</default>
-                <forecastCategory>Pipeline</forecastCategory>
-                <probability>50</probability>
-                <won>false</won>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Id. Decision Makers</fullName>
-                <closed>false</closed>
-                <default>false</default>
-                <forecastCategory>Pipeline</forecastCategory>
-                <probability>60</probability>
-                <won>false</won>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Perception Analysis</fullName>
-                <closed>false</closed>
-                <default>false</default>
-                <forecastCategory>Pipeline</forecastCategory>
-                <probability>70</probability>
-                <won>false</won>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Proposal/Price Quote</fullName>
-                <closed>false</closed>
-                <default>false</default>
-                <forecastCategory>Pipeline</forecastCategory>
-                <probability>75</probability>
-                <won>false</won>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Negotiation/Review</fullName>
-                <closed>false</closed>
-                <default>false</default>
-                <forecastCategory>Pipeline</forecastCategory>
-                <probability>90</probability>
-                <won>false</won>
-            </picklistValues>
             <sorted>false</sorted>
         </picklist>
         <type>Picklist</type>
@@ -618,22 +563,6 @@
             </picklistValues>
             <picklistValues>
                 <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Existing Customer - Upgrade</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Existing Customer - Replacement</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Existing Customer - Downgrade</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>New Customer</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -835,6 +764,7 @@
         </filters>
         <label>Recurring Gifts</label>
     </listViews>
+    <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
     <recordTypes>
         <fullName>Gift</fullName>
         <active>true</active>
