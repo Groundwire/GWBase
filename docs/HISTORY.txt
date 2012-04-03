@@ -1,6 +1,12 @@
 Changelog
 =========
 
+2.?.? - (not released)
+----------------------
+* added Opportunity Before Trigger code to copy an Opp's contact lookup field to CR_Contact_Id, if not set.  This
+  allows the contact lookup field to be used with the Batch Data Entry package to specify the primary contact
+  for opportunities.
+
 2.0.14 - released
 ------------------
 
