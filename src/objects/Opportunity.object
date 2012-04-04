@@ -140,6 +140,46 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Commemoration_Name__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>The name of the person being commemorated In Honor Of or In Memory Of with this opportunity</inlineHelpText>
+        <label>Commemoration Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Commemoration_Special_Instructions__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>If this opportunity represents a commemoration, this indicates the special instructions associated with honoring or memorializing this person.</inlineHelpText>
+        <label>Commemoration Special Instructions</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>LongTextArea</type>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Commemoration_Type__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>If this opportunity represents a commemoration, this indicates the type of commemoration.  In Honor Of a living person or In Memory Of a deceased person. To connect this commemoration to a real contact in Salesforce, create a Contact Role of Honoree</inlineHelpText>
+        <label>Commemoration Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>In Honor Of</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>In Memory Of</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>ContactId__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>The primary contact for this opportunity. Indicates a hard credit (i.e. the opportunity is attributable to this contact)</description>
@@ -771,6 +811,17 @@
         <businessProcess>Gift</businessProcess>
         <label>Gift</label>
         <picklistValues>
+            <picklist>Commemoration_Type__c</picklist>
+            <values>
+                <fullName>In Honor Of</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>In Memory Of</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>ForecastCategoryName</picklist>
             <values>
                 <fullName>Best Case</fullName>
@@ -910,6 +961,17 @@
         <businessProcess>Grant</businessProcess>
         <label>Grant</label>
         <picklistValues>
+            <picklist>Commemoration_Type__c</picklist>
+            <values>
+                <fullName>In Honor Of</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>In Memory Of</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>ForecastCategoryName</picklist>
             <values>
                 <fullName>Best Case</fullName>
@@ -1044,6 +1106,17 @@
         <active>true</active>
         <businessProcess>Gift</businessProcess>
         <label>Membership</label>
+        <picklistValues>
+            <picklist>Commemoration_Type__c</picklist>
+            <values>
+                <fullName>In Honor Of</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>In Memory Of</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
         <picklistValues>
             <picklist>ForecastCategoryName</picklist>
             <values>
