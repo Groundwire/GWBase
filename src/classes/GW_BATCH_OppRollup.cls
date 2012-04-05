@@ -56,6 +56,7 @@ global class GW_BATCH_OppRollup implements Database.Batchable<SObject>, Schedula
             rg.RollupHouseholds((list<onen_household__c>)result);
         } else {
             rg.RollupContacts((list<contact>)result); 
+            rg.RollupRecurring((list<contact>)result);
             //also reconcile any Opportunity Contact Roles that got out of sync with the Primary Contact on Opp
             ONEN_OpportunityContactRoles ocr = new ONEN_OpportunityContactRoles();
             ocr.reconcileConRoles((list<contact>)result);

@@ -60,6 +60,8 @@ public without sharing class GW_OppRollups {
         + (isMultiCurrency() ? ',CurrencyIsoCode' : '');  
     private final static string HH_ROLLUP_FIELDS_FROM_CON = 'ONEN_Household__r.' + HH_ROLLUP_FIELDS.replace(',' , ',ONEN_Household__r.');
     private final static string HH_ROLLUP_FIELDS_FROM_CONROLE = 'Contact.ONEN_Household__r.' + HH_ROLLUP_FIELDS.replace(',' , ',Contact.ONEN_Household__r.');
+    private final static string CON_RECURRING_ROLLUP_FIELDS = 'Recurring_Amount__c,Recurring_Payment_Frequency__c,Recurring_Payment_Period__c';
+    private final static string CON_RECURRING_ROLLUP_FIELDS_FROM_RPP = 'Contact__r.' + CON_RECURRING_ROLLUP_FIELDS.replace(',' , ',Contact__r.'); //add relationship name to use in SOQL of RPPs
     private static map<string,string> ConFieldtypeMap;
     private static map<string,string> AcctFieldtypeMap;
     private static map<string,string> HHFieldtypeMap;
@@ -107,8 +109,7 @@ public without sharing class GW_OppRollups {
             organization o = [select fiscalYearStartMonth from organization limit 1];
             if (o.FiscalYearStartMonth > system.today().month())
                 thisYear--;
-            
-            
+                
         }
     }           
 
@@ -718,7 +719,7 @@ public without sharing class GW_OppRollups {
         Map<String, Schema.SObjectField> M;
         
         if (objName == 'Contact') {
-            fields = CON_ROLLUP_FIELDS;
+            fields = CON_ROLLUP_FIELDS + ',' + CON_RECURRING_ROLLUP_FIELDS;
             M = Schema.SObjectType.Contact.fields.getMap();
         } else if (objName == 'Account') {
             fields = ACCOUNT_ROLLUP_FIELDS;
@@ -752,7 +753,7 @@ public without sharing class GW_OppRollups {
         }
     }
 
-
+	
     public void rollupForOppTrigger( map<id, opportunity> newOpps, map<id, opportunity> oldOpps ) {
     // find contacts and accounts affected and then roll them up
 
@@ -908,6 +909,103 @@ public without sharing class GW_OppRollups {
             }
         }   
     }
+    
+    public void rollupRecurring( list<contact> cons ) {
+    // roll up opps for a set of contacts
+
+        if (cons != null && !cons.isEmpty()) {
+            rollupRecurring( new map<id, contact>(cons) );
+        }
+    }
+    
+    public void rollupRecurring( map<id, contact> cmap ) {
+    // roll up recurring payment profile info for a list of contacts
+		
+        set<id> conIds = cmap.keySet();
+
+        // copy the contacts to a map of zeroed out versions
+        map<id, contact> contactsToUpdate = new map<id, contact>();
+
+        string[] conRecurringRollupFields = CON_RECURRING_ROLLUP_FIELDS.split(',');
+        if (conFieldtypeMap==null) conFieldtypeMap = doFieldDescribe('Contact');
+
+        for (id cid : conIds) {
+            Contact newCon = new Contact(id=cid);
+            putNoOppDefaults(conRecurringRollupFields,newCon,conFieldtypeMap);
+            contactsToUpdate.put(cid,newCon);
+        }
+        
+//      system.debug (Logginglevel.WARN, 'cmap: ' + cmap);
+        
+        for (Recurring_Payment_Profile__c rpp : [SELECT Contact__c,Payment_Period__c,Frequency__c,Amount__c FROM
+        										Recurring_Payment_Profile__c WHERE (End_Date__c > :system.today() OR End_Date__c = null)
+        										AND Contact__c IN :conIds] ) {
+
+            //set the fields on the contact record
+            contactsToUpdate.get(rpp.Contact__c).Recurring_Amount__c = rpp.Amount__c;
+            contactsToUpdate.get(rpp.Contact__c).Recurring_Payment_Frequency__c = rpp.Frequency__c;
+            contactsToUpdate.get(rpp.Contact__c).Recurring_Payment_Period__c = rpp.Payment_Period__c;
+        }
+            
+        // remove (skip updating) any records that have not changed
+        for (id cid : conIds) {
+            contact c1 = cmap.get(cid);
+            contact c2 = contactsToUpdate.get(cid);
+            
+            // so instead loop through the fields and see if we find one that's different. 
+            boolean nochange = true;
+            for (string field : conRecurringRollupFields) {
+//              system.debug (LoggingLevel.WARN , 'checking con field diff for : ' + field + ' :' + c1.get(field) + 'vs. ' + c2.get(field));
+                if (c1.get(field)!=c2.get(field)) {
+                    nochange = false;
+//                  system.debug (LoggingLevel.WARN , 'con field diff found: ' + c1.get(field) + 'vs. ' + c2.get(field));
+                    break;
+                }
+            }
+            if (nochange) contactsToUpdate.remove(cid);
+        }
+
+        // update all the contacts from this batch 
+        if (!contactsToUpdate.isEmpty()) update contactsToUpdate.values();                          
+    }
+    
+    public void rollupForRecurringTrigger( map<id, Recurring_Payment_Profile__c> newProfiles, map<id, Recurring_Payment_Profile__c> oldProfiles ) {
+    	
+		set<id> modifiedContactRPs = new set<id>();
+    	
+    	if (newProfiles == null) {
+            // it is a delete
+            for (id rpid : oldProfiles.keySet()) {
+				if (oldProfiles.get(rpid).Contact__c != null) {
+					modifiedContactRPs.add(rpid);
+				}
+            }
+        } else {
+        	// it is an insert or update
+            for (id rpid : newProfiles.keySet()) {
+				if (newProfiles.get(rpid).Contact__c != null) {
+					modifiedContactRPs.add(rpid);
+				}
+            }
+        }  
+        
+        if (!modifiedContactRPs.isEmpty()) {
+        	
+        	map<id, contact> cmap = new map<id, contact>();
+        	
+        	string soql = 'SELECT Contact__c,' + CON_RECURRING_ROLLUP_FIELDS_FROM_RPP + ' FROM Recurring_Payment_Profile__c '
+        				+ 'WHERE id IN :modifiedContactRPs ALL ROWS';			
+        	Recurring_Payment_Profile__c[] rpps = Database.query(soql);
+        	for (Recurring_Payment_Profile__c rpp : rpps) {
+        		cmap.put(rpp.Contact__c,rpp.Contact__r);
+        	}
+        	
+        	if (!cmap.isEmpty()) {
+	        	rollupRecurring( cmap );
+	        }	
+        }   
+        
+    }
 
     public void rollupAll() {
         rollupAllAccounts();
@@ -981,7 +1079,7 @@ public without sharing class GW_OppRollups {
         // need to preprend the namespace prefix GWBase__ to all HH fields in the batch query to workaround a SF
         // managed package bug
 
-        GW_BATCH_OppRollup batch = new GW_BATCH_OppRollup( 'SELECT id,' + GW_Utilities.StrAllNSPrefix(CON_ROLLUP_FIELDS) + ' FROM Contact'
+        GW_BATCH_OppRollup batch = new GW_BATCH_OppRollup( 'SELECT id,' + GW_Utilities.StrAllNSPrefix(CON_ROLLUP_FIELDS) + GW_Utilities.StrAllNSPrefix(CON_RECURRING_ROLLUP_FIELDS) + ' FROM Contact'
             + (isTest ? ' WHERE Name like \'%doppleganger%\' LIMIT 200' : '') );
         id batchProcessId = database.executeBatch(batch, batchSize);        
     }
@@ -1330,6 +1428,63 @@ public without sharing class GW_OppRollups {
         System.AssertEquals ( null , updatedcon.LastMembershipDate__c );        
         */
         
+        
+    }
+    
+    static testMethod void testRecurringRollup () {
+        
+        Date datClose = System.Today();
+            
+        // create & insert contact(s)
+        Contact[] TestCons = new contact[]{ new contact(firstname='Daddy', lastname='Longlegs') };
+        insert TestCons;
+
+        // create new opps
+        Opportunity[] newOpps = ONEN_UnitTestData.OppsForContactList ( TestCons, null, ONEN_Constants.OPP_DEFAULT_CLOSED_WON_STAGE, datClose, 100 , ONEN_Constants.OPP_DEFAULT_RECTYPE_FORTESTS ,null);
+		
+		Recurring_Payment_Profile__c rpp = new Recurring_Payment_Profile__c(
+			Amount__c = 10,
+			Contact__c = TestCons[0].id,
+			Start_Date__c = system.today()-180,
+			Frequency__c = 1,
+			Payment_Period__C = 'Month'
+			);
+		
+        // insert the opp(s)
+        isTest = true;
+        Test.StartTest();
+        insert rpp;
+        
+        //now test that a contact has received the recurring info from the trigger
+        id FirstConId = TestCons[0].id;
+        Contact UpdatedCon = [SELECT id, Recurring_Amount__c,Recurring_Payment_Frequency__c,Recurring_Payment_Period__c FROM Contact WHERE Id = :FirstConId];
+
+        System.AssertEquals ( 10 , UpdatedCon.Recurring_Amount__c );     
+        System.AssertEquals ( 1 , UpdatedCon.Recurring_Payment_Frequency__c);
+        System.AssertEquals ( 'Month' , UpdatedCon.Recurring_Payment_Period__c);
+		
+        // now roll up manually
+        GW_OppRollups rg = new GW_OppRollups();
+        rg.rollupContacts(testcons);
+
+        //make sure the values are still right
+        UpdatedCon = [SELECT id, Recurring_Amount__c,Recurring_Payment_Frequency__c,Recurring_Payment_Period__c FROM Contact WHERE Id = :FirstConId];
+
+        System.AssertEquals ( 10 , UpdatedCon.Recurring_Amount__c );     
+        System.AssertEquals ( 1 , UpdatedCon.Recurring_Payment_Frequency__c);
+        System.AssertEquals ( 'Month' , UpdatedCon.Recurring_Payment_Period__c);
+
+        // delete the recurring payment profile - totals should clear
+        delete rpp;
+
+        //make sure the values are still right
+        UpdatedCon = [SELECT id, Recurring_Amount__c,Recurring_Payment_Frequency__c,Recurring_Payment_Period__c FROM Contact WHERE Id = :FirstConId];
+
+        System.AssertEquals ( 0 , UpdatedCon.Recurring_Amount__c );     
+        System.AssertEquals ( 0 , UpdatedCon.Recurring_Payment_Frequency__c);
+        System.AssertEquals ( null , UpdatedCon.Recurring_Payment_Period__c);
+        
+        Test.StopTest();
         
     }
     
