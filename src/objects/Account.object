@@ -51,7 +51,7 @@
         <fullName>AverageAmount__c</fullName>
         <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>Average Gift</label>
+        <label>Org Average Gift</label>
         <precision>16</precision>
         <required>false</required>
         <scale>2</scale>
@@ -81,7 +81,7 @@
     <fields>
         <fullName>FirstCloseDate__c</fullName>
         <externalId>false</externalId>
-        <label>First Gift Date</label>
+        <label>Org First Gift Date</label>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Date</type>
@@ -278,7 +278,7 @@
         <fullName>LargestAmount__c</fullName>
         <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>Largest Gift</label>
+        <label>Org Largest Gift</label>
         <precision>16</precision>
         <required>false</required>
         <scale>2</scale>
@@ -288,7 +288,7 @@
     <fields>
         <fullName>LastCloseDate__c</fullName>
         <externalId>false</externalId>
-        <label>Last Gift Date</label>
+        <label>Org Last Gift Date</label>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Date</type>
@@ -297,7 +297,7 @@
         <fullName>LastMembershipAmount__c</fullName>
         <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>Last Membership Amount</label>
+        <label>Org Last Membership Amount</label>
         <precision>16</precision>
         <required>false</required>
         <scale>2</scale>
@@ -307,7 +307,7 @@
     <fields>
         <fullName>LastMembershipDate__c</fullName>
         <externalId>false</externalId>
-        <label>Last Membership Date</label>
+        <label>Org Last Membership Date</label>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Date</type>
@@ -315,7 +315,7 @@
     <fields>
         <fullName>LastMembershipLevel__c</fullName>
         <externalId>false</externalId>
-        <label>Last Membership Level</label>
+        <label>Org Last Membership Level</label>
         <length>255</length>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
@@ -325,7 +325,7 @@
     <fields>
         <fullName>LastMembershipOrigin__c</fullName>
         <externalId>false</externalId>
-        <label>Last Membership Origin</label>
+        <label>Org Last Membership Origin</label>
         <length>255</length>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
@@ -336,7 +336,7 @@
         <fullName>LastOppAmount__c</fullName>
         <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>Last Gift Amount</label>
+        <label>Org Last Gift Amount</label>
         <precision>16</precision>
         <required>false</required>
         <scale>2</scale>
@@ -377,7 +377,7 @@
     <fields>
         <fullName>MembershipEndDate__c</fullName>
         <externalId>false</externalId>
-        <label>Membership End Date</label>
+        <label>Org Membership End Date</label>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Date</type>
@@ -385,7 +385,7 @@
     <fields>
         <fullName>MembershipJoinDate__c</fullName>
         <externalId>false</externalId>
-        <label>Membership Join Date</label>
+        <label>Org Membership Join Date</label>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Date</type>
@@ -395,7 +395,7 @@
         <externalId>false</externalId>
         <formula>if (  MembershipEndDate__c  &lt;today(), if ( MembershipEndDate__c  &gt; ( TODAY() -  $Setup.OppRollupSettings__c.Membership_Grace_Period__c  )  , &quot;Grace Period&quot; , &quot;Expired&quot;) , if(isnull(MembershipEndDate__c ),&quot;&quot;,&quot;Current&quot;))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Membership Status</label>
+        <label>Org Membership Status</label>
         <required>false</required>
         <type>Text</type>
         <unique>false</unique>
@@ -404,7 +404,7 @@
         <fullName>NumberOfClosedOpps__c</fullName>
         <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>Total Number of Gifts</label>
+        <label>Org Total Number of Gifts</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -416,7 +416,7 @@
         <fullName>NumberOfMembershipOpps__c</fullName>
         <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>Number of Membership Gifts</label>
+        <label>Org Number of Membership Gifts</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -428,7 +428,7 @@
         <fullName>OppAmount2YearsAgo__c</fullName>
         <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>Total Gifts Two Years Ago</label>
+        <label>Org Total Gifts Two Years Ago</label>
         <precision>16</precision>
         <required>false</required>
         <scale>2</scale>
@@ -439,7 +439,7 @@
         <fullName>OppAmountLastNDays__c</fullName>
         <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>Total Gifts Last 365 Days</label>
+        <label>Org Total Gifts Last 365 Days</label>
         <precision>16</precision>
         <required>false</required>
         <scale>2</scale>
@@ -450,7 +450,7 @@
         <fullName>OppAmountLastYear__c</fullName>
         <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>Total Gifts Last Year</label>
+        <label>Org Total Gifts Last Year</label>
         <precision>16</precision>
         <required>false</required>
         <scale>2</scale>
@@ -461,7 +461,7 @@
         <fullName>OppAmountThisYear__c</fullName>
         <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>Total Gifts This Year</label>
+        <label>Org Total Gifts This Year</label>
         <precision>16</precision>
         <required>false</required>
         <scale>2</scale>
@@ -472,7 +472,7 @@
         <fullName>OppsClosed2YearsAgo__c</fullName>
         <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>Number of Gifts Two Years Ago</label>
+        <label>Org Number of Gifts Two Years Ago</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -484,7 +484,7 @@
         <fullName>OppsClosedLastNDays__c</fullName>
         <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>Number of Gifts Last 365 Days</label>
+        <label>Org Number of Gifts Last 365 Days</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -496,7 +496,7 @@
         <fullName>OppsClosedLastYear__c</fullName>
         <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>Number of Gifts Last Year</label>
+        <label>Org Number of Gifts Last Year</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -508,7 +508,7 @@
         <fullName>OppsClosedThisYear__c</fullName>
         <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>Number of Gifts This Year</label>
+        <label>Org Number of Gifts This Year</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -647,7 +647,7 @@
         <fullName>SmallestAmount__c</fullName>
         <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>Smallest Gift</label>
+        <label>Org Smallest Gift</label>
         <precision>16</precision>
         <required>false</required>
         <scale>2</scale>
@@ -676,7 +676,7 @@
         <fullName>TotalMembershipOppAmount__c</fullName>
         <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>Total Membership Amount</label>
+        <label>Org Total Membership Amount</label>
         <precision>16</precision>
         <required>false</required>
         <scale>2</scale>
@@ -687,7 +687,7 @@
         <fullName>TotalOppAmount__c</fullName>
         <defaultValue>0</defaultValue>
         <externalId>false</externalId>
-        <label>Total Gifts</label>
+        <label>Org Total Gifts</label>
         <precision>16</precision>
         <required>false</required>
         <scale>2</scale>
