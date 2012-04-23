@@ -18,6 +18,10 @@
         })(jQuery);
     </script>
 
+		
+		<apex:outputText rendered="{!noRecentData}">
+			There is no recent data for the engagement pyramid chart.  This should be updated daily via analytic snapshot.  If you just installed Engagement Tracker, it can take up to 24 hrs for this data to first appear.  Please contact your Salesforce administrator for assistance.
+		</apex:outputText> 
 
 		<apex:dataTable value="{!rows}" var="row" id="pyramidTable">
 			<apex:column >
@@ -29,5 +33,6 @@
 				<apex:outputText value="{!row.countCons}" />
 			</apex:column>
 		</apex:dataTable>
+
 
 </apex:page>

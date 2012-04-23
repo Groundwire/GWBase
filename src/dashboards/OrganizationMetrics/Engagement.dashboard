@@ -8,25 +8,26 @@
         <columnSize>Wide</columnSize>
         <components>
             <componentType>VisualforcePage</componentType>
+            <header>Current Engagement Levels</header>
             <page>engPyramidDash</page>
-            <pageHeightInPixels>350</pageHeightInPixels>
+            <pageHeightInPixels>325</pageHeightInPixels>
         </components>
         <components>
             <chartAxisRange>Auto</chartAxisRange>
-            <componentType>Column</componentType>
+            <componentType>Pie</componentType>
             <displayUnits>Auto</displayUnits>
             <drillEnabled>false</drillEnabled>
             <drillToDetailEnabled>false</drillToDetailEnabled>
             <enableHover>false</enableHover>
             <expandOthers>false</expandOthers>
-            <footer>count of supporters by highest level reached</footer>
+            <footer>count of contacts by highest level reached</footer>
             <legendPosition>Bottom</legendPosition>
             <report>Engagement_Reports/Engagement_Peak</report>
             <showPercentage>false</showPercentage>
             <showValues>false</showValues>
             <sortBy>RowLabelAscending</sortBy>
             <title>Peak Engagement Level</title>
-            <useReportChart>true</useReportChart>
+            <useReportChart>false</useReportChart>
         </components>
         <components>
             <chartAxisRange>Auto</chartAxisRange>
@@ -36,14 +37,29 @@
             <drillToDetailEnabled>false</drillToDetailEnabled>
             <enableHover>false</enableHover>
             <expandOthers>false</expandOthers>
-            <footer>how many levels below peak level have supporters dropped?</footer>
             <legendPosition>Bottom</legendPosition>
             <report>Engagement_Reports/Fall_from_Peak</report>
             <showPercentage>false</showPercentage>
             <showValues>false</showValues>
             <sortBy>RowLabelAscending</sortBy>
             <title>Fall from Peak</title>
-            <useReportChart>true</useReportChart>
+            <useReportChart>false</useReportChart>
+        </components>
+        <components>
+            <chartAxisRange>Auto</chartAxisRange>
+            <componentType>Column</componentType>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>false</enableHover>
+            <expandOthers>false</expandOthers>
+            <legendPosition>Bottom</legendPosition>
+            <report>Engagement_Reports/Time_in_Level</report>
+            <showPercentage>false</showPercentage>
+            <showValues>false</showValues>
+            <sortBy>RowLabelAscending</sortBy>
+            <title>Time in Level</title>
+            <useReportChart>false</useReportChart>
         </components>
     </leftSection>
     <middleSection>
@@ -56,14 +72,14 @@
             <drillToDetailEnabled>false</drillToDetailEnabled>
             <enableHover>false</enableHover>
             <expandOthers>false</expandOthers>
-            <footer>total campaign actions taken for last 2 yrs</footer>
+            <header>Recent Engagement Activity</header>
             <legendPosition>Bottom</legendPosition>
             <report>Engagement_Reports/Campaign_Actions_Per_Quarter</report>
             <showPercentage>false</showPercentage>
             <showValues>false</showValues>
             <sortBy>RowLabelAscending</sortBy>
-            <title>Campaign Actions per Quarter</title>
-            <useReportChart>true</useReportChart>
+            <title>Campaign Actions Per Quarter</title>
+            <useReportChart>false</useReportChart>
         </components>
         <components>
             <chartAxisRange>Auto</chartAxisRange>
@@ -90,30 +106,33 @@
             <drillToDetailEnabled>false</drillToDetailEnabled>
             <enableHover>false</enableHover>
             <expandOthers>false</expandOthers>
-            <footer>compares average length of time (in days) since contacts in each level attained that level</footer>
             <legendPosition>Bottom</legendPosition>
-            <report>Engagement_Reports/Time_in_Level</report>
+            <report>Engagement_Reports/New_In_Level</report>
             <showPercentage>false</showPercentage>
             <showValues>false</showValues>
             <sortBy>RowLabelAscending</sortBy>
-            <title>Time in Level</title>
-            <useReportChart>true</useReportChart>
+            <title>New in Level</title>
+            <useReportChart>false</useReportChart>
         </components>
     </middleSection>
     <rightSection>
         <columnSize>Wide</columnSize>
         <components>
-            <componentType>Table</componentType>
+            <chartAxisRange>Auto</chartAxisRange>
+            <componentType>Line</componentType>
             <displayUnits>Auto</displayUnits>
-            <footer>some supporters who reached level 4 or higher within the last 90 days, and their current level; click the chart for a complete list</footer>
-            <indicatorHighColor>#54C254</indicatorHighColor>
-            <indicatorLowColor>#C25454</indicatorLowColor>
-            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
-            <maxValuesDisplayed>15</maxValuesDisplayed>
-            <report>Engagement_Reports/New_High_Level_Activists</report>
-            <showPicturesOnTables>true</showPicturesOnTables>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>true</enableHover>
+            <expandOthers>false</expandOthers>
+            <header>Engagement Trends</header>
+            <legendPosition>Right</legendPosition>
+            <report>Engagement_Reports/Engagement_Level_Totals_Trend</report>
+            <showPercentage>false</showPercentage>
+            <showValues>false</showValues>
             <sortBy>RowLabelAscending</sortBy>
-            <title>New High-Level Activists</title>
+            <title>Engagement Level Trend</title>
+            <useReportChart>true</useReportChart>
         </components>
         <components>
             <chartAxisRange>Auto</chartAxisRange>
@@ -121,19 +140,18 @@
             <displayUnits>Auto</displayUnits>
             <drillEnabled>false</drillEnabled>
             <drillToDetailEnabled>false</drillToDetailEnabled>
-            <enableHover>false</enableHover>
+            <enableHover>true</enableHover>
             <expandOthers>false</expandOthers>
-            <footer>how many supporters first reached their current level within the last 90 days?</footer>
-            <legendPosition>Bottom</legendPosition>
-            <report>Engagement_Reports/New_In_Level</report>
+            <legendPosition>Right</legendPosition>
+            <report>Engagement_Reports/Engagement_Level_Percentages_Trend</report>
             <showPercentage>false</showPercentage>
             <showValues>false</showValues>
             <sortBy>RowLabelAscending</sortBy>
-            <title>New in Level</title>
+            <title>Engagement Level Pct. of Whole - Trend</title>
             <useReportChart>true</useReportChart>
         </components>
     </rightSection>
-    <runningUser>matthew@onenw_dev.org</runningUser>
+    <runningUser>matthew+ms1dev@groundwire.org</runningUser>
     <textColor>#000000</textColor>
     <title>Engagement</title>
     <titleColor>#000000</titleColor>

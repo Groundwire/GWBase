@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AnalyticSnapshot xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>This snapshot is used for several important Engagement Tracker reports/dashboards, including the main pyramid graph on the dashboard.  It should be scheduled to run daily.  Please do not delete or modify this snapshot.</description>
+    <groupColumn>Contact.Engagement_Level__c</groupColumn>
+    <mappings>
+        <sourceField>ExecutionTime</sourceField>
+        <sourceType>snapshot</sourceType>
+        <targetField>Engagement_Totals__c.As_of_Date__c</targetField>
+    </mappings>
+    <mappings>
+        <sourceField>Contact.Engagement_Level__c</sourceField>
+        <sourceType>tabular</sourceType>
+        <targetField>Engagement_Totals__c.Engagement_Level__c</targetField>
+    </mappings>
+    <mappings>
+        <sourceField>RowCount</sourceField>
+        <sourceType>summary</sourceType>
+        <targetField>Engagement_Totals__c.Number_of_Contacts__c</targetField>
+    </mappings>
+    <name>Engagement Level Counts Snapshot</name>
+    <runningUser>matthew+ms1dev@groundwire.org</runningUser>
+    <sourceReport>Engagement_Snapshot_Reports/Engagement_Level_Totals_for_snapshots</sourceReport>
+    <targetObject>Engagement_Totals__c</targetObject>
+</AnalyticSnapshot>
