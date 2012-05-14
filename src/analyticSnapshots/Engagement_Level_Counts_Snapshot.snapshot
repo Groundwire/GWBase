@@ -18,7 +18,7 @@
         <targetField>Engagement_Totals__c.Number_of_Contacts__c</targetField>
     </mappings>
     <name>Engagement Level Counts Snapshot</name>
-    <runningUser>matthew+ms1dev@groundwire.org</runningUser>
+    <runningUser>davem+1dev@groundwire.org</runningUser>
     <sourceReport>Engagement_Snapshot_Reports/Engagement_Level_Totals_for_snapshots</sourceReport>
     <targetObject>Engagement_Totals__c</targetObject>
 </AnalyticSnapshot>
