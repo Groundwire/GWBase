@@ -166,6 +166,14 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Enable_Recurring_Rollup_Triggers__c</fullName>
+        <defaultValue>true</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Recalculates Recurring Payment Rollup information on a contact each time a Recurring Payment Profile is created or modified.</inlineHelpText>
+        <label>Enable Recurring Payment Rollups</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Enable_Zip_Lookup__c</fullName>
         <defaultValue>true</defaultValue>
         <externalId>false</externalId>

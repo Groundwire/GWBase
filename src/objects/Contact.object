@@ -1104,6 +1104,56 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Recurring_Amount__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>The recurring amount received each recurring pay period. For a contact who pays $10 per month to your organization, this value would be $10.</inlineHelpText>
+        <label>Recurring Amount</label>
+        <precision>8</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Recurring_Payment_Frequency__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Specifies the time between recurring payments in the Recurring Payment Frequency and Recurring Payment Period fields (e.g. every 2 weeks, every 1 month).</inlineHelpText>
+        <label>Recurring Payment Frequency</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Recurring_Payment_Period__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Specifies the time between recurring payments in the Recurring Payment Frequency and Recurring Payment Period fields (e.g. every 2 weeks, every 1 month).</inlineHelpText>
+        <label>Recurring Payment Period</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Day</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Week</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Month</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Year</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>SecondContactEmail__c</fullName>
         <externalId>false</externalId>
         <label>Second Contact Email</label>
