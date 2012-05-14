@@ -7,7 +7,9 @@ Changelog
   allows the contact lookup field to be used with the Batch Data Entry package to specify the primary contact
   for opportunities.
   [davidhabib]
-* add "Org" prefix to opp rollup fields on Account, to distinguish from contact fields with same names [matthew] 
+* add "Org" prefix to opp rollup fields on Account, to distinguish from contact fields with same names [matthew]
+* Engagement Tracker: change pyramid chart on engagement dashboard to draw from new analytic snapshot, rather than 
+  from an on-the-fly query.  This is to allow this to work with orgs that have >50k contacts.
 
 2.0.14 - released
 ------------------
