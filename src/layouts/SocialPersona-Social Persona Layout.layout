@@ -15,7 +15,7 @@
                 <field>Provider</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Required</behavior>
                 <field>ParentId</field>
             </layoutItems>
         </layoutColumns>
