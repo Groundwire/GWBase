@@ -1115,6 +1115,22 @@ IF ( AND ( OtherStreet = &quot;&quot; , OtherCity = &quot;&quot; , OtherState = 
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Recurring_Annualized_Amount__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( AND( NOT( ISBLANK( Recurring_Amount__c ) ),NOT( ISBLANK(  Recurring_Payment_Frequency__c  ) ),NOT( ISBLANK(  TEXT(Recurring_Payment_Period__c)  ) ) ),
+
+IF(TEXT(Recurring_Payment_Period__c) = &apos;Day&apos;, Recurring_Amount__c * (365/Recurring_Payment_Frequency__c),IF(TEXT(Recurring_Payment_Period__c) = &apos;Week&apos;, Recurring_Amount__c * (52/Recurring_Payment_Frequency__c),IF(TEXT(Recurring_Payment_Period__c) = &apos;Month&apos;, Recurring_Amount__c * (12/Recurring_Payment_Frequency__c),Recurring_Amount__c * (1/Recurring_Payment_Frequency__c)))),
+
+null)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Specifies the annualized total from a recurring payment profile associated with this contact. e.g. for a contact who gives $10 per month, this value would be $120</inlineHelpText>
+        <label>Recurring Annualized Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Recurring_Payment_Frequency__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Specifies the time between recurring payments in the Recurring Payment Frequency and Recurring Payment Period fields (e.g. every 2 weeks, every 1 month).</inlineHelpText>
