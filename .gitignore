@@ -88,3 +88,6 @@ src/documents/SharedDocuments-meta.xml
 src/layouts/SocialPost-Social Post Layout.layout
 src/objects/SocialPost.object
 src/workflows/Question.workflow
+src/workflows/Engagement_Totals__c.workflow
+src/workflows/Reply.workflow
+src/workflows/SocialPost.workflow
