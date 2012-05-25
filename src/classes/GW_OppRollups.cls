@@ -39,7 +39,8 @@ public without sharing class GW_OppRollups {
         new OppRollupSettings__c( 
             Enable_Opp_Rollup_Triggers__c = true,
             Excluded_Contact_Opp_Types__c = 'In Kind',
-            Membership_Record_Types__c = ONEN_Constants.OPP_MEMBER_RECTYPE_FORTESTS
+            Membership_Record_Types__c = ONEN_Constants.OPP_MEMBER_RECTYPE_FORTESTS,
+            assume_fiscal_year_starts_january__c = false
         );
             
     private final static string ACCOUNT_ROLLUP_FIELDS = 'TotalOppAmount__c,AverageAmount__c,SmallestAmount__c,LargestAmount__c,FirstCloseDate__c,LastCloseDate__c,'
