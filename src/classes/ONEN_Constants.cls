@@ -27,7 +27,7 @@ global without sharing class ONEN_Constants {
 				strIndAccountName = 'IndividualAccountForTests';
 			} else { 
 				MiscellaneousBaseSettings__c miscBaseSettings = MiscellaneousBaseSettings__c.getInstance();
-				strIndAccountName = (miscBaseSettings == null) ? 'Individual' : miscBaseSettings.Individual_Account_Name__c;
+				strIndAccountName = (miscBaseSettings == null || miscBaseSettings.Individual_Account_Name__c == '' || miscBaseSettings.Individual_Account_Name__c == null) ? 'Individual' : miscBaseSettings.Individual_Account_Name__c;
 			}
 			return strIndAccountName;
 		}		
