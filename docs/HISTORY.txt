@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.?.? - (not released)
+2.1.0 - 2.2.2 - released
 ----------------------
 * added Opportunity Before Trigger code to copy an Opp's contact lookup field to CR_Contact_Id, if not set.  This
   allows the contact lookup field to be used with the Batch Data Entry package to specify the primary contact
@@ -10,6 +10,11 @@ Changelog
 * add "Org" prefix to opp rollup fields on Account, to distinguish from contact fields with same names [matthew]
 * Engagement Tracker: change pyramid chart on engagement dashboard to draw from new analytic snapshot, rather than 
   from an on-the-fly query.  This is to allow this to work with orgs that have >50k contacts.
+* created three new fields for tracking commemoration/tribute gifts on opp, Commemoration Type, Commemoration Special Notes, 
+  Commemoration Name and added a contact role of Honoree to Opportunity Contact Role
+* Added 4 new fields to contact for rolling up recurring information - Recurring Amount, Recurring Payment Period, Recurring 
+  Payment Frequency and Recurring Annualized Amount (calculated formula). Added recurring rollups to OppRollups class and batch process
+* FIXED: bug in batch SOQL from new recurring rollups code - release 2.2.2
 
 2.0.14 - released
 ------------------
