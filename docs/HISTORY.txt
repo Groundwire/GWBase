@@ -1,6 +1,11 @@
 Changelog
 =========
 
+2.2.X - unreleased
+------------------
+* adding better Individual account protection, by assuming null in settings of Ind Account Name defaults to Individual, 
+  and protects account from deletion
+
 2.1.0 - 2.2.2 - released
 ----------------------
 * added Opportunity Before Trigger code to copy an Opp's contact lookup field to CR_Contact_Id, if not set.  This
