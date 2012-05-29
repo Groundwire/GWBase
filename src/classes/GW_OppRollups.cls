@@ -1080,7 +1080,7 @@ public without sharing class GW_OppRollups {
         // need to preprend the namespace prefix GWBase__ to all HH fields in the batch query to workaround a SF
         // managed package bug
 
-        GW_BATCH_OppRollup batch = new GW_BATCH_OppRollup( 'SELECT id,' + GW_Utilities.StrAllNSPrefix(CON_ROLLUP_FIELDS) + GW_Utilities.StrAllNSPrefix(CON_RECURRING_ROLLUP_FIELDS) + ' FROM Contact'
+        GW_BATCH_OppRollup batch = new GW_BATCH_OppRollup( 'SELECT id,' + GW_Utilities.StrAllNSPrefix(CON_ROLLUP_FIELDS) + ',' + GW_Utilities.StrAllNSPrefix(CON_RECURRING_ROLLUP_FIELDS) + ' FROM Contact'
             + (isTest ? ' WHERE Name like \'%doppleganger%\' LIMIT 200' : '') );
         id batchProcessId = database.executeBatch(batch, batchSize);        
     }
