@@ -15,14 +15,14 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
     
     public map<integer,string> lvlNameMap = new map<integer,string>();
     map<integer,string> lvlNameSettingMap = new map<integer,string> {
-        1=>GW_Utilities.StrTokenNSPrefix('Level_1_Name__c') , 
-        2=>GW_Utilities.StrTokenNSPrefix('Level_2_Name__c') , 
-        3=>GW_Utilities.StrTokenNSPrefix('Level_3_Name__c') , 
-        4=>GW_Utilities.StrTokenNSPrefix('Level_4_Name__c') , 
-        5=>GW_Utilities.StrTokenNSPrefix('Level_5_Name__c') , 
-        6=>GW_Utilities.StrTokenNSPrefix('Level_6_Name__c') , 
-        7=>GW_Utilities.StrTokenNSPrefix('Level_7_Name__c') , 
-        8=>GW_Utilities.StrTokenNSPrefix('Level_8_Name__c')}; 
+            1 => addNSPrefixET('Level_1_Name__c',true,false) , 
+            2 => addNSPrefixET('Level_2_Name__c',true,false) , 
+            3 => addNSPrefixET('Level_3_Name__c',true,false) , 
+            4 => addNSPrefixET('Level_4_Name__c',true,false) , 
+            5 => addNSPrefixET('Level_5_Name__c',true,false) , 
+            6 => addNSPrefixET('Level_6_Name__c',true,false) , 
+            7 => addNSPrefixET('Level_7_Name__c',true,false) , 
+            8 => addNSPrefixET('Level_8_Name__c',true,false) };
     integer[] lvlsNoNeedResp = new integer[0];
     map<string,EngagementContactFieldSettings__c> fieldSettingsMap = new map<string,EngagementContactFieldSettings__c>(); 
     map<string,EngagementFrequencySettings__c> freqSettingsMap = new map<string,EngagementFrequencySettings__c>(); 
@@ -32,6 +32,12 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
     private date cutoffDateMedium; 
     private integer NewMbrLvl;
     private integer RetMbrLvl;
+
+    // these fieldlists are static so that static methods called from triggers can access them
+    // all of these fields will be blanked out on insert (clone)
+    static final string CON_FIELDS_ET_EDITABLE = 'Engagement_Level__c,Engagement_Peak__c,Engagement_Level_Numeric__c,Engagement_Peak_Numeric__c,First_Action_Date_Curr_Level__c,' +
+									   			 'Engagement_Level_Override__c,Engagement_Override_End_Date__c,Last_Leadership_Action_Date__c,'; 
+	static final string CON_FIELDS_ET_READONLY = 'Engagement_Level_Override_Numeric__c,'; 
     
     /*******************************************************************************************************
 	* @description This constructor is needed to allow this class to be schedulable.
@@ -121,37 +127,43 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
     
     
     protected void constructQuery() {
-        string querySOQL = 'SELECT Id,Name,Engagement_Level__c,Engagement_Level_Numeric__c,Engagement_Peak__c,Engagement_Peak_Numeric__c,';
-        querySOQL +=        'Engagement_Level_Override__c,Engagement_Level_Override_Numeric__c,Engagement_Override_End_Date__c,Last_Leadership_Action_Date__c,First_Action_Date_Curr_Level__c,';
         
-        // add our namespace prefix to fields we own.
-        querySOQL = GW_Utilities.StrAllNSPrefix(querySOQL);
+    	// first ET fields
+        string querySOQL = 'SELECT Id,Name,' + CON_FIELDS_ET_EDITABLE + CON_FIELDS_ET_READONLY;
+        querySOQL = addAllNSPrefixET(querySOQL,true,false);
 
-        if (GW_Utilities.IsGWBaseInstalled) {
-        	querySOQL += 'GWBase__OppAmountLastNDays__c,GWBase__Best_Gift_Year__c,GWBase__Best_Gift_Year_Total__c,GWBase__OppAmountLastNDaysHH__c,GWBase__LastCloseDate__c,GWBase__LastCloseDateHH__c,GWBase__OppsClosedLastNDays__c,';
-        	querySOQL += 'GWBase__ONEN_Household__r.GWBase__OppsClosedLastNDays__c,GWBase__ONEN_Household__r.GWBase__Best_Gift_Year__c,GWBase__ONEN_Household__r.GWBase__Best_Gift_Year_Total__c,';
-        	querySOQL += 'GWBase__MembershipJoinDate__c,GWBase__MembershipEndDate__c,GWBase__LastMembershipLevel__c,GWBase__LastMembershipOrigin__c,GWBase__LastMembershipDate__c,GWBase__LastMembershipAmount__c,';
-        	querySOQL += 'GWBase__HouseholdMembershipEndDate__c,';
-        }
+        // then fields w/ same name in gwbase & NPSP
+        string querySOQLmore = 'OppAmountLastNDays__c,LastCloseDate__c,LastCloseDateHH__c,OppsClosedLastNDays__c,' +
+        						'OppAmountThisYear__c, OppAmountLastYear__c, OppAmount2YearsAgo__c,Account.Name,Account.OppAmountLastNDays__c,Account.LastCloseDate__c,' +
+	        					'MembershipJoinDate__c,MembershipEndDate__c,LastMembershipLevel__c,LastMembershipOrigin__c,LastMembershipDate__c,LastMembershipAmount__c,';
+        querySOQLmore = addAllNSPrefixET(querySOQLmore,false,true);
+        querySOQL += ',' + querySOQLmore; 
         
-		if (GW_Utilities.IsNPSPHHInstalled)	{
-			querySOQL += 
-				'npo02__OppAmountLastNDays__c, npo02__LastCloseDate__c, npo02__Household__c,' +
-				'npo02__LastCloseDateHH__c, npo02__OppsClosedLastNDays__c, npo02__Household__r.npo02__OppAmountLastNDays__c,' +
-				'npo02__Household__r.npo02__OppAmountThisYear__c, npo02__Household__r.npo02__OppAmountLastYear__c, npo02__Household__r.npo02__OppAmount2YearsAgo__c,' +
-				'npo02__OppAmountThisYear__c, npo02__OppAmountLastYear__c, npo02__OppAmount2YearsAgo__c,' +
-				'npo02__Household__r.npo02__OppsClosedLastNDays__c, npo02__Household__r.npo02__LastMembershipDate__c,' +
-				'npo02__MembershipJoinDate__c, npo02__MembershipEndDate__c, npo02__LastMembershipLevel__c,' +
-				'npo02__LastMembershipOrigin__c, npo02__LastMembershipDate__c, npo02__LastMembershipAmount__c,';
+        if (IsGWBaseInstalled) {
+        	// then fields that exist only in gwbase
+        	querySOQLmore = ' Best_Gift_Year__c,Best_Gift_Year_Total__c,OppAmountLastNDaysHH__c, ' + 
+        							'ONEN_Household__c,ONEN_Household__r.OppsClosedLastNDays__c,ONEN_Household__r.Best_Gift_Year__c,ONEN_Household__r.Best_Gift_Year_Total__c,' +
+									'HouseholdMembershipEndDate__c,';
+        	querySOQLmore = addAllNSPrefixET (querySOQLmore,false,true);
+        	querySOQL += ',' + querySOQLmore;
+        } else if (IsNPSPHHInstalled)	{
+        	// and finally fields that only exist in NPSP
+			querySOQLmore = 
+				'Household__c,' +
+				'Household__r.OppAmountLastNDays__c,' +
+				'Household__r.OppAmountThisYear__c, Household__r.OppAmountLastYear__c, Household__r.OppAmount2YearsAgo__c,' +
+				'Household__r.OppsClosedLastNDays__c, Household__r.LastMembershipDate__c,';
+			querySOQLmore = addAllNSPrefixET (querySOQLmore,false,true);
+			querySOQL += ',' + querySOQLmore;
 		} 
         
         // include any checkbox fields from settings in the query
         if (fieldSettingsMap.size()>0) {
             for (EngagementContactFieldSettings__c s : fieldSettingsMap.values() ) {
-                querySOQL += s.Fieldname__c + ','; 
+                querySOQL += ',' + s.Fieldname__c ; 
             }
         }
-        querySOQL = querySOQL.substring(0,querySOQL.length()-1);   //lop off trailing comma
+        // querySOQL = querySOQL.substring(0,querySOQL.length()-1);   //lop off trailing comma
         
         querySOQL += ' FROM Contact';
         if (isTest) {
@@ -187,6 +199,9 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
         // cast sobjects to Contacts, and add to wrappers & maps        
         for (sobject s: SBatch) {
             Contact con = (Contact)s;
+            system.debug (Logginglevel.WARN,'con before cals: ' + con);
+            system.debug (Logginglevel.WARN,'con member end date: ' + con.MembershipEndDate__c);
+            system.debug (Logginglevel.WARN,'con member origin: ' + con.LastMembershipOrigin__c);
             conIDs.add(con.Id);
             engTrackConWrapper cw = new engTrackConWrapper(con.Id);
             cw.con = con.clone(true,true);
@@ -202,7 +217,7 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
             */
         }
         
-        //system.debug (Logginglevel.WARN,'conwrapper map before calcs: ' + conWrapMap);
+        system.debug (Logginglevel.WARN,'conwrapper map before calcs: ' + conWrapMap);
         
         // grab opp rollup data and store data on the contact wrapper object
         if (settings.Include_Opps__c || settings.Include_Membership__c) {
@@ -277,10 +292,10 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
                 qstr +=         ' AND (HasResponded=True OR Campaign.Engagement_Level_Numeric__c IN :lvlsNoNeedResp) ';
                 qstr +=         ' AND Effective_Action_Date__c >= :cutoffDateRecent ';
                 // add our namespace prefix to fields we own.
-                qstr = GW_Utilities.StrAllNSPrefix(qstr);
+                qstr = addAllNSPrefixET (qstr,true,false);
                 // fields coming from settings we can't assume should be namespace prefixed.
                 qstr +=         ' AND Campaign.' + fqset.Fieldname_1__c + '= \'' + fqset.Field_Value_1__c + '\' ';
-                qstr +=         GW_Utilities.StrAllNSPrefix(' GROUP BY ROLLUP ( ContactId, Calendar_Year(Effective_Action_Date__c) )');
+                qstr +=         addAllNSPrefixET(' GROUP BY ROLLUP ( ContactId, Calendar_Year(Effective_Action_Date__c) )' , true, false);
                 //system.debug (Logginglevel.WARN,'querystring: ' + qstr);
                 sobject[] results = Database.query(qstr);
                 for (sobject row : results) {
@@ -461,42 +476,31 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
 	*/      
 	private	void CalculateOppData(Map<id,engTrackConWrapper> conWrapMap, set<id> conIDs) {
 		
-		if (GW_Utilities.IsGWBaseInstalled)	{
             for (engTrackConWrapper cw : conWrapMap.values()) {
 				Contact con = cw.con;    				      	
-		        cw.OppAmountLastNDays_c = (decimal)con.get('GWBase__OppAmountLastNDays__c');		        
-		        cw.LastCloseDate_c = (date)con.get('GWBase__LastCloseDate__c');
-		        cw.OppsClosedLastNDays_c = (decimal)con.get('GWBase__OppsClosedLastNDays__c');
-		        cw.LastCloseDateHH_c = (date)con.get('GWBase__LastCloseDateHH__c');
-		        cw.MembershipEndDate_c = (date)con.get('GWBase__MembershipEndDate__c');
-		        cw.LastMembershipOrigin_c = (string)con.get('GWBase__LastMembershipOrigin__c');
-		        cw.LastMembershipDate_c = (date)con.get('GWBase__LastMembershipDate__c');
-		        cw.MembershipJoinDate_c = (date)con.get('GWBase__MembershipJoinDate__c');
-		        cw.Best_Gift_Year_Total_c = (decimal)con.get('GWBase__Best_Gift_Year_Total__c');
-		        cw.OppAmountLastNDaysHH_c = (decimal)con.get('GWBase__OppAmountLastNDaysHH__c');
-		        cw.HouseholdMembershipEndDate_c = (date)con.get('GWBase__HouseholdMembershipEndDate__c');
 		        
-				sObject hh = con.getSObject('GWBase__ONEN_Household__r');  
+			// these fields have the same name in gwbase & npsp, just have to mind the prefix  
+	        cw.OppAmountLastNDays_c = (decimal)con.get( addNSPrefixET('OppAmountLastNDays__c',false,true) );		        
+	        cw.LastCloseDate_c = (date)con.get( addNSPrefixET('LastCloseDate__c',false,true) );
+	        cw.OppsClosedLastNDays_c = (decimal)con.get( addNSPrefixET('OppsClosedLastNDays__c',false,true) );
+	        cw.LastCloseDateHH_c = (date)con.get( addNSPrefixET('LastCloseDateHH__c',false,true) );
+	        cw.MembershipEndDate_c = (date)con.get( addNSPrefixET('MembershipEndDate__c',false,true) );
+	        cw.LastMembershipOrigin_c = (string)con.get( addNSPrefixET('LastMembershipOrigin__c',false,true) );
+	        cw.LastMembershipDate_c = (date)con.get( addNSPrefixET('LastMembershipDate__c',false,true) );
+	        cw.MembershipJoinDate_c = (date)con.get( addNSPrefixET('MembershipJoinDate__c',false,true) );
+	        
+	        if (IsGWBaseInstalled) {
+	        	// these fields are only in gwbase (for now) or have different names
+		        cw.Best_Gift_Year_Total_c = (decimal)con.get( addNSPrefixET('Best_Gift_Year_Total__c',false,true) );
+		        cw.OppAmountLastNDaysHH_c = (decimal)con.get( addNSPrefixET('OppAmountLastNDaysHH__c',false,true) );
+		        cw.HouseholdMembershipEndDate_c = (date)con.get( addNSPrefixET('HouseholdMembershipEndDate__c',false,true) );
+				sObject hh = con.getSObject(addNSPrefixET('ONEN_Household__r',false,true) );  
 				if (hh != null) {
-		        	cw.Best_Gift_Year_TotalHH_c = (decimal)hh.get('GWBase__Best_Gift_Year_Total__c');
-		        	cw.OppsClosedLastNDaysHH_c = (decimal)hh.get('GWBase__OppsClosedLastNDays__c');
+		        	cw.Best_Gift_Year_TotalHH_c = (decimal)hh.get(addNSPrefixET('Best_Gift_Year_Total__c',false,true));
+		        	cw.OppsClosedLastNDaysHH_c = (decimal)hh.get(addNSPrefixET('OppsClosedLastNDays__c',false,true));
 				}
-            }            
-		}
-	
-		if (GW_Utilities.IsNPSPHHInstalled)	{
-            for (engTrackConWrapper cw : conWrapMap.values()) {
-				Contact con = cw.con;    				      	
-		        cw.OppAmountLastNDays_c = (decimal)con.get('npo02__OppAmountLastNDays__c');		        
-		        cw.LastCloseDate_c = (date)con.get('npo02__LastCloseDate__c');
-		        cw.OppsClosedLastNDays_c = (decimal)con.get('npo02__OppsClosedLastNDays__c');
-		        cw.LastCloseDateHH_c = (date)con.get('npo02__LastCloseDateHH__c');
-		        cw.MembershipEndDate_c = (date)con.get('npo02__MembershipEndDate__c');
-		        cw.LastMembershipOrigin_c = (string)con.get('npo02__LastMembershipOrigin__c');
-		        cw.LastMembershipDate_c = (date)con.get('npo02__LastMembershipDate__c');
-		        cw.MembershipJoinDate_c = (date)con.get('npo02__MembershipJoinDate__c');
-
-		        // estimate this for now.
+	        } else if (IsNPSPHHInstalled)	{
+		        // estimate this for now, until npsp implements best gift year
 		        decimal d1 = (decimal)con.get('npo02__OppAmountThisYear__c');
 		        decimal d2 = (decimal)con.get('npo02__OppAmountLastYear__c');
 		        decimal d3 = (decimal)con.get('npo02__OppAmount2YearsAgo__c');
@@ -506,6 +510,7 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
 
 				sObject hh = con.getSObject('npo02__Household__r');  
 				if (hh != null) {
+					// npsp doesn't roll up some HH metrics to the contact
 			        cw.OppAmountLastNDaysHH_c = (decimal)hh.get('npo02__OppAmountLastNDays__c');		        
 			        cw.OppsClosedLastNDaysHH_c = (decimal)hh.get('npo02__OppsClosedLastNDays__c');
 			        cw.HouseholdMembershipEndDate_c = (date)hh.get('npo02__LastMembershipDate__c');
@@ -542,6 +547,151 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
     global void finish(Database.BatchableContext BC){
         
     }
+
+    
+
+
+    /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+    
+    // NAMESPACE PREFIX METHODS
+    
+    public static string addNSPrefixET (string str, boolean isETField, boolean isNP02Field) {
+	     if (str.endsWith('__c') || str.endsWith('__r') ) {
+	     	if (str.contains('.')) {
+	     		// if we're passed a related field w/ object notation, recurse and do each part of the fieldname separately
+	     		// that's because if we may need namespace on both the relationship and the fieldname
+	     		// for example in npo02 we need npo02__Household__r.npo02__MembershipEndDate__c
+	     		string[] strParts = str.split('\\.');	// need to escape the dot char since this is regex
+	     		string newString = '';
+	     		for (string s : strParts) {
+	     			newString += addNSPrefixET(s,isETField,isNP02Field) + '.';
+	     		}
+	     		newString = newString.substring(0,newString.length()-1);   //lop off trailing period
+	     		return newString;
+	     	} else {
+				if (isETField) {
+					// for fields that are part of ET (like the level fields in contact and campaign)
+					// possibilities are:
+					// * GWET prefix (ET package installed in NPSP context, or ET package dev instance)
+					// * GWBase prefix (GWBase installed, or GWBase package dev instance)
+					// * no prefix (unmanaged context, e.g. git clone of GWBase)
+					if (InETPackage) {
+						return 'GWET__' + str;
+					} else {
+						return GW_Utilities.StrTokenNSPrefix(str);
+					}
+				} else {
+					// OTOH, if the fields is not part of ET, but rather part of either GWBase or NPSP (like opp rollup fields)
+					// possibilities are:
+					// * np02 or npe01 prefix (NPSP package installed - which prefix depends on which package the field is in)
+					// * GWBase prefix (NPSP not installed, GWBase installed or GWBase package dev instance)
+					// * no prefix (as above)
+					// note that we don't allow for the case of a developer/unmanaged instance of NPSP, since we (GW) never work in that context
+					if (IsNPSPHHInstalled) {
+						if (isNP02Field) {
+							return 'npo02__' + str;
+						} else {
+							return 'npe01__' + str;
+						}
+					} else {
+						return GW_Utilities.StrTokenNSPrefix(str);
+					}
+				}
+	     	}
+	     } else {
+		     return str;
+	     }
+	     
+	}
+		    
+    private static string addAllNSPrefixET (string str,boolean isETFields, boolean isNP02Fields) {
+		string[] fields = str.split(',');
+		string newString = '';
+		for (string s:fields) {
+			s = s.trim();
+			newString += addNSPrefixET (s,isETFields,isNP02Fields) + ',';
+		}
+		newString = newString.substring(0,newString.length()-1);   //lop off trailing period
+		return newString;
+	}
+		    
+	private static boolean fCheckedForNPSPHH = false;
+	public static boolean IsNPSPHHInstalled {
+		get {
+			if (!fCheckedForNPSPHH) {
+				Schema.SObjectType token = Schema.getGlobalDescribe().get('npo02__Household__c');
+				IsNPSPHHInstalled = (token != null);
+				fCheckedForNPSPHH = true;
+			}
+			return IsNPSPHHInstalled;
+		}
+		set;
+	}
+		    
+	private static boolean fCheckedForGWBase = false;
+	public static boolean IsGWBaseInstalled {
+		get {
+			if (!fCheckedForGWBase) {
+				Schema.SObjectType token = Schema.getGlobalDescribe().get('ONEN_Household__c');
+				IsGWBaseInstalled = (token != null);
+				fCheckedForGWBase = true;
+			}
+			return IsGWBaseInstalled;
+		}
+		set;
+	}
+		
+	private static boolean CheckedForETPkg = false;
+	public static boolean InETPackage {
+		get {
+			if (!CheckedForETPkg) {
+				// first try to look up a ET object using ET pkg namespace - this should only work in an installed (i.e. client) instance
+				Schema.SObjectType token = Schema.getGlobalDescribe().get('GWET__EngagementTrackerSettings__c');
+				if (token != null) {
+					InETPackage = true;
+					CheckedForETPkg = true;
+				} else {
+					// if this doesn't work, we are either in the ET dev instance itself, or in an unmanaged developer instance (git clone)
+					// the former still needs to include the prefixes, while the latter needs to not include them
+					// in order to tell the difference, try a dynamic query w/ the prefix and see if we get an err
+					string soql = 'SELECT Id,GWET__Engagement_Level__c FROM Contact LIMIT 1';
+					try {
+						SObject[] recs = database.query(soql);
+					} catch (exception e) {
+						system.debug ('err: ' + e.getMessage() );
+						InETPackage = false;
+						CheckedForETPkg = true;
+					} finally {
+						if (!CheckedForETPkg) {
+							InETPackage = true;
+							CheckedForETPkg = true;
+						}
+					}
+				}
+			}
+			return InETPackage;
+		}
+		set;
+	}
+	
+	
+	public static void BlankETConFields (list<Contact> cons) {
+		// called from before insert trigger
+		// blank out all ET fields on contact on insert
+		// this is done to prevent problems when contact is cloned, since some fields are semi-persistent
+		// e.g. peak level won't drop once it's set
+		// and as long as we're nulling some it's less confusing for user if we null them all
+		string fieldList = addAllNSPrefixET(CON_FIELDS_ET_EDITABLE,true,false);
+		string[] fieldnames = fieldList.split(',');
+		for (Contact con : cons) {
+			for (string fieldname : fieldnames) {
+				con.put(fieldname , null);
+			}
+		}
+	}
+	
+	
+    /* ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
 
     
     // *** WRAPPER CLASS **************************************************************
@@ -629,10 +779,10 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
     
     static void setSettingsForTests(string txtfield1, string txtfield1FV, double txtfield1lvl) {
 
-        settings.Include_Opps__c = GW_Utilities.IsNPSPHHInstalled || GW_Utilities.IsGWBaseInstalled; 
+        settings.Include_Opps__c = IsNPSPHHInstalled || IsGWBaseInstalled; 
         settings.Timeframe_Recent__c = 12;
         settings.Timeframe_Medium__c = 12;
-        settings.Include_Membership__c = GW_Utilities.IsNPSPHHInstalled || GW_Utilities.IsGWBaseInstalled;
+        settings.Include_Membership__c = IsNPSPHHInstalled || IsGWBaseInstalled;
         settings.New_Member_Level__c = 3;
         settings.Renewing_Member_Level__c = 4;
         settings.Override_Default_Duration__c = 12;
@@ -711,14 +861,14 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
         // this stuff basically repeated from the class - need this looked up for the test as well
         map<integer,string> lvlNameMapTest = new map<integer,string>();
         map<integer,string> lvlNameSettingMap = new map<integer,string>{
-            1=>GW_Utilities.StrTokenNSPrefix('Level_1_Name__c') , 
-            2=>GW_Utilities.StrTokenNSPrefix('Level_2_Name__c') , 
-            3=>GW_Utilities.StrTokenNSPrefix('Level_3_Name__c') , 
-            4=>GW_Utilities.StrTokenNSPrefix('Level_4_Name__c') , 
-            5=>GW_Utilities.StrTokenNSPrefix('Level_5_Name__c') , 
-            6=>GW_Utilities.StrTokenNSPrefix('Level_6_Name__c') , 
-            7=>GW_Utilities.StrTokenNSPrefix('Level_7_Name__c') , 
-            8=>GW_Utilities.StrTokenNSPrefix('Level_8_Name__c')};
+            1 => addNSPrefixET('Level_1_Name__c',true,false) , 
+            2 => addNSPrefixET('Level_2_Name__c',true,false) , 
+            3 => addNSPrefixET('Level_3_Name__c',true,false) , 
+            4 => addNSPrefixET('Level_4_Name__c',true,false) , 
+            5 => addNSPrefixET('Level_5_Name__c',true,false) , 
+            6 => addNSPrefixET('Level_6_Name__c',true,false) , 
+            7 => addNSPrefixET('Level_7_Name__c',true,false) , 
+            8 => addNSPrefixET('Level_8_Name__c',true,false) };
         
         /* TBD
         for (integer i=1 ; i<=lvlNameSettingMap.keyset().size() ; i++) {
@@ -965,22 +1115,14 @@ global virtual class GW_BATCH_EngagementRollup implements Database.Batchable<Sob
         mbrOpps.addAll(mbrshipsThisYr);
         mbrOpps.addAll(mbrshipsLastYr);
         
-        if (GW_Utilities.IsGWBaseInstalled) {
-	        for (Opportunity opp : mbrOpps) {    
-	        	opp.put('GWBase__Membership_Start_Date__c', opp.CloseDate);
-	        	opp.put('GWBase__Membership_End_Date__c', opp.CloseDate.AddYears(1)); 
-	        }
-        }
-        if (GW_Utilities.IsNPSPHHInstalled) {
-	        for (Opportunity opp : mbrOpps) {    
-	        	opp.put('npe01__Membership_Start_Date__c', opp.CloseDate);
-	        	opp.put('npe01__Membership_End_Date__c', opp.CloseDate.AddYears(1)); 
-	        }	        
-	        // note that we also made sure contact 12 and 13 (those with membership),
-	        // have normal gift opps, to work around a bug in NPSP where they wouldn't
-	        // rollup membership opps if membership was in the excluded set, and the contact
-	        // had no other opps.
-        }
+		for (Opportunity opp : mbrOpps) {    
+            opp.put( addNSPrefixET('Membership_Start_Date__c',false,false), opp.CloseDate);
+            opp.put( addNSPrefixET('Membership_End_Date__c',false,false), opp.CloseDate.AddYears(1)); 
+	    }	        
+        // note that we also made sure contact 12 and 13 (those with membership),
+        // have normal gift opps, to work around a bug in NPSP where they wouldn't
+        // rollup membership opps if membership was in the excluded set, and the contact
+        // had no other opps.
 
         Opportunity[] allOpps = new Opportunity[0];
         allOpps.addAll(recentSmallOpps);

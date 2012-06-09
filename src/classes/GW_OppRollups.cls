@@ -34,7 +34,7 @@ public without sharing class GW_OppRollups {
     static string currCorporate;
 
     // need to work slightly differently in tests, and allow different settings
-    static public boolean isTest = false;
+    static public boolean isTest = test.isRunningTest();
     static OppRollupSettings__c rollupSettingsForTest = 
         new OppRollupSettings__c( 
             Enable_Opp_Rollup_Triggers__c = true,

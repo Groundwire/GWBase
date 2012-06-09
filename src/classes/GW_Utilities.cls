@@ -69,21 +69,25 @@ global without sharing class GW_Utilities {
 	* @description boolean property to track whether NPSP Household package is installed, so we can use
 	* their opportunity rollups with the Engagement Tracker code.
 	********************************************************************************************************/	
+	/*
 	public static boolean IsNPSPHHInstalled {
 		get {
 			return false;
 		}
 	}
+	*/
 	
 	/*******************************************************************************************************
 	* @description boolean property to track whether GWBase package is installed, so we can use
 	* their opportunity rollups with the Engagement Tracker code.
 	********************************************************************************************************/	
+	/*
 	public static boolean IsGWBaseInstalled {
 		get {
 			return true;
 		}
 	}
+	*/
 
 	/*******************************************************************************************************
 	* @description Static method that takes a string of a potential field name or object name.  
