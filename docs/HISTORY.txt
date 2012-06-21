@@ -1,10 +1,14 @@
 Changelog
 =========
 
-2.2.X - unreleased
+2.2.3 - released
 ------------------
 * adding better Individual account protection, by assuming null in settings of Ind Account Name defaults to Individual, 
-  and protects account from deletion
+  and protects account from deletion [greenstork]
+* FIXED: OpportunityInstallments had an update call in a for loop, removed and now behold larger batches for data manipulation operations [greenstork]
+* FIXED issue where engagement tracker tests fail if Opp Rollup settings rec is not present; also apply namespace-prefix 
+  changes to eng tracker so it works in unmanaged gwbase setting [matthew]
+* FIXED: Removed unnecessary SOQLs from Recurring methods, for opps that don't have a Recurring Payment Profile [greenstork]
 
 2.1.0 - 2.2.2 - released
 ----------------------
