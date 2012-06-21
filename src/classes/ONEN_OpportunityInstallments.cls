@@ -40,9 +40,9 @@ public without sharing class ONEN_OpportunityInstallments {
 				// if so, add to set for processing	
 				oppUpdateMap.put(thisOpp.id, thisOpp);
 			}	
-			
-			if (!oppUpdateMap.isEmpty()) ONEN_OpportunityInstallments.updateMirrorPayments(oppUpdateMap);
-		}			
+		}		
+		
+		if (!oppUpdateMap.isEmpty()) ONEN_OpportunityInstallments.updateMirrorPayments(oppUpdateMap);	
 	}
 	
     private static void updateMirrorPayments (map<id,Opportunity> OppsToUpdateMap) {
