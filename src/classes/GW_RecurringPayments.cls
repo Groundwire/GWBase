@@ -83,52 +83,55 @@ global without sharing class GW_RecurringPayments {
 				mapIdRPPToOpp.put(oppNew.Recurring_Payment_Profile__c, oppOld == null ? oppNew : oppOld); 
 			}			
 		}
+		
+		if(!mapIdRPPToOpp.isEmpty()) {
+			
+			// for these RPP's, see which have open opps.
+			set<ID> setIdRPPWithOpps = new set<ID>();
+			for (list<Opportunity> listOpp : [select Id, Recurring_Payment_Profile__c from Opportunity 
+				where IsClosed = false and Recurring_Payment_Profile__c in :mapIdRPPToOpp.keySet()]) {
+				for (Opportunity opp : listOpp) {
+					setIdRPPWithOpps.add(opp.Recurring_Payment_Profile__c);
+				}
+			}
+			
+			// remove the RPP's with open opps from our map.
+			for (ID id : mapIdRPPToOpp.keySet()) {
+				if (setIdRPPWithOpps.contains(id)) {
+					mapIdRPPToOpp.remove(id);
+				}
+			}
+			
+			// now if an RPP has no open Opps, create a new Recurring Opp for it.
+			list<Opportunity> listOppsToCreate = new list<Opportunity>();
+			
+			for (Recurring_Payment_Profile__c rpp : [select Id, IsActive__c, Amount__c, Contact__c, Account__c, 
+				Payment_Period__c, End_Date__c, Frequency__c from Recurring_Payment_Profile__c
+				where IsActive__c = 'Yes' and Id in :mapIdRPPToOpp.keySet()]) {
+				Opportunity oppClosed = mapIdRPPToOpp.get(rpp.Id);
+				Date dt = oppClosed.CloseDate;
+				integer fq = rpp.frequency__c.intValue();
+				dt = 
+					(rpp.Payment_Period__c == 'Day') ? dt.addDays(fq) :
+					(rpp.Payment_Period__c == 'Week') ? dt.addDays(fq * 7) :
+					(rpp.Payment_Period__c == 'Year') ? dt.addYears(fq) :
+					dt.addMonths(fq);			
 	
-		// for these RPP's, see which have open opps.
-		set<ID> setIdRPPWithOpps = new set<ID>();
-		for (list<Opportunity> listOpp : [select Id, Recurring_Payment_Profile__c from Opportunity 
-			where IsClosed = false and Recurring_Payment_Profile__c in :mapIdRPPToOpp.keySet()]) {
-			for (Opportunity opp : listOpp) {
-				setIdRPPWithOpps.add(opp.Recurring_Payment_Profile__c);
+				Opportunity opp = new Opportunity(
+					RecordTypeId = oppClosed.RecordTypeId,
+					Amount = rpp.Amount__c,
+					CloseDate = dt,
+					StageName = ONEN_Constants.OPP_DEFAULT_RECURRING_STAGE,
+					AccountId = oppClosed.AccountId,
+					ContactId__c = oppClosed.ContactId__c,
+					CR_Contact_Id__c = oppClosed.CR_Contact_Id__c, 
+					Recurring_Payment_Profile__c = rpp.Id);	
+				listOppsToCreate.add(opp);				
 			}
-		}
-		
-		// remove the RPP's with open opps from our map.
-		for (ID id : mapIdRPPToOpp.keySet()) {
-			if (setIdRPPWithOpps.contains(id)) {
-				mapIdRPPToOpp.remove(id);
-			}
-		}
-		
-		// now if an RPP has no open Opps, create a new Recurring Opp for it.
-		list<Opportunity> listOppsToCreate = new list<Opportunity>();
-		
-		for (Recurring_Payment_Profile__c rpp : [select Id, IsActive__c, Amount__c, Contact__c, Account__c, 
-			Payment_Period__c, End_Date__c, Frequency__c from Recurring_Payment_Profile__c
-			where IsActive__c = 'Yes' and Id in :mapIdRPPToOpp.keySet()]) {
-			Opportunity oppClosed = mapIdRPPToOpp.get(rpp.Id);
-			Date dt = oppClosed.CloseDate;
-			integer fq = rpp.frequency__c.intValue();
-			dt = 
-				(rpp.Payment_Period__c == 'Day') ? dt.addDays(fq) :
-				(rpp.Payment_Period__c == 'Week') ? dt.addDays(fq * 7) :
-				(rpp.Payment_Period__c == 'Year') ? dt.addYears(fq) :
-				dt.addMonths(fq);			
-
-			Opportunity opp = new Opportunity(
-				RecordTypeId = oppClosed.RecordTypeId,
-				Amount = rpp.Amount__c,
-				CloseDate = dt,
-				StageName = ONEN_Constants.OPP_DEFAULT_RECURRING_STAGE,
-				AccountId = oppClosed.AccountId,
-				ContactId__c = oppClosed.ContactId__c,
-				CR_Contact_Id__c = oppClosed.CR_Contact_Id__c, 
-				Recurring_Payment_Profile__c = rpp.Id);	
-			listOppsToCreate.add(opp);				
-		}
-		
-		// create them.
-		insert listOppsToCreate;			
+			
+			// create them.
+			insert listOppsToCreate;
+		}			
 	}
 	
 	/* started to abstract this for Online payments but put on hold
