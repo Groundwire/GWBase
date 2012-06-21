@@ -256,4 +256,34 @@ public with sharing class ONEN_EXT_OpportunitiesMarkAs {
     
     }
 
+    public static testMethod void TestMarkAsThankedBulk() {
+    
+    	integer howMany = 200;
+        Date datClose = System.Today();
+            
+        // create & insert contact(s)
+        Contact[] TestCons = ONEN_UnitTestData.CreateMultipleTestContacts ( howMany ) ;
+        insert TestCons;
+        
+        // create new opps
+        Opportunity[] newOpps2 = ONEN_UnitTestData.OppsForContactList ( TestCons, null, 'Prospecting', datClose.addYears(-1), 50 , ONEN_Constants.OPP_DEFAULT_RECTYPE_FORTESTS,null);
+
+        // insert the opp(s)
+        Test.StartTest();
+        insert newOpps2;
+        
+	    //pass selected opportunities into the controller
+	    ApexPages.StandardSetController sc = new ApexPages.standardSetController(newOpps2);
+	    sc.setSelected(newOpps2);
+	    //pass the controller into the extension
+	    ONEN_EXT_OpportunitiesMarkAs ext = new ONEN_EXT_OpportunitiesMarkAs(sc);
+	    
+	    ext.MarkAsThanked();
+	    
+	    Opportunity[] Opps = [SELECT Name, StageName FROM Opportunity where id = :newOpps2[0].id ];
+	    system.assertEquals(1,Opps.size());
+	    System.assertEquals(ONEN_Constants.OPP_DEFAULT_CLOSED_WON_STAGE,Opps[0].StageName);
+    
+    }
+
 }
