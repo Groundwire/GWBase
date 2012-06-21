@@ -5,6 +5,7 @@
         <datatype>percent</datatype>
         <developerName>FORMULA1</developerName>
         <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
         <masterLabel>Won %</masterLabel>
         <scale>2</scale>
     </aggregates>
@@ -14,6 +15,7 @@
         <description>total $ won divided by # of donors (gifts, actually, but they&apos;re usually the same)</description>
         <developerName>FORMULA2</developerName>
         <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
         <masterLabel>Net Revenue per Donor</masterLabel>
         <scale>2</scale>
     </aggregates>
@@ -23,6 +25,7 @@
         <description>total $ won divided by effective # sent</description>
         <developerName>FORMULA3</developerName>
         <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
         <masterLabel>Net Revenue per Piece Sent</masterLabel>
         <scale>2</scale>
     </aggregates>

@@ -16,6 +16,7 @@
                 <fullName>Draft</fullName>
                 <default>false</default>
             </picklistValues>
+            <restrictedPicklist>true</restrictedPicklist>
             <sorted>false</sorted>
         </picklist>
         <type>Picklist</type>

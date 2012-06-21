@@ -8,6 +8,7 @@
     <leftSection>
         <columnSize>Medium</columnSize>
         <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
             <componentType>Gauge</componentType>
             <displayUnits>Auto</displayUnits>
             <gaugeMax>1000000.0</gaugeMax>
@@ -25,6 +26,7 @@
             <title>Received revenue to date</title>
         </components>
         <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
             <chartAxisRange>Auto</chartAxisRange>
             <componentType>LineCumulative</componentType>
             <displayUnits>Auto</displayUnits>
@@ -42,6 +44,7 @@
             <useReportChart>false</useReportChart>
         </components>
         <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
             <chartAxisRange>Auto</chartAxisRange>
             <componentType>BarGrouped</componentType>
             <displayUnits>Auto</displayUnits>
@@ -63,6 +66,7 @@
     <middleSection>
         <columnSize>Medium</columnSize>
         <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
             <componentType>Gauge</componentType>
             <displayUnits>Auto</displayUnits>
             <gaugeMax>1000000.0</gaugeMax>
@@ -80,6 +84,7 @@
             <title>Gift revenue received this year</title>
         </components>
         <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
             <chartAxisRange>Auto</chartAxisRange>
             <componentType>ColumnStacked</componentType>
             <displayUnits>Auto</displayUnits>
@@ -97,6 +102,7 @@
             <useReportChart>false</useReportChart>
         </components>
         <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
             <chartAxisRange>Auto</chartAxisRange>
             <componentType>Funnel</componentType>
             <displayUnits>Integer</displayUnits>
@@ -117,6 +123,7 @@
     <rightSection>
         <columnSize>Medium</columnSize>
         <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
             <componentType>Gauge</componentType>
             <displayUnits>Auto</displayUnits>
             <gaugeMax>1000000.0</gaugeMax>
@@ -134,6 +141,7 @@
             <title>Grants received this year</title>
         </components>
         <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
             <chartAxisRange>Auto</chartAxisRange>
             <componentType>ColumnStacked</componentType>
             <displayUnits>Auto</displayUnits>
@@ -151,6 +159,7 @@
             <useReportChart>false</useReportChart>
         </components>
         <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
             <chartAxisRange>Auto</chartAxisRange>
             <componentType>Funnel</componentType>
             <displayUnits>Integer</displayUnits>

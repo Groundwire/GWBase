@@ -46,6 +46,7 @@
         <relationshipLabel>Related Contacts</relationshipLabel>
         <relationshipName>R00N700000020Qy3EAE</relationshipName>
         <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
         <type>MasterDetail</type>
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>

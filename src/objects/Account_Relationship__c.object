@@ -46,6 +46,7 @@
         <relationshipLabel>Related Organizations</relationshipLabel>
         <relationshipName>rel_org_to_contact_contact</relationshipName>
         <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
         <type>MasterDetail</type>
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
@@ -72,6 +73,7 @@
         <relationshipLabel>Related Contacts</relationshipLabel>
         <relationshipName>rel_org_to_contact_organization</relationshipName>
         <relationshipOrder>1</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
         <type>MasterDetail</type>
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
