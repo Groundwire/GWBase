@@ -826,7 +826,7 @@ public without sharing class GW_OppRollups {
                         (o.closeDate != oldOpp.closeDate) ||
                         (o.Membership_Start_Date__c != oldOpp.Membership_Start_Date__c) ||
                         (o.Membership_End_Date__c != oldOpp.Membership_End_Date__c) ||
-                        (o.Membership_Level__c != oldOpp.Membership_Level__c) ||
+                        (o.Member_Level__c != oldOpp.Member_Level__c) ||
                         (o.accountId != oldOpp.accountId)))) {
                             
 //                      system.debug (LoggingLevel.WARN, 'opp changed! ' + o);   
