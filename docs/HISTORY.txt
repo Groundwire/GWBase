@@ -1,6 +1,10 @@
 Changelog
 =========
 
+Unreleased
+----------
+* FIXED: Opp trigger now fires for change in member level
+
 2.2.3 - released
 ------------------
 * adding better Individual account protection, by assuming null in settings of Ind Account Name defaults to Individual, 
