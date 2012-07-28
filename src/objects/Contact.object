@@ -468,7 +468,7 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>HouseholdMembershipEndDate__c</fullName>
         <externalId>false</externalId>
-        <formula>ONEN_Household__r.MembershipEndDate__c</formula>
+        <formula>IF ( ISNULL(ONEN_Household__c) ,  MembershipEndDate__c  , ONEN_Household__r.MembershipEndDate__c )</formula>
         <inlineHelpText>End date of the last membership for this person&apos;s household.</inlineHelpText>
         <label>Household Membership End Date</label>
         <required>false</required>
@@ -477,7 +477,7 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>HouseholdMembershipJoinDate__c</fullName>
         <externalId>false</externalId>
-        <formula>ONEN_Household__r.MembershipJoinDate__c</formula>
+        <formula>IF ( ISNULL(ONEN_Household__c) ,  MembershipJoinDate__c  ,ONEN_Household__r.MembershipJoinDate__c)</formula>
         <inlineHelpText>Start date of the first membership for this person&apos;s household.</inlineHelpText>
         <label>Household Membership Join Date</label>
         <required>false</required>
@@ -541,7 +541,7 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>LastCloseDateHH__c</fullName>
         <externalId>false</externalId>
-        <formula>ONEN_Household__r.LastCloseDate__c</formula>
+        <formula>IF ( ISNULL(ONEN_Household__c) ,  LastCloseDate__c  , ONEN_Household__r.LastCloseDate__c)</formula>
         <label>Last Household Gift Date</label>
         <required>false</required>
         <type>Date</type>
@@ -778,7 +778,7 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>OppAmountLastNDaysHH__c</fullName>
         <externalId>false</externalId>
-        <formula>ONEN_Household__r.OppAmountLastNDays__c</formula>
+        <formula>IF ( ISNULL(ONEN_Household__c) ,  OppAmountLastNDays__c  , ONEN_Household__r.OppAmountLastNDays__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Total Household Gifts Last 365 Days</label>
         <precision>18</precision>
@@ -800,7 +800,7 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>OppAmountLastYearHH__c</fullName>
         <externalId>false</externalId>
-        <formula>ONEN_Household__r.OppAmountLastYear__c</formula>
+        <formula>IF ( ISNULL(ONEN_Household__c) ,  OppAmountLastYear__c  , ONEN_Household__r.OppAmountLastYear__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Total Household Gifts Last Year</label>
         <precision>18</precision>
@@ -822,7 +822,7 @@ NOTE: This does not take into account any past overrides or formerly-checked che
     <fields>
         <fullName>OppAmountThisYearHH__c</fullName>
         <externalId>false</externalId>
-        <formula>ONEN_Household__r.OppAmountThisYear__c</formula>
+        <formula>IF ( ISNULL(ONEN_Household__c) ,  OppAmountThisYear__c  , ONEN_Household__r.OppAmountThisYear__c )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Total Household Gifts This Year</label>
         <precision>18</precision>
@@ -1296,7 +1296,7 @@ null)</formula>
     <fields>
         <fullName>Total_Household_Gifts__c</fullName>
         <externalId>false</externalId>
-        <formula>ONEN_Household__r.TotalOppAmount__c</formula>
+        <formula>IF ( ISNULL(ONEN_Household__c) ,  TotalOppAmount__c  , ONEN_Household__r.TotalOppAmount__c )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Total Household Gifts</label>
         <precision>18</precision>
