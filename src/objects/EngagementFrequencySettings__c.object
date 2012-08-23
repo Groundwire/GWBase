@@ -6,6 +6,36 @@
     <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <fields>
+        <fullName>Campaign_Record_Type__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>The Record Type of the Campaign to set an Engagement Level for. This field is optional.</inlineHelpText>
+        <label>Campaign Record Type</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Campaign_Sub_Type__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>The Sub Type of the Campaign to set an Engagement Level for. This field is optional.</inlineHelpText>
+        <label>Campaign Sub Type</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Campaign_Type__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>The Type of the Campaign to set an Engagement Level for. This field is optional.</inlineHelpText>
+        <label>Campaign Type</label>
+        <length>255</length>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Field_Value_1__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Optional. The value of Fieldname 1 required for a Campaign to count toward this rule. For checkboxes, &quot;True&quot; corresponds to checked.</inlineHelpText>

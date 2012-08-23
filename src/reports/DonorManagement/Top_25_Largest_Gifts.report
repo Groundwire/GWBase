@@ -54,6 +54,10 @@
         <name>probability</name>
         <value>&gt;0</value>
     </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
     <reportType>Opportunity</reportType>
     <rowLimit>25</rowLimit>
     <scope>organization</scope>

@@ -61,6 +61,10 @@
         <name>probability</name>
         <value>&gt;0</value>
     </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
     <reportType>Opportunity</reportType>
     <scope>organization</scope>
     <showDetails>false</showDetails>

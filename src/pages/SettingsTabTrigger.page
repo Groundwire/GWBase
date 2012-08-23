@@ -1,0 +1,84 @@
+<apex:page controller="GW_CTRL_SettingsWizard" >
+
+	<apex:outputPanel id="frmTrigger" >	
+	<apex:form >
+  		<apex:pageMessages />	
+   		<apex:outputPanel layout="block" styleClass="cssTabInfo" >
+   			<br/>
+   			<div class="cssTabTitle" >Trigger Settings</div>
+   			<div class="cssTabSubTitle">Enable or disable all trigger based functionality for GWBase..</div>
+			<a class="cssTabHelpLink helpLink" id="linkHelpTrigger" onclick="document.getElementById('linkHelpTrigger').hide();
+				document.getElementById('divHelpTrigger').show();"><br/>Help <img src="/s.gif" alt="" class="helpIcon" title=""/></a>   		
+	   		<div id="divHelpTrigger" class="cssHelpText" style="display:none" >
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_Active_Campaign__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_Active_Campaign__c.InlineHelpText}</p>
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_Auto_Membership_Dates__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_Auto_Membership_Dates__c.InlineHelpText}</p>
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_Contact_Relationships__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_Contact_Relationships__c.InlineHelpText}</p>
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_Contact_Smart_Fields__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_Contact_Smart_Fields__c.InlineHelpText}</p>
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_Default_Campaign_Member_Statuses__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_Default_Campaign_Member_Statuses__c.InlineHelpText}</p>
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_Engagement_Tracker__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_Engagement_Tracker__c.InlineHelpText}</p>
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_Households__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_Households__c.InlineHelpText}</p>
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_Individual_Account__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_Individual_Account__c.InlineHelpText}</p>
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_InterAccount_Relationships__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_InterAccount_Relationships__c.InlineHelpText}</p>
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_Lead_Add_To_Campaign__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_Lead_Add_To_Campaign__c.InlineHelpText}</p>
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_Lead_Smart_Fields__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_Lead_Smart_Fields__c.InlineHelpText}</p>
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_Opportunity_Add_To_Campaign__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_Opportunity_Add_To_Campaign__c.InlineHelpText}</p>
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_Opportunity_AutoName__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_Opportunity_AutoName__c.InlineHelpText}</p>
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_Opportunity_Contact_Roles__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_Opportunity_Contact_Roles__c.InlineHelpText}</p>
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_Opportunity_Mirror_Payments__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_Opportunity_Mirror_Payments__c.InlineHelpText}</p>
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_Opportunity_Recurring_Creation__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_Opportunity_Recurring_Creation__c.InlineHelpText}</p>
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_Opportunity_Rollups__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_Opportunity_Rollups__c.InlineHelpText}</p>
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_Payment_Amount_Sync__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_Payment_Amount_Sync__c.InlineHelpText}</p>
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_Primary_Contact_On_Accounts__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_Primary_Contact_On_Accounts__c.InlineHelpText}</p>
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_Recurring_Rollup_Triggers__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_Recurring_Rollup_Triggers__c.InlineHelpText}</p>
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_RPP_Opportunity_Closing__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_RPP_Opportunity_Closing__c.InlineHelpText}</p>
+				<p><b>{!$ObjectType.TriggerSettings__c.Fields.Enable_Zip_Lookup__c.Label}</b> - {!$ObjectType.TriggerSettings__c.Fields.Enable_Zip_Lookup__c.InlineHelpText}</p>
+				
+				<a class="cssTabHelpLink helpLink" onclick="document.getElementById('divHelpTrigger').hide();document.getElementById('linkHelpTrigger').show();"><br/>Hide</a>  
+	  		</div>
+   			<br/>
+   		</apex:outputPanel>
+		<apex:outputPanel layout="block" styleClass="cssTabButtons" >
+	       	<apex:commandButton value="Edit" status="statusLoad" action="{!ctabTrigger.editTab}" rendered="{!NOT(ctabTrigger.isEditingTab)}" immediate="true" rerender="pbWizard" />
+	       	<apex:commandButton value="Save" status="statusLoad" action="{!ctabTrigger.saveTab}" rendered="{!ctabTrigger.isEditingTab}" immediate="false" rerender="pbWizard" />&nbsp;&nbsp;
+	       	<apex:commandButton value="Cancel" status="statusLoad" action="{!ctabTrigger.cancelTab}" rendered="{!ctabTrigger.isEditingTab}" immediate="true" rerender="pbWizard" />
+			<p/>
+   		</apex:outputPanel>  		
+        <apex:panelGrid columns="2" columnClasses="cssPanelGridColumn1,cssPanelGridColumn2" >
+        	<apex:panelGroup >
+	        	<apex:pageBlockSection columns="1" id="pbsTrigger" >
+
+		      		<apex:inputCheckbox value="{!tSettings.Enable_Active_Campaign__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />
+		      		<apex:inputCheckbox value="{!tSettings.Enable_Auto_Membership_Dates__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />
+		      		<apex:inputCheckbox value="{!tSettings.Enable_Contact_Relationships__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />
+		      		<apex:inputCheckbox value="{!tSettings.Enable_Contact_Smart_Fields__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />
+		      		<apex:inputCheckbox value="{!tSettings.Enable_Default_Campaign_Member_Statuses__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />
+		      		<apex:inputCheckbox value="{!tSettings.Enable_Engagement_Tracker__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />
+		      		<apex:inputCheckbox value="{!tSettings.Enable_Households__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />
+		      		<apex:inputCheckbox value="{!tSettings.Enable_Individual_Account__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />
+		      		<apex:inputCheckbox value="{!tSettings.Enable_InterAccount_Relationships__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />
+		      		<apex:inputCheckbox value="{!tSettings.Enable_Lead_Add_To_Campaign__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />
+		      		<apex:inputCheckbox value="{!tSettings.Enable_Lead_Smart_Fields__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />
+		      		<apex:inputCheckbox value="{!tSettings.Enable_Opportunity_Add_To_Campaign__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />
+		      		<apex:inputCheckbox value="{!tSettings.Enable_Opportunity_AutoName__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />
+		      		<apex:inputCheckbox value="{!tSettings.Enable_Opportunity_Contact_Roles__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />
+		      		<apex:inputCheckbox value="{!tSettings.Enable_Opportunity_Mirror_Payments__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />
+		      		<apex:inputCheckbox value="{!tSettings.Enable_Opportunity_Recurring_Creation__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />
+		      		<apex:inputCheckbox value="{!tSettings.Enable_Opportunity_Rollups__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />
+		      		<apex:inputCheckbox value="{!tSettings.Enable_Payment_Amount_Sync__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />
+		      		<apex:inputCheckbox value="{!tSettings.Enable_Primary_Contact_On_Accounts__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />
+		      		<apex:inputCheckbox value="{!tSettings.Enable_Recurring_Rollup_Triggers__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />
+		      		<apex:inputCheckbox value="{!tSettings.Enable_RPP_Opportunity_Closing__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />
+		      		<apex:inputCheckbox value="{!tSettings.Enable_Zip_Lookup__c}" disabled="{!NOT(ctabTrigger.isEditingTab)}" required="false" />	
+
+	        	</apex:pageBlockSection>
+	       	</apex:panelGroup> 
+        </apex:panelGrid>	
+		<apex:outputPanel layout="block" styleClass="cssTabButtons" >
+			<p/>
+	       	<apex:commandButton value="Edit" status="statusLoad" action="{!ctabTrigger.editTab}" rendered="{!NOT(ctabTrigger.isEditingTab)}" immediate="true" rerender="pbWizard" />
+	       	<apex:commandButton value="Save" status="statusLoad" action="{!ctabTrigger.saveTab}" rendered="{!ctabTrigger.isEditingTab}" immediate="false" rerender="pbWizard" />&nbsp;&nbsp;
+	       	<apex:commandButton value="Cancel" status="statusLoad" action="{!ctabTrigger.cancelTab}" rendered="{!ctabTrigger.isEditingTab}" immediate="true" rerender="pbWizard" />
+   		</apex:outputPanel>
+	</apex:form>
+	</apex:outputPanel> 
+</apex:page>
