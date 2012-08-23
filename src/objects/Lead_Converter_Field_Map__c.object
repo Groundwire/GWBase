@@ -17,6 +17,7 @@
     </fields>
     <fields>
         <fullName>Field_Type__c</fullName>
+        <defaultValue>&quot;Text&quot;</defaultValue>
         <externalId>false</externalId>
         <inlineHelpText>Should be either Text, Checkbox, or Multiselect. Text can correspond to a number of Salesforce field types that are text based, e.g. Text, Text Area, Picklist, Email, et al.</inlineHelpText>
         <label>Field Type</label>
