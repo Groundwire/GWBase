@@ -1,9 +1,10 @@
 Changelog
 =========
 
-Unreleased
+2.2.4 - 2.2.5 released
 ----------
 * FIXED: Opp trigger now fires for change in member level
+* FIXED: Household rollup formula fields now show contact totals when a HH doesn't exist
 
 2.2.3 - released
 ------------------
