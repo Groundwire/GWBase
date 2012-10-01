@@ -1,6 +1,10 @@
 Changelog
 =========
 
+2.2.6 released
+----------
+* FIXED: LeadConverter bug where Opp was created even if Do Not Create was selected. [njjc]
+
 2.2.4 - 2.2.5 released
 ----------
 * FIXED: Opp trigger now fires for change in member level
