@@ -570,7 +570,7 @@ global with sharing virtual class ONEN_LeadConversion {
 						leadsThatNeedOpps.put(cs.leadId, new Opportunity());
 					
 					// check if there is an opp to update after conversion
-					if (cs.oppId != null && cs.oppId != 'create_new') {
+					if (cs.oppId != null && cs.oppId != 'create_new' && cs.oppId != 'none') {
 						opportunity[] matchOpps = matchmap.get(cs.leadId).opps;
 						if (matchOpps != null) {
 							for (opportunity o : matchOpps) {
