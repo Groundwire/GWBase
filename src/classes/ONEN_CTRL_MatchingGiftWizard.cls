@@ -25,7 +25,7 @@ public with sharing class ONEN_CTRL_MatchingGiftWizard {
             newOpp.donorIdOnMatchedGift = newOpp.donorRoleOnMatchedGift.ContactId;
 
 	        //grab donor's record
-	        newOpp.donorForMatchingGift = [Select ONEN_Household__r.Name from Contact where Id = :newOpp.donorIdOnMatchedGift limit 1];
+	        newOpp.donorForMatchingGift = [Select HouseholdName__c from Contact where Id = :newOpp.donorIdOnMatchedGift limit 1];
 	        donor = newOpp.donorForMatchingGift;
         }       
 

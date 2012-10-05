@@ -35,7 +35,7 @@ Global without sharing virtual class ONEN_OpportunityMaintenance {
 	global String matchingGiftName(Date closeDate) {
 		//grab Account Name
 		Account thisAccount = [Select Name from Account where Id = :matchingGift.AccountId limit 1];
-		return thisAccount.Name + ' ' + closeDate.year() +' Matching Gift for ' + donorForMatchingGift.ONEN_Household__r.Name;
+		return thisAccount.Name + ' ' + closeDate.year() +' Matching Gift for ' + donorForMatchingGift.HouseholdName__c;
 	}
 
 	//values used in naming function below	
