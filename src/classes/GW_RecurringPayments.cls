@@ -124,7 +124,8 @@ global without sharing class GW_RecurringPayments {
 					StageName = ONEN_Constants.OPP_DEFAULT_RECURRING_STAGE,
 					AccountId = oppClosed.AccountId,
 					ContactId__c = oppClosed.ContactId__c,
-					CR_Contact_Id__c = oppClosed.CR_Contact_Id__c, 
+					CR_Contact_Id__c = rpp.Contact__c, 
+					CR_Contact_Role__c = oppClosed.CR_Contact_Role__c, 
 					Recurring_Payment_Profile__c = rpp.Id);	
 				listOppsToCreate.add(opp);				
 			}
