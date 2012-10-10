@@ -1,6 +1,10 @@
 Changelog
 =========
 
+2.2.7 released
+----------
+* FIXED: Recurring payment bug where con role were getting created wrong on opp copy. [greenstork]
+
 2.2.6 released
 ----------
 * FIXED: LeadConverter bug where Opp was created even if Do Not Create was selected. [njjc]
