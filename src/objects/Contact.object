@@ -114,6 +114,30 @@
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>Campaign_Member_Status__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>For new contact import and assigning to Campaigns. Only useful when a contact is created.</inlineHelpText>
+        <label>Campaign Member Status</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Campaign_Origin__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>The originating Campaign that brought this contact into the database, ie. what outreach effort brought in this new contact?</inlineHelpText>
+        <label>Campaign Origin</label>
+        <referenceTo>Campaign</referenceTo>
+        <relationshipLabel>Contacts</relationshipLabel>
+        <relationshipName>Contacts</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Communication_Preference__c</fullName>
         <externalId>false</externalId>
         <label>Communication Preference</label>
