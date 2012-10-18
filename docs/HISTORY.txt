@@ -1,6 +1,14 @@
 Changelog
 =========
 
+2.3.0 unreleased
+----------
+* Campaign_Member_Error__c object: holding object for failed CampaignMember inserts, with tab. [njjc]
+* GW_CampaignMember class: handles attempting upserts of CampaignMember and list<CampaignMember>, creates error records for failed inserts, translates CampaignMember to CampaignMemberError objects. [njjc]
+* GW_BATCH_CampaignMember class: schedulable batchable class to process holding records and attempt to insert them. [njjc]
+* New settings: Contact Add to Campaign trigger setting, enable Campaign Member Error misc. setting. [njjc]
+* Modified Contact After trigger and Contact Maintenance class to handle CampaignMember inserts. [njjc]
+
 2.2.7 released
 ----------
 * FIXED: Recurring payment bug where con role were getting created wrong on opp copy. [greenstork]
