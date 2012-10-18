@@ -22,6 +22,14 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Enable_Contact_Add_To_Campaign__c</fullName>
+        <defaultValue>true</defaultValue>
+        <description>Adds contacts with Campaign Origin field to the appropriate campaign.</description>
+        <externalId>false</externalId>
+        <label>Enable Contact Add To Campaign</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Enable_Contact_Relationships__c</fullName>
         <defaultValue>true</defaultValue>
         <externalId>false</externalId>

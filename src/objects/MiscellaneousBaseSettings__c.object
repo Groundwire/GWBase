@@ -17,6 +17,14 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Enable_Campaign_Member_Error_Table__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Enable the Campaign Member Error holding table, to hold and process failed Campaign Member inserts due to row locking errors.</description>
+        <externalId>false</externalId>
+        <label>Enable Campaign Member Error Table</label>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>GW_Help_Docs_Password__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Password for the Groundwire help documentation site.</inlineHelpText>
