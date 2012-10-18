@@ -15,6 +15,10 @@ trigger GW_ContactTriggerAfter on Contact (after delete, after insert, after upd
         am.SetPrimaryContacts(trigger.New, trigger.Old, (trigger.isInsert || trigger.isUndelete), trigger.isDelete);
     }
 
+	if (GW_TriggerSettings.ts.Enable_Contact_Add_To_Campaign__c && trigger.isInsert) {
+		GW_ContactMaintenance.NewContactAddToCampaign(trigger.new);
+	}
+
     if (trigger.isDelete) {
         // delete appropriate relationships
         if (GW_TriggerSettings.ts.Enable_Contact_Relationships__c) {

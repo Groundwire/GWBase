@@ -51,6 +51,29 @@ public with sharing class GW_ContactMaintenance {
 		
 	}
 	
+		// after a lead is inserted, add them to a Campaign if one was specified.
+	public static void NewContactAddToCampaign(list<Contact> listContact) {
+		
+		List<CampaignMember> membershipRecords = new list<CampaignMember>();
+
+		for (Contact c : listContact) {
+			if (c.Campaign_Origin__c != NULL) {
+				CampaignMember cm = new CampaignMember(
+					CampaignId = c.Campaign_Origin__c,
+					ContactId = c.id
+				);
+				if (c.Campaign_Member_Status__c!=null) {
+					cm.Status = c.Campaign_Member_Status__c;
+				}
+				membershipRecords.add(cm);
+			}
+		}
+		
+		if (membershipRecords.size() > 0) {			
+			GW_CampaignMember.UpsertCM(membershipRecords);
+		}
+	}
+	
 	static testmethod void TestContactDeceased() {
 		Contact c = new Contact();
 		c.FirstName = 'Micky';

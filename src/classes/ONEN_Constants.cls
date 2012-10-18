@@ -68,7 +68,19 @@ global without sharing class ONEN_Constants {
 			return (miscBaseSettings == null) ? 'Employee' : miscBaseSettings.Job_Change_Wizard_Relationship__c;
 		}
 	}
-			
+
+	/*******************************************************************************************************
+	* @description Returns the custom setting Enable_Campaign_Member_Error_Table__c, which decides 
+	* whether to to hold and process failed Campaign Member inserts due to row locking errors. 
+	* Defaults to true.
+	*/		
+	global static boolean ENABLE_CAMPAIGNMEMBER_ERROR_TABLE {		
+		get {
+			MiscellaneousBaseSettings__c miscBaseSettings = MiscellaneousBaseSettings__c.getInstance();
+			return (miscBaseSettings == null) ? true : miscBaseSettings.Enable_Campaign_Member_Error_Table__c;
+		}
+	}
+
 //--- OPPORTUNITY (ROLLUP) options ---
 
 	/*******************************************************************************************************

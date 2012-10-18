@@ -36,6 +36,7 @@ global without sharing class GW_TriggerSettings {
 		ts.Enable_Zip_Lookup__c = true;		
 		ts.Enable_Opportunity_Recurring_Creation__c = true;
 		ts.Enable_RPP_Opportunity_Closing__c = true;
+		ts.Enable_Contact_Add_To_Campaign__c = true;
 		
 		// if DupBlocker is installed, tests shouldn't run these standard triggers, because they cause errs in dupeblocker tests
 		// instead, alternate triggers that run overridden versions of the classes that are dupeblocker safe should be run

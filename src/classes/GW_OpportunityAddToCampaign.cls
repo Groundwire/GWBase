@@ -16,8 +16,7 @@ public class GW_OpportunityAddToCampaign {
         Map<id,id> OppToContactIds = new Map<id,id> (); 
         // Map<id,Map<id,CampaignMember>> ContactToCMs = new Map<id,Map<id,CampaignMember>> ();
         Map<id,Opportunity> oppsToProcess = new Map<id,Opportunity> ();
-        List<CampaignMember> CMsToInsert = new List<CampaignMember> ();
-        List<CampaignMember> CMsToUpdate = new List<CampaignMember> ();
+        set<CampaignMember> CMsToUpsert = new set<CampaignMember> ();
         
         // this map's keys will be a concatenation of contactID & campaignID 
         Map<string,CampaignMember> comboIDMap = new Map<string,CampaignMember> ();
@@ -122,7 +121,7 @@ public class GW_OpportunityAddToCampaign {
                                 CampaignsToCheckCMS.add (CampId);
                             }
                         }
-                        CMsToInsert.add (newCM);
+                        CMsToUpsert.add (newCM);
                         comboIDMap.put (comboID,newCM);
     
                         
@@ -139,7 +138,7 @@ public class GW_OpportunityAddToCampaign {
                                 CampaignsToCheckCMS.add (CampId);
                             }
                             if (CMIDsToUpdateSet.add(thisCM.Id)) {
-                                CMsToUpdate.add(thisCM);
+                                CMsToUpsert.add(thisCM);
                             }
                         }
                     }
@@ -152,18 +151,11 @@ public class GW_OpportunityAddToCampaign {
             boolean statusOK = ONEN_CampaignMemberStatus.CheckCMStatusExistsBulk (CampaignsToCheckCMS,DefaultDonatedStatus,true);
             boolean statusOK2 = ONEN_CampaignMemberStatus.CheckCMStatusExistsBulk (CampToCheckResponded,'Responded',true);
             
-            //system.debug ('to update: ' + CMsToUpdate);
-            //system.debug ('to insert: ' + CMsToInsert);
-    
-            // need to insert the new ones first, in case any will be subsequent dups that need updating.
-            if ( CMsToInsert.size() > 0 ) {
-                insert CMsToInsert;
-            }   
-            //system.debug('CMDebug: ' + CMsToUpdate);  
-            if ( CMsToUpdate.size() > 0 ) {
-                update CMsToUpdate;     
+            if ( CMsToUpsert.size() > 0 ) {
+            	list<CampaignMember> CMListToUpsert = new list<CampaignMember>();
+            	CMListToUpsert.addAll(CMsToUpsert);
+                GW_CampaignMember.UpsertCM(CMListToUpsert);
             }
-            
         }
     }   
 

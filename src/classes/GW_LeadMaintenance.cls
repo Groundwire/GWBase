@@ -71,7 +71,7 @@ public with sharing class GW_LeadMaintenance {
 			}
 			
 			if (membershipRecords.size()>0) {			
-				insert membershipRecords;
+				GW_CampaignMember.UpsertCM(membershipRecords);
 			}
 		}
 	}
