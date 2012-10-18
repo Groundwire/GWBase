@@ -34,6 +34,7 @@
     </actionOverrides>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>false</enableActivities>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>true</enableReports>
@@ -125,8 +126,8 @@
         <customTabListAdditionalFields>Exception__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>Exception_Type__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>Times_Failed__c</customTabListAdditionalFields>
-        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
         <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
         <lookupDialogsAdditionalFields>Campaign__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Contact__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Lead__c</lookupDialogsAdditionalFields>
