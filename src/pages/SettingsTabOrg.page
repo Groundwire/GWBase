@@ -1,0 +1,50 @@
+<apex:page controller="GW_CTRL_SettingsWizard" >
+
+	<apex:outputPanel id="frmOrg" >	
+	<apex:form >
+  		<apex:pageMessages />	
+   		<apex:outputPanel layout="block" styleClass="cssTabInfo" >
+   			<br/>
+   			<div class="cssTabTitle" >Org Contact Roles</div>
+   			<div class="cssTabSubTitle">Specify the default Primary Contact Role for each Opportunity Record Type for Opportunities applied to Organizations.</div>
+	   		<div id="divHelpOrg" class="cssHelpText" style="display:none" >
+				<p><b>Primary Contact Role</b> - {!$ObjectType.OrgConRole_Settings__c.Fields.Primary_Contact_Role__c.InlineHelpText}</p>
+	  		</div>	
+   		</apex:outputPanel>
+		<apex:outputPanel layout="block" styleClass="cssTabButtons" >
+	       	<apex:commandButton value="Edit" status="statusLoad" action="{!ctabOrg.editTab}" rendered="{!NOT(ctabOrg.isEditingTab)}" immediate="true" rerender="pbWizard" />
+	       	<apex:commandButton value="Save" status="statusLoad" action="{!ctabOrg.saveTab}" rendered="{!ctabOrg.isEditingTab}" immediate="false" rerender="pbWizard" />&nbsp;&nbsp;
+	       	<apex:commandButton value="Cancel" status="statusLoad" action="{!ctabOrg.cancelTab}" rendered="{!ctabOrg.isEditingTab}" immediate="true" rerender="pbWizard" />
+			<p/>
+   		</apex:outputPanel>
+        <apex:panelGrid columns="1" columnClasses="cssPanelGridColumn1,cssPanelGridColumn2" >
+        	<apex:panelGroup >
+				<apex:pageBlockSection >        	
+					<apex:pageBlockTable value="{!ctabOrg.listOrgSettings}" var="os" >
+						<apex:column rendered="{!ctabOrg.isEditingTab}" >
+							<a class="cssDelLink" onclick="DelOnClick(this);" >del</a>
+						</apex:column>					
+						<apex:column >
+							<apex:facet name="header">{!$ObjectType.OrgConRole_Settings__c.Fields.Primary_Contact_Role__c.Label}</apex:facet>
+							<apex:inputField value="{!os.Primary_Contact_Role__c}" rendered="{!(ctabOrg.isEditingTab)}" required="false" />
+							<apex:outputField value="{!os.Primary_Contact_Role__c}" rendered="{!NOT(ctabOrg.isEditingTab)}" />
+						</apex:column>									
+						<apex:column >
+							<apex:facet name="header">Organization Opportunity Record Type</apex:facet>
+							<apex:inputField value="{!os.Name}" rendered="{!(ctabOrg.isEditingTab)}" required="false" />
+							<apex:outputField value="{!os.Name}" rendered="{!NOT(ctabOrg.isEditingTab)}" />
+						</apex:column>
+					</apex:pageBlockTable>														
+	        	</apex:pageBlockSection>	        	        	        	        
+	        		        	         	        	        
+	       	</apex:panelGroup> 
+        </apex:panelGrid>	
+		<apex:outputPanel layout="block" styleClass="cssTabButtons" >
+			<p/>
+	       	<apex:commandButton value="Edit" status="statusLoad" action="{!ctabOrg.editTab}" rendered="{!NOT(ctabOrg.isEditingTab)}" immediate="true" rerender="pbWizard" />
+	       	<apex:commandButton value="Save" status="statusLoad" action="{!ctabOrg.saveTab}" rendered="{!ctabOrg.isEditingTab}" immediate="false" rerender="pbWizard" />&nbsp;&nbsp;
+	       	<apex:commandButton value="Cancel" status="statusLoad" action="{!ctabOrg.cancelTab}" rendered="{!ctabOrg.isEditingTab}" immediate="true" rerender="pbWizard" />
+   		</apex:outputPanel>
+	</apex:form>
+	</apex:outputPanel> 
+</apex:page>
